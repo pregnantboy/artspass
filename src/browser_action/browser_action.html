@@ -1,0 +1,36 @@
+<!doctype html>
+
+<head>
+	<link rel="stylesheet" href="../../node_modules/material-components-web/dist/material-components-web.css">
+</head>
+<style type="text/css">
+	body {
+		width: 400px;
+		height: 600px;
+		margin: 0;
+		padding: 0;
+	}
+</style>
+
+<body>
+	<script src="../../node_modules/vue/dist/vue.js"></script>
+	<div class="mdc-toolbar">
+		<div class="mdc-toolbar__row">
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+			</section>
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-end mdc-toolbar__section--shrink-to-fit">
+				<i class="material-icons">assignment_return</i>
+			</section>
+		</div>
+	</div>
+	<ul id="mainlist" v-for="account in accounts" class="mdc-list mdc-list--two-line">
+		<li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
+			<span class="mdc-list-item__text">
+				{{account.site}}
+				<span class="mdc-list-item__text__secondary">{{account.username}}</span>
+			</span>
+		</li>
+	</ul>
+	<script src="../../node_modules/material-components-web/dist/material-components-web.js"></script>
+	<script src="browser_action.js"></script>
+</body>

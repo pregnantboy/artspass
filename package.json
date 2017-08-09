@@ -1,0 +1,18 @@
+{
+  "name": "artspass",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/browser_action/browser_action.html",
+  "scripts": {
+    "watch": "watchify -vd -p browserify-hmr -t vueify -e src/browser_action/browser_action.js -o src/browser_action/browser_action.prod.js",
+    "build": "browserify -t vueify -e src/browser_action/browser_action.js -o src/browser_action/browser_action.prod.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@material/list": "^0.2.14",
+    "material-components-web": "^0.17.0",
+    "vue": "^1.0.28-csp"
+  },
+  "devDependencies": {}
+}

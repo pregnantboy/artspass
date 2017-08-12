@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@material/list": "^0.2.14",
+    "lodash": "^4.17.4",
     "material-components-web": "^0.17.0",
+    "material-design-icons": "^3.0.1",
     "vue": "^1.0.28-csp"
   },
   "devDependencies": {}

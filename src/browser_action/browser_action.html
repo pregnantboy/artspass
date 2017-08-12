@@ -1,36 +1,49 @@
 <!doctype html>
+<html>
 
 <head>
 	<link rel="stylesheet" href="../../node_modules/material-components-web/dist/material-components-web.css">
+	<link rel="stylesheet" href="../../node_modules/material-design-icons/iconfont/material-icons.css">
+	<link href="../../fonts/font.css" rel="stylesheet">
+	<link rel="stylesheet" href="browser_action.css">
 </head>
-<style type="text/css">
-	body {
-		width: 400px;
-		height: 600px;
-		margin: 0;
-		padding: 0;
-	}
-</style>
 
-<body>
+<body id="app">
 	<script src="../../node_modules/vue/dist/vue.js"></script>
 	<div class="mdc-toolbar">
 		<div class="mdc-toolbar__row">
-			<section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark">
+				<div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px;">
+					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString">
+				</div>
 			</section>
-			<section class="mdc-toolbar__section mdc-toolbar__section--align-end mdc-toolbar__section--shrink-to-fit">
-				<i class="material-icons">assignment_return</i>
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-end  mdc-toolbar__section--shrink-to-fit" class="mdc-theme--dark">
+				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple">
+					<i class="material-icons spin">sync</i>
+				</button>
+				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple" base-color="white">
+					<i class="material-icons">settings</i>
+				</button>
 			</section>
 		</div>
 	</div>
-	<ul id="mainlist" v-for="account in accounts" class="mdc-list mdc-list--two-line">
-		<li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
-			<span class="mdc-list-item__text">
-				{{account.site}}
-				<span class="mdc-list-item__text__secondary">{{account.username}}</span>
-			</span>
-		</li>
-	</ul>
+	<div class="maindiv">
+		<ul v-for="account in filteredAccounts" class="mdc-list mdc-list--two-line">
+			<li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
+				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
+				<span class="mdc-list-item__text">
+				{{account ? account.site : ""}}
+				<span class="mdc-list-item__text__secondary">{{account ? account.username : null}}</span>
+				</span>
+			</li>
+		</ul>
+		<button class="mdc-fab add-new material-icons" aria-label="Edit" data-mdc-auto-init="MDCRipple">
+			<span class="mdc-fab__icon">add</span>
+		</button>
+	</div>
 	<script src="../../node_modules/material-components-web/dist/material-components-web.js"></script>
+	<script src="../../node_modules/lodash/lodash.min.js"></script>
 	<script src="browser_action.js"></script>
 </body>
+
+</html>

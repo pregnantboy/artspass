@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 body {
@@ -94,4 +95,102 @@ html {
     bottom: 20px;
     right: 20px;
     background-color: #e74c3c;
+=======
+
+
+body {
+	width: 400px;
+	height: 600px;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+    font-family: 'Roboto';
+}
+
+/* animations */
+
+.spin {
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(-360deg);}
+}
+
+/* mdc tweaks */
+
+.mdc-button {
+    min-width: 1%;
+}
+
+.mdc-list {
+    padding-top: 0px;
+}
+
+.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
+.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
+  background-color: rgba(255,255,255,0.2);
+}
+
+/* built-in tweaks */
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: black;
+}
+
+:root {
+    --mdc-theme-primary: #e74c3c;
+}
+
+/* other css */
+
+.maindiv {
+    height: calc( 100% - 59px);
+    overflow-y: scroll;
+}
+    
+.toolbar-icon {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.round-button {
+    line-height: 55px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: transparent;
+    padding: 0;
+    margin-right: 5px;
+    color: white;
+}
+
+.letter-icon {
+    background: #e74c3c;
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    color: white;
+    text-align: center;
+    line-height: 56px;
+    font-size: 25px;
+}
+
+.add-new {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e74c3c;
+>>>>>>> bed46074611ba99813ebe390b39e83eaa882fd3c
 }

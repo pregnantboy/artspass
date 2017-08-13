@@ -23,6 +23,20 @@ html {
     to {transform:rotate(-360deg);}
 }
 
+.slide-transition {
+    transition: all 0.3s ease;
+    top: 56px;
+    position: absolute;
+    background: white;
+    left: 0px;
+    height: calc( 100% - 56px );
+    padding: 0 30px;
+}
+
+.slide-enter, .slide-leave {
+    left: 400px;
+}
+
 /* mdc tweaks */
 
 .mdc-button {
@@ -36,6 +50,14 @@ html {
 .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
 .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
   background-color: rgba(255,255,255,0.2);
+}
+
+.mdc-form-field {
+    width: 100%;
+}
+
+.mdc-form-field .mdc-textfield {
+    width: 100%;
 }
 
 /* built-in tweaks */
@@ -53,10 +75,10 @@ html {
     --mdc-theme-primary: #e74c3c;
 }
 
-/* other css */
+/* maindiv */
 
 .maindiv {
-    height: calc( 100% - 59px);
+    height: calc( 100% - 56px);
     overflow-y: scroll;
 }
     
@@ -93,3 +115,5 @@ html {
     right: 20px;
     background-color: #e74c3c;
 }
+
+/* overlay divs */

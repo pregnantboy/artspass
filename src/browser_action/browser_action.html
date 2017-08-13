@@ -3,19 +3,25 @@
 
 <head>
 	<link rel="stylesheet" href="../../node_modules/material-components-web/dist/material-components-web.css">
-	<link rel="stylesheet" href="../../node_modules/material-design-icons/iconfont/material-icons.css">
+	<link rel="stylesheet" href="../../fonts/material-icons/material-icons.css">
 	<link href="../../fonts/font.css" rel="stylesheet">
 	<link rel="stylesheet" href="browser_action.css">
+	<script src="../../node_modules/vue/dist/vue.js"></script>
+	<script src="../../node_modules/material-components-web/dist/material-components-web.js"></script>
+	<script src="../../node_modules/lodash/lodash.min.js"></script>
 </head>
 
 <body id="app">
-	<script src="../../node_modules/vue/dist/vue.js"></script>
+
 	<div class="mdc-toolbar">
 		<div class="mdc-toolbar__row">
-			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark">
-				<div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px;">
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="!showAccount">
+				<div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px; padding: 0;">
 					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString">
 				</div>
+			</section>
+			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="showAccount">
+				<i class="material-icons" @click="navigateBack" style="margin-left: 10px; width: 50px; cursor:pointer;">arrow_back</i>
 			</section>
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-end  mdc-toolbar__section--shrink-to-fit" class="mdc-theme--dark">
 				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple">
@@ -29,7 +35,7 @@
 	</div>
 	<div class="maindiv">
 		<ul v-for="account in filteredAccounts" class="mdc-list mdc-list--two-line">
-			<li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
+			<li class="mdc-list-item" data-mdc-auto-init="MDCRipple" @click="showAccountDetailsPage($event, account)">
 				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
 				<span class="mdc-list-item__text">
 				{{account ? account.site : ""}}
@@ -37,13 +43,44 @@
 				</span>
 			</li>
 		</ul>
-		<button class="mdc-fab add-new material-icons" aria-label="Edit" data-mdc-auto-init="MDCRipple">
+		<button class="mdc-fab add-new material-icons" @click="showNewAccountPage" data-mdc-auto-init="MDCRipple">
 			<span class="mdc-fab__icon">add</span>
 		</button>
 	</div>
-	<script src="../../node_modules/material-components-web/dist/material-components-web.js"></script>
-	<script src="../../node_modules/lodash/lodash.min.js"></script>
-	<script src="browser_action.js"></script>
+	<div class="account" v-show="showAccount" transition="slide">
+		<!-- <img src="" -->
+		<div class="mdc-form-field account-form-field">
+			<div id="site-input" class="mdc-textfield ">
+				<input type="text" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="site">
+				<label class="mdc-textfield__label" for="my-textfield">Site</label>
+			</div>
+		</div>
+		<div class="mdc-form-field account-form-field">
+			<div id="url-input" class="mdc-textfield">
+				<input type="text" id="my-textfield" class="mdc-textfield__input" @blur="getIcon" disabled={{!canEdit}} v-model="url">
+				<label class="mdc-textfield__label" for="my-textfield">URL</label>
+			</div>
+		</div>
+		<div class="mdc-form-field account-form-field">
+			<div id="username-input" class="mdc-textfield">
+				<input type="text" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="username">
+				<label class="mdc-textfield__label" for="my-textfield">Username</label>
+			</div>
+		</div>
+		<div class="mdc-form-field account-form-field">
+			<div id="password-input" class="mdc-textfield">
+				<input type="password" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="password">
+				<label class="mdc-textfield__label" for="my-textfield">Password</label>
+			</div>
+		</div>
+		<div class="mdc-form-field">
+			<button class="mdc-button mdc-button--primary" style="position: absolute; right: 30px; bottom: 50px" @click="canEdit? save() : edit()">
+				{{ canEdit ? 'SAVE' : 'EDIT'}}
+			</button>
+		</div>
+	</div>
+	<script src="vue_init.prod.js"></script>
+	<script src="mdc_init.js"></script>
 </body>
 
 </html>

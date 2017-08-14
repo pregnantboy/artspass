@@ -3,54 +3,68 @@ var request = require('request');
 var accounts = [
     {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     },
     {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }, {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }, {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }, {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }, {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }, {
         site: "Google",
-        username: "user1"
+        username: "user1",
+        password: "password1"
     },
     {
         site: "Yahoo",
-        username: "user2"
+        username: "user2",
+        password: "password2"
     }
 ];
 
@@ -58,7 +72,7 @@ var mainlist = new Vue({
     el: '#app',
     data: {
         accounts: accounts,
-        showAccount: true,
+        showAccount: false,
         searchString: "",
         canEdit: true,
         site: "",
@@ -91,6 +105,24 @@ var mainlist = new Vue({
         },
         save: function () {
             this.navigateBack();
+        },
+        copyUsername(element, event, account) {
+            event.stopPropagation();
+            copyToClipboard(account.username);
+            var copyText = element.$els.copyuser;
+            copyText.innerText = 'Copied!';
+            setTimeout(() => {
+                copyText.innerText = 'Username'
+            }, 2000);
+        },
+        copyPassword(element, event, account) {
+            event.stopPropagation();
+            copyToClipboard(account.password);
+            var copyText = element.$els.copypass;
+            copyText.innerText = 'Copied!';
+            setTimeout(() => {
+                copyText.innerText = 'Password'
+            }, 2000);
         }
     },
     computed: {
@@ -120,4 +152,33 @@ function fillInput(account) {
 function validateURL(textval) {
     var urlregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
     return urlregex.test(textval);
+}
+
+function copyToClipboard(text) {
+    if (!text || text.length === 0) {
+        return;
+    }
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    } finally {
+        document.body.removeChild(textArea);
+    }
 }

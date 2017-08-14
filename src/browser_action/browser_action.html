@@ -35,11 +35,20 @@
 	</div>
 	<div class="maindiv">
 		<ul v-for="account in filteredAccounts" class="mdc-list mdc-list--two-line">
-			<li class="mdc-list-item" data-mdc-auto-init="MDCRipple" @click="showAccountDetailsPage($event, account)">
+			<li class="mdc-list-item" @click="showAccountDetailsPage($event, account)">
 				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
-				<span class="mdc-list-item__text">
+				<span class="mdc-list-item__text list-text">
 				{{account ? account.site : ""}}
 				<span class="mdc-list-item__text__secondary">{{account ? account.username : null}}</span>
+				</span>
+				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-14px;">
+					<button class="mdc-button mdc-button--dense mdc-button--compact copy-button username" data-mdc-auto-init="MDCRipple" @click="copyUsername(this, $event, account)">
+						<i class="material-icons">content_copy</i><span id="copy-text" v-el:copyuser>Username</span>
+					</button>
+					<button class="mdc-button mdc-button--dense mdc-button--compact mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
+					 @click="copyPassword(this, $event, account)">
+						<i class="material-icons">content_copy</i><span  id="copy-text" v-el:copypass >Password</span>
+					</button>
 				</span>
 			</li>
 		</ul>
@@ -50,27 +59,27 @@
 	<div class="account" v-show="showAccount" transition="slide">
 		<!-- <img src="" -->
 		<div class="mdc-form-field account-form-field">
-			<div id="site-input" class="mdc-textfield ">
-				<input type="text" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="site">
-				<label class="mdc-textfield__label" for="my-textfield">Site</label>
+			<div id="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+				<input type="text" id="site-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="site">
+				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || site) }" for="site-textfield">Site</label>
 			</div>
 		</div>
 		<div class="mdc-form-field account-form-field">
-			<div id="url-input" class="mdc-textfield">
-				<input type="text" id="my-textfield" class="mdc-textfield__input" @blur="getIcon" disabled={{!canEdit}} v-model="url">
-				<label class="mdc-textfield__label" for="my-textfield">URL</label>
+			<div id="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+				<input type="text" id="url-textfield" class="mdc-textfield__input" @blur="getIcon" disabled={{!canEdit}} v-model="url">
+				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || url) }" for="url-textfield">URL</label>
 			</div>
 		</div>
 		<div class="mdc-form-field account-form-field">
-			<div id="username-input" class="mdc-textfield">
-				<input type="text" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="username">
-				<label class="mdc-textfield__label" for="my-textfield">Username</label>
+			<div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+				<input type="text" id="username-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="username">
+				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || username) }" for="username-textfield">Username</label>
 			</div>
 		</div>
 		<div class="mdc-form-field account-form-field">
-			<div id="password-input" class="mdc-textfield">
-				<input type="password" id="my-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="password">
-				<label class="mdc-textfield__label" for="my-textfield">Password</label>
+			<div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+				<input type="password" id="password-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="password">
+				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit ||password) }" for="password-textfield">Password</label>
 			</div>
 		</div>
 		<div class="mdc-form-field">

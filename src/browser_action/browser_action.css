@@ -45,6 +45,7 @@ html {
 
 .mdc-list {
     padding-top: 0px;
+    cursor: pointer;
 }
 
 .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
@@ -58,6 +59,10 @@ html {
 
 .mdc-form-field .mdc-textfield {
     width: 100%;
+}
+
+.no-underline::after {
+    background-color: transparent !important;
 }
 
 /* built-in tweaks */
@@ -114,6 +119,29 @@ html {
     bottom: 20px;
     right: 20px;
     background-color: #e74c3c;
+}
+
+.copy-button {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+    font-size: 10px;    
+    width: 90px;
+}
+
+.copy-button span {
+    width: 60px;
+    text-align: center;
+}
+
+.copy-button i {
+    font-size: 15px;
+    line-height: 32px;
+    margin-right: 3px;
+}
+
+.list-text {
+    overflow:hidden; width:109px; white-space: nowrap; text-overflow: ellipsis;
 }
 
 /* overlay divs */

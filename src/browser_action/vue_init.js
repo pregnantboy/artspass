@@ -1,4 +1,4 @@
-var request = require('request');
+
 
 var accounts = [
     {
@@ -107,22 +107,45 @@ var mainlist = new Vue({
             this.navigateBack();
         },
         copyUsername(element, event, account) {
+            var usernameToCopy = this.username;
+            if (account) {
+                usernameToCopy = account.username;
+            }
             event.stopPropagation();
-            copyToClipboard(account.username);
-            var copyText = element.$els.copyuser;
-            copyText.innerText = 'Copied!';
-            setTimeout(() => {
-                copyText.innerText = 'Username'
-            }, 2000);
+            copyToClipboard(usernameToCopy);
+            if (account) {
+                var copyText = element.$els.copyuser;
+                copyText.innerText = 'Copied!';
+                setTimeout(() => {
+                    copyText.innerText = 'Username'
+                }, 2000);
+            } else {
+                event.target.innerText = 'check';
+                setTimeout(() => {
+                    event.target.innerText = 'content_copy'
+                }, 2000);
+            }
         },
         copyPassword(element, event, account) {
+            var passwordToCopy = this.password;
+            if (account) {
+                passwordToCopy = account.password;
+            }
             event.stopPropagation();
-            copyToClipboard(account.password);
-            var copyText = element.$els.copypass;
-            copyText.innerText = 'Copied!';
-            setTimeout(() => {
-                copyText.innerText = 'Password'
-            }, 2000);
+            copyToClipboard(passwordToCopy);
+            console.log(element)
+            if (account) {
+                var copyText = element.$els.copypass;
+                copyText.innerText = 'Copied!';
+                setTimeout(() => {
+                    copyText.innerText = 'Password'
+                }, 2000);
+            } else {
+                event.target.innerText = 'check';
+                setTimeout(() => {
+                    event.target.innerText = 'content_copy'
+                }, 2000);
+            }
         }
     },
     computed: {

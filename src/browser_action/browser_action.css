@@ -144,4 +144,16 @@ html {
     overflow:hidden; width:109px; white-space: nowrap; text-overflow: ellipsis;
 }
 
+.detailed-copy-button {
+    left: 291px;
+    cursor: pointer;
+    top: 5px;
+    pointer-events: all !important;
+    font-size: 18px;    
+    --mdc-ripple-fg-scale: 1.6 !important;
+    --mdc-ripple-left: 6px !important;
+    --mdc-ripple-top: 6px !important;
+}
+}
+
 /* overlay divs */

@@ -33,7 +33,7 @@
 			</section>
 		</div>
 	</div>
-	<div class="maindiv">
+	<div class="maindiv" v-cloak>
 		<ul v-for="account in filteredAccounts" class="mdc-list mdc-list--two-line">
 			<li class="mdc-list-item" @click="showAccountDetailsPage($event, account)">
 				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
@@ -44,9 +44,9 @@
 				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-14px;">
 					<button class="mdc-button mdc-button--dense mdc-button--compact copy-button username" data-mdc-auto-init="MDCRipple" @click="copyUsername(this, $event, account)">
 						<i class="material-icons">content_copy</i><span id="copy-text" v-el:copyuser>Username</span>
-					</button>
-					<button class="mdc-button mdc-button--dense mdc-button--compact mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
-					 @click="copyPassword(this, $event, account)">
+				</button>
+				<button class="mdc-button mdc-button--dense mdc-button--compact mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
+				 @click="copyPassword(this, $event, account)">
 						<i class="material-icons">content_copy</i><span  id="copy-text" v-el:copypass >Password</span>
 					</button>
 				</span>
@@ -74,16 +74,20 @@
 			<div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
 				<input type="text" id="username-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="username">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || username) }" for="username-textfield">Username</label>
+				<i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button"
+				 aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
 			</div>
 		</div>
 		<div class="mdc-form-field account-form-field">
 			<div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
 				<input type="password" id="password-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="password">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit ||password) }" for="password-textfield">Password</label>
+				<i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button"
+				 aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
 			</div>
 		</div>
 		<div class="mdc-form-field">
-			<button class="mdc-button mdc-button--primary" style="position: absolute; right: 30px; bottom: 50px" @click="canEdit? save() : edit()">
+			<button class="mdc-button mdc-button--primary" style="position: relative; left: 280px; top: 150px;" @click="canEdit? save() : edit()">
 				{{ canEdit ? 'SAVE' : 'EDIT'}}
 			</button>
 		</div>

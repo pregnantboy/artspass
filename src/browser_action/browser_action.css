@@ -154,6 +154,10 @@ html {
     --mdc-ripple-left: 6px !important;
     --mdc-ripple-top: 6px !important;
 }
+
+.account-form-field .mdc-textfield {
+    width: 340px;
+    max-width: 100%;
 }
 
 /* overlay divs */

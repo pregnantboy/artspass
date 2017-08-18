@@ -18,16 +18,59 @@ firebase.initializeApp(config);
 
 // Get a reference to the database service
 var database = firebase.database();
-var databaseRef = database.ref('/arts/accounts/');
+var ref = database.ref('/arts/accounts/');
 
-databaseRef.on('child_added', function(data) {
+var accountsObj = {};
+
+ref.on('child_added', function (data) {
   // send data to browser_action
+  addChild(data);
 });
 
-databaseRef.on('child_changed', function(data) {
+ref.on('child_changed', function (data) {
   // send data to browser_action
+  addChild(data);
 });
 
-databaseRef.on('child_removed', function(data) {
+ref.on('child_removed', function (data) {
   // send data to browser_action
+  removeChild(data);
+});
+
+function addChild(child) {
+  let childVal = child.val();
+  accountsObj[child.key] = {
+    username: decrypt(childVal.username),
+    password: decrypt(childVal.password),
+    site: childVal.site,
+    url: childVal.url
+  };
+}
+
+function removeChild(child) {
+  delete accountsObj[child.key];
+}
+
+function encypt(text) { return text };
+function decrypt(text) { return text };
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  console.log('message received', message.event);
+  if (message.event == "onload") {
+    sendResponse(accountsObj);
+  }
+  console.log('reached here');
+  if (message.event == "reload") {
+    console.log('reloading');
+    ref.once('value', function (snapshot) {
+      accountsObj = {};
+      console.log(snapshot);
+      snapshot.forEach( function (child) {
+        addChild(child);
+      });
+      console.log(accountsObj);
+      sendResponse(accountsObj);
+    });
+    return true;    
+  }
 });

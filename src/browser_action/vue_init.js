@@ -1,161 +1,114 @@
 
+var mainlist = vueInit([]);
 
-var accounts = [
-    {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    },
-    {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }, {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }, {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }, {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }, {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }, {
-        site: "Google",
-        username: "user1",
-        password: "password1"
-    },
-    {
-        site: "Yahoo",
-        username: "user2",
-        password: "password2"
-    }
-];
+function vueInit(accounts) {
 
-var mainlist = new Vue({
-    el: '#app',
-    data: {
-        accounts: accounts,
-        showAccount: false,
-        searchString: "",
-        canEdit: true,
-        site: "",
-        url: "",
-        username: "",
-        password: ""
-    },
-    methods: {
-        showNewAccountPage: function () {
-            clearInput();
-            this.showAccount = true;
-            this.canEdit = true;
+    return new Vue({
+        el: '#app',
+        data: {
+            accounts: accounts,
+            showAccount: false,
+            searchString: "",
+            canEdit: true,
+            site: "",
+            url: "",
+            username: "",
+            password: "",
+            isSyncing: false
         },
-        showAccountDetailsPage: function (event, account) {
-            fillInput(account);
-            this.showAccount = true;
-            this.canEdit = false;
-            console.log(account);
-        },
-        navigateBack: function () {
-            this.showAccount = false;
-        },
-        getIcon: function (event) {
-            let url = event.target.value;
-            if (validateURL(url)) {
+        methods: {
+            showNewAccountPage: function () {
+                clearInput();
+                this.showAccount = true;
+                this.canEdit = true;
+            },
+            showAccountDetailsPage: function (event, account) {
+                fillInput(account);
+                this.showAccount = true;
+                this.canEdit = false;
+                console.log(account);
+            },
+            navigateBack: function () {
+                this.showAccount = false;
+            },
+            getIcon: function (event) {
+                let url = event.target.value;
+                if (validateURL(url)) {
+                }
+            },
+            edit: function () {
+                this.canEdit = true;
+            },
+            save: function () {
+                this.navigateBack();
+            },
+            copyUsername(element, event, account) {
+                var usernameToCopy = this.username;
+                if (account) {
+                    usernameToCopy = account.username;
+                }
+                event.stopPropagation();
+                copyToClipboard(usernameToCopy);
+                if (account) {
+                    var copyText = element.$els.copyuser;
+                    copyText.innerText = 'Copied!';
+                    setTimeout(() => {
+                        copyText.innerText = 'Username'
+                    }, 2000);
+                } else {
+                    event.target.innerText = 'check';
+                    setTimeout(() => {
+                        event.target.innerText = 'content_copy'
+                    }, 2000);
+                }
+            },
+            copyPassword(element, event, account) {
+                var passwordToCopy = this.password;
+                if (account) {
+                    passwordToCopy = account.password;
+                }
+                event.stopPropagation();
+                copyToClipboard(passwordToCopy);
+                console.log(element)
+                if (account) {
+                    var copyText = element.$els.copypass;
+                    copyText.innerText = 'Copied!';
+                    setTimeout(() => {
+                        copyText.innerText = 'Password'
+                    }, 2000);
+                } else {
+                    event.target.innerText = 'check';
+                    setTimeout(() => {
+                        event.target.innerText = 'content_copy'
+                    }, 2000);
+                }
+            },
+            reload() {
+                this.isSyncing = true;
+                chrome.runtime.sendMessage({ event: "reload " }, (accountsObj) => {
+                    console.log(accountsObj);
+                    this.accounts = _.values(accountsObj);
+                    this.isSyncing = false;
+                });
             }
         },
-        edit: function () {
-            this.canEdit = true;
-        },
-        save: function () {
-            this.navigateBack();
-        },
-        copyUsername(element, event, account) {
-            var usernameToCopy = this.username;
-            if (account) {
-                usernameToCopy = account.username;
-            }
-            event.stopPropagation();
-            copyToClipboard(usernameToCopy);
-            if (account) {
-                var copyText = element.$els.copyuser;
-                copyText.innerText = 'Copied!';
-                setTimeout(() => {
-                    copyText.innerText = 'Username'
-                }, 2000);
-            } else {
-                event.target.innerText = 'check';
-                setTimeout(() => {
-                    event.target.innerText = 'content_copy'
-                }, 2000);
-            }
-        },
-        copyPassword(element, event, account) {
-            var passwordToCopy = this.password;
-            if (account) {
-                passwordToCopy = account.password;
-            }
-            event.stopPropagation();
-            copyToClipboard(passwordToCopy);
-            console.log(element)
-            if (account) {
-                var copyText = element.$els.copypass;
-                copyText.innerText = 'Copied!';
-                setTimeout(() => {
-                    copyText.innerText = 'Password'
-                }, 2000);
-            } else {
-                event.target.innerText = 'check';
-                setTimeout(() => {
-                    event.target.innerText = 'content_copy'
-                }, 2000);
+        computed: {
+            filteredAccounts: function () {
+                return this.accounts.filter((acc) => {
+                    return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1)
+                });
             }
         }
-    },
-    computed: {
-        filteredAccounts: function () {
-            return this.accounts.filter((acc) => {
-                return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1)
-            });
-        }
-    }
+    });
+
+}
+
+console.log('document onload');
+chrome.runtime.sendMessage({ event: "onload" }, function (accountsObj) {
+    console.log(accountsObj);
+    mainlist.accounts = _.values(accountsObj);
 });
+
 
 // https://github.com/mat/besticon#self-hosting
 function clearInput() {

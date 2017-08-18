@@ -25,7 +25,7 @@
 			</section>
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-end  mdc-toolbar__section--shrink-to-fit" class="mdc-theme--dark">
 				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple">
-					<i class="material-icons spin">sync</i>
+					<i class="material-icons" v-bind:class="{'spin':isSyncing}" @click="reload">sync</i>
 				</button>
 				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple" base-color="white">
 					<i class="material-icons">settings</i>
@@ -74,16 +74,16 @@
 			<div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
 				<input type="text" id="username-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="username">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || username) }" for="username-textfield">Username</label>
-				<i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button"
-				 aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
+				<i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
+				 role="button" aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
 			</div>
 		</div>
 		<div class="mdc-form-field account-form-field">
 			<div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
 				<input type="password" id="password-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="password">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit ||password) }" for="password-textfield">Password</label>
-				<i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button"
-				 aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
+				<i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
+				 role="button" aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
 			</div>
 		</div>
 		<div class="mdc-form-field">

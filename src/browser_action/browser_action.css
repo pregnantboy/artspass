@@ -1,163 +1,206 @@
-body {
-	width: 400px;
-	height: 600px;
-	margin: 0;
-	padding: 0;
-}
+    body {
+        width: 400px;
+        height: 600px;
+        margin: 0;
+        padding: 0;
+    }
 
-html {
-    overflow: scroll;
-    overflow-x: hidden;
-    font-family: 'Roboto';
-}
+    html {
+        overflow: scroll;
+        overflow-x: hidden;
+        font-family: 'Roboto';
+    }
 
-/* animations */
+    [v-cloak] {
+        display: none;
+    }
+    /* animations */
 
-.spin {
-  -webkit-animation: spin 2s infinite linear;
-  animation: spin 2s infinite linear;
-}
+    .spin {
+        -webkit-animation: spin 1s infinite linear;
+        animation: spin 1s infinite linear;
+    }
 
-@keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(-360deg);}
-}
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(-360deg);
+        }
+    }
 
-.slide-transition {
-    transition: all 0.3s ease;
-    top: 56px;
-    position: absolute;
-    background: white;
-    left: 0px;
-    height: calc( 100% - 56px );
-    padding: 0 30px;
-}
+    .slide-transition {
+        transition: all 0.3s ease;
+        top: 56px;
+        position: absolute;
+        background: white;
+        left: 0px;
+        height: calc( 100% - 56px);
+        padding: 0 30px;
+    }
 
-.slide-enter, .slide-leave {
-    left: 400px;
-}
+    .slide-enter,
+    .slide-leave {
+        left: 400px;
+    }
+    /* mdc tweaks */
 
-/* mdc tweaks */
+    .mdc-button {
+        min-width: 1%;
+    }
 
-.mdc-button {
-    min-width: 1%;
-}
+    .mdc-list {
+        padding-top: 0px;
+        cursor: pointer;
+    }
 
-.mdc-list {
-    padding-top: 0px;
-    cursor: pointer;
-}
+    .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
+    .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
 
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
-  background-color: rgba(255,255,255,0.2);
-}
+    .mdc-button.mdc-button--primary::before,
+    .mdc-button.mdc-button--primary::after {
+        background-color: rgba(231, 75, 59, 0.2);
+    }
 
-.mdc-form-field {
-    width: 100%;
-}
+    .mdc-button:focus:not(:hover)::before,
+    .mdc-button:focus:not(:hover)::after {
+        background-color: transparent !important;
+    }
 
-.mdc-form-field .mdc-textfield {
-    width: 100%;
-}
+    .mdc-form-field {
+        width: 100%;
+    }
 
-.no-underline::after {
-    background-color: transparent !important;
-}
+    .mdc-form-field .mdc-textfield {
+        width: 100%;
+    }
 
-/* built-in tweaks */
+    .mdc-list-item:hover {
+        background-color: rgba(100, 100, 100, 0.05);
+    }
 
-::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
-}
-/* optional: show position indicator in red */
-::-webkit-scrollbar-thumb {
-    background: black;
-}
+    .no-underline::after {
+        background-color: transparent !important;
+    }
+    /* built-in tweaks */
 
-:root {
-    --mdc-theme-primary: #e74c3c;
-}
+     ::-webkit-scrollbar {
+        width: 0px;
+        /* remove scrollbar space */
+        /* background: transparent; */
+        /* optional: just make scrollbar invisible */
+    }
 
-/* maindiv */
+     ::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 100, 100, 0.5);
+    }
 
-.maindiv {
-    height: calc( 100% - 56px);
-    overflow-y: scroll;
-}
-    
-.toolbar-icon {
-    padding-left: 10px;
-    padding-right: 10px;
-}
+     :root {
+        --mdc-theme-primary: #e74c3c;
+    }
+    /* maindiv */
 
-.round-button {
-    line-height: 55px;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    background: transparent;
-    padding: 0;
-    margin-right: 5px;
-    color: white;
-}
+    .maindiv {
+        height: calc( 100% - 56px);
+        overflow-y: scroll;
+    }
 
-.letter-icon {
-    background: #e74c3c;
-    width: 56px;
-    height: 56px;
-    border-radius: 28px;
-    color: white;
-    text-align: center;
-    line-height: 56px;
-    font-size: 25px;
-}
+    .toolbar-icon {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 
-.add-new {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: #e74c3c;
-}
+    .round-button {
+        line-height: 55px;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        background: transparent;
+        padding: 0;
+        margin-right: 5px;
+        color: white;
+    }
 
-.copy-button {
-    position: relative;
-    display: inline-flex;
-    vertical-align: middle;
-    font-size: 10px;    
-    width: 90px;
-}
+    .letter-icon {
+        background: #e74c3c;
+        width: 56px;
+        height: 56px;
+        border-radius: 28px;
+        color: white;
+        text-align: center;
+        line-height: 56px;
+        font-size: 25px;
+    }
 
-.copy-button span {
-    width: 60px;
-    text-align: center;
-}
+    .add-new {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background-color: #e74c3c;
+    }
 
-.copy-button i {
-    font-size: 15px;
-    line-height: 32px;
-    margin-right: 3px;
-}
+    .copy-button {
+        position: relative;
+        display: inline-flex;
+        vertical-align: middle;
+        font-size: 10px;
+        width: 90px;
+    }
 
-.list-text {
-    overflow:hidden; width:109px; white-space: nowrap; text-overflow: ellipsis;
-}
+    .copy-button span {
+        width: 60px;
+        text-align: center;
+    }
 
-.detailed-copy-button {
-    left: 291px;
-    cursor: pointer;
-    top: 5px;
-    pointer-events: all !important;
-    font-size: 18px;    
-    --mdc-ripple-fg-scale: 1.6 !important;
-    --mdc-ripple-left: 6px !important;
-    --mdc-ripple-top: 6px !important;
-}
+    .copy-button i {
+        font-size: 15px;
+        line-height: 32px;
+        margin-right: 3px;
+    }
 
-.account-form-field .mdc-textfield {
-    width: 340px;
-    max-width: 100%;
-}
+    .list-text {
+        overflow: hidden;
+        width: 109px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 
-/* overlay divs */
+    .detailed-copy-button {
+        left: 291px;
+        cursor: pointer;
+        top: 5px;
+        pointer-events: all !important;
+        font-size: 18px;
+        --mdc-ripple-fg-scale: 1.6 !important;
+        --mdc-ripple-left: 6px !important;
+        --mdc-ripple-top: 6px !important;
+    }
+
+    .account-form-field .mdc-textfield {
+        width: 340px;
+        max-width: 100%;
+    }
+
+    .show-password {
+        margin-bottom: 8px;
+        margin-right: 4px;
+        font-size: 21px;
+        color: rgba(100, 100, 100, 0.5);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .show-password:hover {
+        color: rgba(100, 100, 100, 0.7);
+    }
+
+    .show-password:focus {
+        outline: none;
+    }
+
+    .show-password.active {
+        color: rgba(231, 75, 59, 0.7);
+    }

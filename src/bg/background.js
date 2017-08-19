@@ -6,71 +6,151 @@
 
 // Initialize Firebase
 
+var initDataLoaded = false;
+
 var config = {
-  apiKey: "AIzaSyA4p-JEtAvGo5BFKUilv0nDLKbX7qS4e0E",
-  authDomain: "artspass-dev.firebaseapp.com",
-  databaseURL: "https://artspass-dev.firebaseio.com",
-  projectId: "artspass-dev",
-  storageBucket: "",
-  messagingSenderId: "542991076028"
+	apiKey: "AIzaSyA4p-JEtAvGo5BFKUilv0nDLKbX7qS4e0E",
+	authDomain: "artspass-dev.firebaseapp.com",
+	databaseURL: "https://artspass-dev.firebaseio.com",
+	projectId: "artspass-dev",
+	storageBucket: "",
+	messagingSenderId: "542991076028"
 };
 firebase.initializeApp(config);
 
 // Get a reference to the database service
 var database = firebase.database();
-var ref = database.ref('/arts/accounts/');
+var ref = database.ref("/arts/accounts/");
 
 var accountsObj = {};
 
-ref.on('child_added', function (data) {
-  // send data to browser_action
-  addChild(data);
+ref.on("child_added", function (data) {
+	if (initDataLoaded) {
+		chrome.runtime.sendMessage({
+			event: "ref-add",
+			account: addChild(data)
+		});
+	}
 });
 
-ref.on('child_changed', function (data) {
-  // send data to browser_action
-  addChild(data);
+ref.on("child_changed", function (data) {
+	if (initDataLoaded) {
+		chrome.runtime.sendMessage({
+			event: "ref-change",
+			account: addChild(data)
+		});
+	}
 });
 
-ref.on('child_removed', function (data) {
-  // send data to browser_action
-  removeChild(data);
+ref.on("child_removed", function (data) {
+	if (initDataLoaded) {
+		chrome.runtime.sendMessage({
+			event: "ref-delete",
+			account: {
+				key: removeChild(data)
+			}
+		});
+	}
 });
+
+function loadAllData(callback) {
+	initDataLoaded = false;
+	ref.once("value", (snapshot) => {
+		initDataLoaded = true;
+		accountsObj = {};
+		snapshot.forEach((child) => {
+			addChild(child);
+		});
+		console.log(snapshot.numChildren() + " accounts loaded");
+		if (callback) {
+			callback(getAccountsArray());
+		}
+	});
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	console.log("message received", message.event);
+
+	// first load - retrieve from variable
+	if (message.event === "onload") {
+		if (initDataLoaded) {
+			sendResponse(getAccountsArray());
+		} else {
+			loadAllData(sendResponse);
+			// for async response, return true
+			return true;
+		}
+	}
+
+	// reload - refresh data
+	if (message.event === "reload") {
+		console.log("reloading");
+		loadAllData(sendResponse);
+		// for async response, return true
+		return true;
+	}
+
+	// Saving data
+	if (message.event === "save" && message.account) {
+		console.log("saving account");
+		var newChildRef;
+		if (message.account.key) {
+			newChildRef = database.ref("arts/accounts/" + message.account.key);
+		} else {
+			newChildRef = database.ref("arts/accounts").push();
+			message.account.key = newChildRef.key;
+		}
+		newChildRef.set(Account.encrypt(message.account), err => {
+			if (err) {
+				console.log(err);
+				sendResponse(false);
+			} else {
+				sendResponse(true);
+			}
+		});
+		return true;
+	}
+
+	if (message.event == "delete") {
+		console.log("delete account");
+		if (message.account.key) {
+			var deleteChildRef = database.ref("arts/accounts/" + message.account.key);
+			deleteChildRef.remove(err => {
+				if (err) {
+					console.log(err);
+					sendResponse(false);
+				} else {
+					sendResponse(true);
+				}
+			});
+			return true;
+		} else {
+			sendResponse(false);
+		}
+	}
+
+});
+
+function getAccountsArray() {
+	return _.values(accountsObj);
+}
 
 function addChild(child) {
-  let childVal = child.val();
-  accountsObj[child.key] = {
-    username: decrypt(childVal.username),
-    password: decrypt(childVal.password),
-    site: childVal.site,
-    url: childVal.url
-  };
+	var childVal = child.val();
+	var newChild = Account.decrypt(childVal, child.key);
+	accountsObj[child.key] = newChild;
+	return newChild;
 }
 
 function removeChild(child) {
-  delete accountsObj[child.key];
+	delete accountsObj[child.key];
+	return child.key;
 }
 
-function encypt(text) { return text };
-function decrypt(text) { return text };
+function encypt(text) {
+	return text
+};
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  console.log('message received', message.event);
-  if (message.event == "onload") {
-    sendResponse(accountsObj);
-  }
-  console.log('reached here');
-  if (message.event == "reload") {
-    console.log('reloading');
-    ref.once('value', function (snapshot) {
-      accountsObj = {};
-      console.log(snapshot);
-      snapshot.forEach( function (child) {
-        addChild(child);
-      });
-      console.log(accountsObj);
-      sendResponse(accountsObj);
-    });
-    return true;    
-  }
-});
+function decrypt(text) {
+	return text
+};

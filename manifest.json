@@ -21,8 +21,7 @@
     "default_popup": "src/browser_action/browser_action.html"
   },
   "permissions": [
-    "clipboardWrite",
-    "background"
+    "clipboardWrite"
   ],
   "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

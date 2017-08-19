@@ -41,8 +41,9 @@ function vueInit(accounts) {
                 this.canEdit = true;
             },
             save: function () {
-                validateForm();
-                // addOrEditAccount(this.currAccount);
+                if (validateForm()) {
+                    addOrEditAccount(this.currAccount);
+                }
             },
             remove: function () {
                 deleteAccount(this.currAccount);

@@ -82,20 +82,28 @@
         background-color: rgba(100, 100, 100, 0.05);
     }
 
+    .mdc-list-item__text__secondary {
+        font-size: 13px;
+    }
+
     .no-underline::after {
         background-color: transparent !important;
     }
     /* built-in tweaks */
 
      ::-webkit-scrollbar {
-        width: 0px;
+        width: 5px;
         /* remove scrollbar space */
         /* background: transparent; */
         /* optional: just make scrollbar invisible */
     }
 
+    ::-webkit-scrollbar-thumb {
+        background: rgba(231, 75, 59, 0.14);
+    }
+
      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(100, 100, 100, 0.5);
+        background: rgba(231, 75, 59, 0.7);
     }
 
      :root {
@@ -126,13 +134,15 @@
 
     .letter-icon {
         background: #e74c3c;
-        width: 56px;
-        height: 56px;
-        border-radius: 28px;
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
         color: white;
         text-align: center;
-        line-height: 56px;
-        font-size: 25px;
+        line-height: 50px;
+        font-size: 23px;
+        margin-left: 4px;
+        margin-right: 22px;
     }
 
     .add-new {
@@ -147,25 +157,32 @@
         display: inline-flex;
         vertical-align: middle;
         font-size: 10px;
-        width: 90px;
+        width: 70px;
+        text-align: center;
+        padding: 0;
+        box-shadow: 2px 2px 2px 1px rgba(100, 100, 100, 0.2);
+        bottom: 3px;
     }
 
     .copy-button span {
-        width: 60px;
+        width: 42px;
         text-align: center;
     }
 
     .copy-button i {
-        font-size: 15px;
+        font-size: 17px;
+        width: auto;
         line-height: 32px;
-        margin-right: 3px;
+        padding-left: 7px;
     }
 
     .list-text {
         overflow: hidden;
-        width: 109px;
+        width: 150px;
         white-space: nowrap;
         text-overflow: ellipsis;
+        font-size: 15px;
+        font-weight: 500;
     }
 
     .detailed-copy-button {

@@ -19,7 +19,7 @@ class Account {
 
     constructor(site, url, username, password, key) {
         this.site = site;
-        this.url = url;
+        this.url = url ? url : "";
         this.username = username;
         this.password = password;
         if (key) {

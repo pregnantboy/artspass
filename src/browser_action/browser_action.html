@@ -15,7 +15,7 @@
 		<div class="mdc-toolbar__row">
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="!showAccount">
 				<div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px; padding: 0;">
-					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString" style="border-bottom:none">
+					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px;">
 				</div>
 			</section>
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="showAccount">
@@ -45,19 +45,19 @@
 	<!-- Accounts List -->
 	<div class="maindiv" v-cloak>
 		<ul class="mdc-list mdc-list--two-line" style="padding: 0 0 80px 0; overflow-x: hidden;">
-			<li v-for="account in filteredAccounts" class="mdc-list-item" @click="showAccountDetailsPage($event, account)" style="height: 77px; width: 380px; padding: 0 10px;">
+			<li v-for="account in filteredAccounts" class="mdc-list-item" @click="showAccountDetailsPage($event, account)" style="height: 70px; width: 380px; padding: 0 10px;">
 				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
-				<span class="mdc-list-item__text list-text">
+				<span class="mdc-list-item__text list-text"  style="text-transform: capitalize">
 				{{account ? account.site : ""}}
 				<span class="mdc-list-item__text__secondary">{{account ? account.username : null}}</span>
 				</span>
-				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-14px;">
-					<button class="mdc-button mdc-button--dense mdc-button--compact copy-button username" data-mdc-auto-init="MDCRipple"   @click="copyUsername(this, $event, account)">
-						<i class="material-icons">content_copy</i><span id="copy-text" v-el:copyuser>Username</span>
+				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-35px;">
+					<button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="copyUsername(this, $event, account)" style="color:rgba(100,100,100,1);">
+						<i class="material-icons">person</i><span id="copy-text" v-el:copyuser>COPY</span>
 				</button>
-				<button class="mdc-button mdc-button--dense mdc-button--compact mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
+				<button class="mdc-button mdc-button--dense mdc-button mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
 				    @click="copyPassword(this, $event, account)">
-						<i class="material-icons">content_copy</i><span  id="copy-text" v-el:copypass>Password</span>
+						<i class="material-icons">vpn_key</i><span id="copy-text" v-el:copypass>COPY</span>
 					</button>
 				</span>
 			</li>

@@ -57,9 +57,9 @@ function vueInit(accounts) {
                 copyToClipboard(usernameToCopy);
                 if (account) { // list view
                     var copyText = element.$els.copyuser;
-                    copyText.innerText = "Copied!";
+                    copyText.innerText = "COPIED!";
                     setTimeout(() => {
-                        copyText.innerText = "Username"
+                        copyText.innerText = "COPY"
                     }, 2000);
                 } else { // account view
                     event.target.innerText = "check";
@@ -77,9 +77,9 @@ function vueInit(accounts) {
                 copyToClipboard(passwordToCopy);
                 if (account) { // list view
                     var copyText = element.$els.copypass;
-                    copyText.innerText = "Copied!";
+                    copyText.innerText = "COPIED!";
                     setTimeout(() => {
-                        copyText.innerText = "Password"
+                        copyText.innerText = "COPY"
                     }, 2000);
                 } else { // account view
                     event.target.innerText = "check";
@@ -93,7 +93,7 @@ function vueInit(accounts) {
             },
             showPassword() {
                 this.passwordVisible = true;
-            },         
+            },
             hidePassword() {
                 this.passwordVisible = false;
             }
@@ -118,7 +118,7 @@ function validateForm() {
         document.querySelector('#site-textfield').focus();
         return false;
     }
-    
+
     app.currAccount.username = app.currAccount.username ? app.currAccount.username.trim() : "";
     if (app.currAccount.username.length === 0) {
         document.querySelector('#username-textfield').focus();
@@ -260,7 +260,7 @@ function setSavingMode(mode) {
             }, 700);
             break;
         case 4:
-            app.isSaving = true;
+            app.isSaving = false;
             app.saveText = "FAILED";
             setTimeout(() => {
                 app.saveText = "SAVE";

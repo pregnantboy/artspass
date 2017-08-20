@@ -38,14 +38,24 @@ h3 {
 }
 
 button#login {
-    background-image: url(google-signin.png);
-    background-position: center;
-    background-size: 191px 46px;
     width: 185px;
     height: 40px;
     padding: 0px;
     margin: 0px;
     border: 0 none;
-    box-shadow: 1px 1px 3px 1px rgba(100,100,100,0.5);
-    cursor: pointer;
+    vertical-align: center;
+    text-align: center;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+#login img {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+#login span {
+    line-height: 40px;
+    width: 145px;
+    font-size: 12px;
 }

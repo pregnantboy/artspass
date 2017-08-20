@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>ARTSPass Options</title>
-    <link rel="stylesheet" href="../../node_modules/material-components-web/dist/material-components-web.css">
-    <link rel="stylesheet" href="../../fonts/material-icons/material-icons.css">
-    <link href="../../fonts/font.css" rel="stylesheet">
-    <link href="options.css" rel="stylesheet">
-    <script src="../bg/firebase.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.3.0/firebaseui.css" />
-</head>
+    <head>
+        <title>ARTSPass Options</title>
+        <link rel="stylesheet" href="../shared/material-components-web.css">
+        <link rel="stylesheet" href="../../fonts/material-icons/material-icons.css">
+        <link href="../../fonts/font.css" rel="stylesheet">
+        <link href="options.css" rel="stylesheet">
+        <script src="../bg/firebase.js"></script>
+    </head>
 
-<body>
-    <h3> Login: </h3>
-    <button id="login"></button>
-    <br>
-    <h3> Upload encryption file: </h3>
-    <span id="uploaded-file">no file uploaded</span>
-    <label class="mdc-button upload-button mdc-button--raised mdc-button--primary">
+    <body>
+        <h3 id="login-header"> Login with ARTS account: </h3>
+        <button id="login" class="mdc-button mdc-button--raised mdc-button--dense mdc-button--dense"><img src="google-icon.png" height="30px" width="30px"/><span id="login-text">Login with Google</span></button>
+        <br>
+        <h3> Upload encryption file: </h3>
+        <span id="uploaded-file">no file uploaded</span>
+        <label class="mdc-button upload-button mdc-button--raised mdc-button--primary">
         <i class="material-icons">file_upload</i>
         Upload
         <input id="file-upload" style="display: none;" type="file" />
     </label>
-    <span id="invalid-file">Invalid file</span>
-    <script src="../../node_modules/material-components-web/dist/material-components-web.js" defer></script>
-    <script src="options.js"></script>
-</body>
+        <span id="invalid-file">Invalid file</span>
+        <script src="../shared/material-components-web.min.js" defer></script>        
+        <script src="options.js"></script>
+    </body>
 
 </html>

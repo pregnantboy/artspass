@@ -55,17 +55,25 @@ ref.on("child_removed", function (data) {
 
 function loadAllData(callback) {
 	initDataLoaded = false;
-	ref.once("value", (snapshot) => {
-		initDataLoaded = true;
-		accountsObj = {};
-		snapshot.forEach((child) => {
-			addChild(child);
+	ref.once("value")
+		.then((snapshot) => {
+			initDataLoaded = true;
+			accountsObj = {};
+			snapshot.forEach((child) => {
+				addChild(child);
+			});
+			console.log(snapshot.numChildren() + " accounts loaded");
+			if (callback) {
+				callback(getAccountsArray());
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+			accountsObj = {};
+			if (callback) {
+				callback(getAccountsArray());
+			}
 		});
-		console.log(snapshot.numChildren() + " accounts loaded");
-		if (callback) {
-			callback(getAccountsArray());
-		}
-	});
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

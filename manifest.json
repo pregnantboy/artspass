@@ -14,14 +14,28 @@
     "page": "src/bg/background.html",
     "persistent": true
   },
-  "options_page": "src/options_custom/index.html",
+  "options_ui": {
+    "page": "src/options/options.html",
+    "chrome_style": true,
+    "open_in_tab": true
+  },
   "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "ARTSpass",
     "default_popup": "src/browser_action/browser_action.html"
   },
+  "oauth2": {
+    "client_id": "542991076028-sdu76a4klhdjk4og7c99pk9qslnff48j.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvUTQzLmLgFAOxVN+yqCGgNLVnlAtMw9vmyUXNVvF7am2MuXzrbih2mzjbTcMdNk9DeqL5DjAs3lFFFTNhTXM3Q52l8FMxpNa3zkQDlvkfp+wvW1m4M2J7hSx9UqJ6/AK3QAHyle5quHnxTqhlmYg/kczVNYY221+kLHnJFMZcVoymUQN/QX8+XQhr21ieu1Vq6g8Rt/9t0SdI65i61CGTHYaLZEl2ZdkmzumIHdUQTqcCMdWxIX+vLj02fTshnrYYS+xes/I0sWTxsRMtNFc0P0KcMyy5iudyVKYqYHIB2Pv5smki0r5QogZGPsgjE5gNn8m1cDjC41/d6pN60Ck+QIDAQAB",
   "permissions": [
-    "clipboardWrite"
+    "clipboardWrite",
+    "storage",
+    "identity"
   ],
-  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

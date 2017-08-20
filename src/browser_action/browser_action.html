@@ -25,7 +25,7 @@
 				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple">
 					<i class="material-icons" v-bind:class=" { 'spin': isSyncing } " @click="reload">sync</i>
 				</button>
-				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple" base-color="white">
+				<button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple" base-color="white" @click="openOptions()">
 					<i class="material-icons">settings</i>
 				</button>
 			</section>

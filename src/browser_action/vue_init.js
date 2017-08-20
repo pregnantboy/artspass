@@ -96,6 +96,9 @@ function vueInit(accounts) {
             },
             hidePassword() {
                 this.passwordVisible = false;
+            },
+            openOptions() {
+                chrome.runtime.openOptionsPage();
             }
         },
         computed: {

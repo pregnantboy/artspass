@@ -1,0 +1,51 @@
+body {
+    padding: 10px;
+    font-family: 'Roboto';
+}
+
+ :root {
+    --mdc-theme-primary: #e74c3c;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+.mdc-button.upload-button {
+    font-size: 11px;
+    height: 34px;
+}
+
+.mdc-button i {
+    margin: auto;
+    font-size: 16px;
+    margin-right: 3px;
+}
+
+.upload-button {
+    display: inline-flex;
+}
+
+#uploaded-file {
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+#invalid-file {
+    display: none;
+    color: red;
+    margin-left: 4px;
+}
+
+button#login {
+    background-image: url(google-signin.png);
+    background-position: center;
+    background-size: 191px 46px;
+    width: 185px;
+    height: 40px;
+    padding: 0px;
+    margin: 0px;
+    border: 0 none;
+    box-shadow: 1px 1px 3px 1px rgba(100,100,100,0.5);
+    cursor: pointer;
+}

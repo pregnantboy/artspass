@@ -6,14 +6,14 @@ var invalidFile;
 var loginText;
 var loginHeader;
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   inputElement = document.getElementById("file-upload");
   uploadedFile = document.getElementById("uploaded-file");
   invalidFile = document.getElementById("invalid-file");
   loginText = document.getElementById("login-text");
   loginHeader = document.getElementById("login-header");
   inputElement.addEventListener("change", handleFiles, false);
-  document.getElementById("login").addEventListener('click', login);
+  document.getElementById("login").addEventListener("click", login);
   restore_options();
 });
 
@@ -40,14 +40,14 @@ function startAuth() {
       var credential = firebase.auth.GoogleAuthProvider.credential(null, token);
       firebase.auth().signInAndRetrieveDataWithCredential(credential)
         .then(function (userCredential) {
-          console.log('login success', userCredential);
+          console.log("login success", userCredential);
           loginHeader.innerText = "Logged in as " + userCredential.user.displayName + ":";
-          loginText.innerText = 'Logout';
+          loginText.innerText = "Logout";
         })
         .catch(function (error) {
           // The OAuth token might have been invalidated. Lets' remove it from cache.
-          console.log('reached here');
-          if (error.code === 'auth/invalid-credential') {
+          console.log("reached here");
+          if (error.code === "auth/invalid-credential") {
             chrome.identity.removeCachedAuthToken({
               token: token
             }, function () {
@@ -56,7 +56,7 @@ function startAuth() {
           }
         });
     } else {
-      console.error('The OAuth Token was null');
+      console.error("The OAuth Token was null");
     }
   });
 }
@@ -64,10 +64,10 @@ function startAuth() {
 function login() {
   console.log(firebase.auth().currentUser);
   if (firebase.auth().currentUser) {
-    console.log('signing out');
+    console.log("signing out");
     logout();
   } else {
-    console.log('signing in');
+    console.log("signing in");
     startAuth();
   }
 }
@@ -80,8 +80,8 @@ function logout() {
     chrome.identity.removeCachedAuthToken({
       token: token
     }, function () {
-      loginHeader.innerText = "Login with ARTS account:"
-      loginText.innerText = 'Login with Google';
+      loginHeader.innerText = "Login with ARTS account:";
+      loginText.innerText = "Login with Google";
     });
   });
 }
@@ -103,13 +103,13 @@ function handleFiles() {
           encryptKey: textFromFileLoaded,
           encryptFileName: file.name
         }, function () {
-          uploadedFile.innerText = file.name
+          uploadedFile.innerText = file.name;
         });
       } else {
         showInvalidFileText();
       }
     };
-    fileReader.readAsText(file, "UTF-8")
+    fileReader.readAsText(file, "UTF-8");
   }
 }
 
@@ -125,17 +125,17 @@ function showInvalidFileText() {
 function restore_options() {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get({
-    encryptFileName: 'no file uploaded',
+    encryptFileName: "no file uploaded",
   }, function (settings) {
     uploadedFile.innerText = settings.encryptFileName;
   });
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       loginHeader.innerText = "Logged in as " + user.displayName + ":";
-      loginText.innerText = 'Logout';
+      loginText.innerText = "Logout";
     } else {
-      loginHeader.innerText = "Login with ARTS account:"
-      loginText.innerText = 'Login with Google';
+      loginHeader.innerText = "Login with ARTS account:";
+      loginText.innerText = "Login with Google";
     }
   });
 }

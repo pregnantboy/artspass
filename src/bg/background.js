@@ -154,11 +154,3 @@ function removeChild(child) {
 	delete accountsObj[child.key];
 	return child.key;
 }
-
-function encypt(text) {
-	return text
-};
-
-function decrypt(text) {
-	return text
-};

@@ -28,14 +28,13 @@ function vueInit(accounts) {
                 populateAccount(account);
                 this.showAccount = true;
                 this.canEdit = false;
-                console.log(account);
             },
             navigateBack: function () {
                 this.showAccount = false;
             },
             getIcon: function (event) {
                 let url = event.target.value;
-                if (validateURL(url)) {}
+                validateURL(url);
             },
             edit: function () {
                 this.canEdit = true;
@@ -59,12 +58,12 @@ function vueInit(accounts) {
                     var copyText = element.$els.copyuser;
                     copyText.innerText = "COPIED!";
                     setTimeout(() => {
-                        copyText.innerText = "COPY"
+                        copyText.innerText = "COPY";
                     }, 2000);
                 } else { // account view
                     event.target.innerText = "check";
                     setTimeout(() => {
-                        event.target.innerText = "content_copy"
+                        event.target.innerText = "content_copy";
                     }, 2000);
                 }
             },
@@ -79,7 +78,7 @@ function vueInit(accounts) {
                     var copyText = element.$els.copypass;
                     copyText.innerText = "COPIED!";
                     setTimeout(() => {
-                        copyText.innerText = "COPY"
+                        copyText.innerText = "COPY";
                     }, 2000);
                 } else { // account view
                     event.target.innerText = "check";
@@ -107,7 +106,7 @@ function vueInit(accounts) {
                     if (!acc.site) {
                         return false;
                     }
-                    return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1)
+                    return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1);
                 });
             }
         }
@@ -118,18 +117,18 @@ function vueInit(accounts) {
 function validateForm() {
     app.currAccount.site = app.currAccount.site ? app.currAccount.site.trim() : "";
     if (app.currAccount.site.length === 0) {
-        document.querySelector('#site-textfield').focus();
+        document.querySelector("#site-textfield").focus();
         return false;
     }
 
     app.currAccount.username = app.currAccount.username ? app.currAccount.username.trim() : "";
     if (app.currAccount.username.length === 0) {
-        document.querySelector('#username-textfield').focus();
+        document.querySelector("#username-textfield").focus();
         return false;
     }
 
     if (!app.currAccount.password || app.currAccount.password.length === 0) {
-        document.querySelector('#password-textfield').focus();
+        document.querySelector("#password-textfield").focus();
         return false;
     }
 
@@ -152,9 +151,9 @@ function addOrEditAccount(account) {
 }
 
 function deleteAccount(account) {
-    var dialog = new mdc.dialog.MDCDialog(document.querySelector('#dialog'));
+    var dialog = new mdc.dialog.MDCDialog(document.querySelector("#dialog"));
     dialog.show();
-    dialog.listen('MDCDialog:accept', function () {
+    dialog.listen("MDCDialog:accept", function () {
         app.isSaving = true;
         chrome.runtime.sendMessage({
             event: "delete",
@@ -193,7 +192,7 @@ chrome.runtime.sendMessage({
 
 // event listeners 
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
     var refAccount = message.account;
     var event = message.event;
     if (!refAccount) {
@@ -206,8 +205,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log(app.accounts);
     }
 
+    var indexToChange = _.findIndex(app.accounts, ["key", refAccount.key]);
+
     if (event === "ref-change") {
-        var indexToChange = _.findIndex(app.accounts, ['key', refAccount.key]);
         if (indexToChange === -1) {
             reload();
         } else {
@@ -217,7 +217,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (event === "ref-delete") {
-        var indexToChange = _.findIndex(app.accounts, ['key', refAccount.key]);
         if (indexToChange === -1) {
             reload();
         } else {
@@ -230,7 +229,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // helpers
 
 function sort() {
-    app.accounts = _.sortBy(app.accounts, 'site');
+    app.accounts = _.sortBy(app.accounts, "site");
 }
 
 function populateAccount(account) {

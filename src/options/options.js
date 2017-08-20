@@ -29,15 +29,18 @@ var config = {
 firebase.initializeApp(config);
 
 
-function startAuth() {
+function startAuth2() {
+
   chrome.identity.getAuthToken({
     interactive: true // must be true
   }, function (token) {
+    console.log(token);
     if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError);
     } else if (token) {
       // Authrorize Firebase with the OAuth Access Token.
       var credential = firebase.auth.GoogleAuthProvider.credential(null, token);
+      console.log("new token", token);
       firebase.auth().signInAndRetrieveDataWithCredential(credential)
         .then(function (userCredential) {
           console.log("login success", userCredential);
@@ -45,8 +48,7 @@ function startAuth() {
           loginText.innerText = "Logout";
         })
         .catch(function (error) {
-          // The OAuth token might have been invalidated. Lets' remove it from cache.
-          console.log("reached here");
+          // The OAuth token might have been invalidated. Lets" remove it from cache.
           if (error.code === "auth/invalid-credential") {
             chrome.identity.removeCachedAuthToken({
               token: token
@@ -61,8 +63,67 @@ function startAuth() {
   });
 }
 
+function startAuth() {
+  // Using chrome.tabs
+  var manifest = chrome.runtime.getManifest();
+
+  var clientId = encodeURIComponent(manifest.oauth2.client_id);
+  var scopes = encodeURIComponent(manifest.oauth2.scopes.join(' '));
+  var redirectUri = encodeURIComponent('urn:ietf:wg:oauth:2.0:oob:auto');
+
+  var url = 'https://accounts.google.com/o/oauth2/auth' +
+    '?client_id=' + clientId +
+    '&response_type=id_token' +
+    '&redirect_uri=' + redirectUri +
+    '&scope=' + scopes;
+  console.log(url);
+  var RESULT_PREFIX = ['Success', 'Denied', 'Error'];
+  chrome.tabs.create({
+    'url': 'about:blank'
+  }, function (authenticationTab) {
+    chrome.tabs.onUpdated.addListener(function googleAuthorizationHook(tabId, changeInfo, tab) {
+      if (tabId === authenticationTab.id) {
+        var titleParts = tab.title.split(' ', 2);
+
+        var result = titleParts[0];
+        if (titleParts.length == 2 && RESULT_PREFIX.indexOf(result) >= 0) {
+          chrome.tabs.onUpdated.removeListener(googleAuthorizationHook);
+          chrome.tabs.remove(tabId);
+
+          var response = titleParts[1];
+          // Example: id_token=<YOUR_BELOVED_ID_TOKEN>&authuser=0&hd=<SOME.DOMAIN.PL>   
+          var endIndex = response.indexOf("&authuser");
+          var id_token = response.slice(9, endIndex);
+          var credential = firebase.auth.GoogleAuthProvider.credential(null, id_token);
+          console.log("new token", id_token);
+          firebase.auth().signInAndRetrieveDataWithCredential(credential)
+            .then(function (userCredential) {
+              console.log("login success", userCredential);
+              loginHeader.innerText = "Logged in as " + userCredential.user.displayName + ":";
+              loginText.innerText = "Logout";
+            })
+            .catch(function (error) {
+              console.log(error);
+              // The OAuth token might have been invalidated. Lets" remove it from cache.
+              if (error.code === "auth/invalid-credential") {
+                chrome.identity.removeCachedAuthToken({
+                  token: token
+                }, function () {
+                  // startAuth();
+                });
+              }
+            });
+        }
+      }
+    });
+
+    chrome.tabs.update(authenticationTab.id, {
+      'url': url
+    });
+  });
+}
+
 function login() {
-  console.log(firebase.auth().currentUser);
   if (firebase.auth().currentUser) {
     console.log("signing out");
     logout();
@@ -80,6 +141,10 @@ function logout() {
     chrome.identity.removeCachedAuthToken({
       token: token
     }, function () {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + token);
+      xhr.send();
+      console.log("removed token", token);
       loginHeader.innerText = "Login with ARTS account:";
       loginText.innerText = "Login with Google";
     });
@@ -123,7 +188,7 @@ function showInvalidFileText() {
 // // Restores select box and checkbox state using the preferences
 // // stored in chrome.storage.
 function restore_options() {
-  // Use default value color = 'red' and likesColor = true.
+  // Use default value color = "red" and likesColor = true.
   chrome.storage.sync.get({
     encryptFileName: "no file uploaded",
   }, function (settings) {

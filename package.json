@@ -4,8 +4,7 @@
   "description": "",
   "main": "src/browser_action/browser_action.html",
   "scripts": {
-    "test": "eslint src/browser_action src/options src/bg src/shared/account.js",
-    "fix": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
+    "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
     "zip": "node zip.js"
   },
   "author": "",

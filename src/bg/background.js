@@ -154,3 +154,17 @@ function removeChild(child) {
 	delete accountsObj[child.key];
 	return child.key;
 }
+
+function startAuth() {
+	// Using chrome.tabs
+	var manifest = chrome.runtime.getManifest();
+	var provider = new firebase.auth.GoogleAuthProvider();
+
+	manifest.oauth2.scopes.forEach(scope => {
+		provider.addScope(scope);
+	});
+
+	firebase.auth().signInWithPopup(provider).then(function (result) {
+		console.log(result);
+	});
+}

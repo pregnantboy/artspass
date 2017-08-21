@@ -27,7 +27,6 @@
   "oauth2": {
     "client_id": "542991076028-sdu76a4klhdjk4og7c99pk9qslnff48j.apps.googleusercontent.com",
     "scopes": [
-      "openid",
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile"
     ]
@@ -39,5 +38,5 @@
     "identity",
     "tabs"
   ],
-  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com  https://apis.google.com; object-src 'self'"
 }

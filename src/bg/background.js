@@ -8,8 +8,8 @@ chrome.storage.sync.get({
 
 chrome.storage.onChanged.addListener(function (changes) {
 
-	if (changes.hasOwnProperty('encryptKey')) {
-		salt = changes['encryptKey'].newValue;
+	if (changes.hasOwnProperty("encryptKey")) {
+		salt = changes["encryptKey"].newValue;
 		loadAllData();
 	}
 });

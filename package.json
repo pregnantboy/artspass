@@ -5,11 +5,13 @@
   "main": "src/browser_action/browser_action.html",
   "scripts": {
     "test": "eslint src/browser_action src/options src/bg src/shared/account.js",
-    "fix": "eslint --fix src/browser_action src/options src/bg src/shared/account.js"
+    "fix": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
+    "zip": "node zip.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "archiver": "^2.0.0",
     "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1"
   }

@@ -1,9 +1,3 @@
-// if you checked "fancy-settings" in extensionizr.com, uncomment this lines
-
-// var settings = new Store("settings", {
-//     "sample_setting": "This is how you use Store.js to remember values"
-// });
-
 // Initialize Firebase
 
 var initDataLoaded = false;
@@ -24,34 +18,44 @@ var ref = database.ref("/arts/accounts/");
 
 var accountsObj = {};
 
-ref.on("child_added", function (data) {
-	if (initDataLoaded) {
-		chrome.runtime.sendMessage({
-			event: "ref-add",
-			account: addChild(data)
-		});
-	}
-});
+function initListeners() {
+	destroyListeners();
+	ref.on("child_added", function (data) {
+		if (initDataLoaded) {
+			chrome.runtime.sendMessage({
+				event: "ref-add",
+				account: addChild(data)
+			});
+		}
+	});
 
-ref.on("child_changed", function (data) {
-	if (initDataLoaded) {
-		chrome.runtime.sendMessage({
-			event: "ref-change",
-			account: addChild(data)
-		});
-	}
-});
+	ref.on("child_changed", function (data) {
+		if (initDataLoaded) {
+			chrome.runtime.sendMessage({
+				event: "ref-change",
+				account: addChild(data)
+			});
+		}
+	});
 
-ref.on("child_removed", function (data) {
-	if (initDataLoaded) {
-		chrome.runtime.sendMessage({
-			event: "ref-delete",
-			account: {
-				key: removeChild(data)
-			}
-		});
-	}
-});
+	ref.on("child_removed", function (data) {
+		if (initDataLoaded) {
+			chrome.runtime.sendMessage({
+				event: "ref-delete",
+				account: {
+					key: removeChild(data)
+				}
+			});
+		}
+	});
+}
+
+function destroyListeners() {
+	ref.off();
+}
+
+initListeners();
+
 
 function loadAllData(callback) {
 	initDataLoaded = false;
@@ -165,6 +169,6 @@ function startAuth() {
 	});
 
 	firebase.auth().signInWithPopup(provider).then(function (result) {
-		console.log(result);
+		console.log("logged in", result);
 	});
 }

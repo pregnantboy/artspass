@@ -98,9 +98,11 @@ function restore_options() {
   });
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
+      chrome.extension.getBackgroundPage().initListeners();
       loginHeader.innerText = "Logged in as " + user.displayName + ":";
       loginText.innerText = "Logout";
     } else {
+      chrome.extension.getBackgroundPage().destroyListeners();      
       loginHeader.innerText = "Login with ARTS account:";
       loginText.innerText = "Login with Google";
     }

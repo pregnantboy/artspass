@@ -1,3 +1,19 @@
+var salt;
+
+chrome.storage.sync.get({
+	encryptKey: ""
+}, function (settings) {
+	salt = settings.encryptKey;
+});
+
+chrome.storage.onChanged.addListener(function (changes) {
+
+	if (changes.hasOwnProperty('encryptKey')) {
+		salt = changes['encryptKey'].newValue;
+		loadAllData();
+	}
+});
+
 // Initialize Firebase
 
 var initDataLoaded = false;
@@ -77,7 +93,7 @@ function loadAllData(callback) {
 			}
 		})
 		.catch((err) => {
-			console.log(err);
+			console.error(err);
 			accountsObj = {};
 			if (callback) {
 				callback(getAccountsArray());
@@ -117,9 +133,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			newChildRef = database.ref("arts/accounts").push();
 			message.account.key = newChildRef.key;
 		}
-		newChildRef.set(Account.encrypt(message.account), err => {
+		newChildRef.set(Account.encrypt(salt, message.account), err => {
 			if (err) {
-				console.log(err);
+				console.error(err);
 				sendResponse(false);
 			} else {
 				sendResponse(true);
@@ -129,7 +145,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 
 	if (message.event == "delete") {
-		console.log("delete account");
 		if (message.account.key) {
 			var deleteChildRef = database.ref("arts/accounts/" + message.account.key);
 			deleteChildRef.remove(err => {
@@ -154,7 +169,7 @@ function getAccountsArray() {
 
 function addChild(child) {
 	var childVal = child.val();
-	var newChild = Account.decrypt(childVal, child.key);
+	var newChild = Account.decrypt(salt, childVal, child.key);
 	accountsObj[child.key] = newChild;
 	return newChild;
 }

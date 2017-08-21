@@ -27,7 +27,6 @@ function logout() {
     chrome.identity.removeCachedAuthToken({
       token: token
     }, function () {
-      console.log("removed token", token);
       loginHeader.innerText = "Login with ARTS account:";
       loginText.innerText = "Login with Google";
     });
@@ -38,7 +37,6 @@ function handleFiles() {
   var fileList = this.files; /* now you can work with the file list */
   if (fileList.length === 1) {
     var file = fileList[0];
-    console.log(file);
     if (file.size > 1000) {
       showInvalidFileText();
       return;

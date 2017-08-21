@@ -1,35 +1,16 @@
-// Firebase Login
+var firebaseAuth = chrome.extension.getBackgroundPage().firebase.auth();
 
-var inputElement;
-var uploadedFile;
-var invalidFile;
-var loginText;
-var loginHeader;
-
-document.addEventListener("DOMContentLoaded", function () {
-  inputElement = document.getElementById("file-upload");
-  uploadedFile = document.getElementById("uploaded-file");
-  invalidFile = document.getElementById("invalid-file");
-  loginText = document.getElementById("login-text");
-  loginHeader = document.getElementById("login-header");
-  inputElement.addEventListener("change", handleFiles, false);
-  document.getElementById("login").addEventListener("click", login);
-  restore_options();
-});
-
-var config = {
-  apiKey: "AIzaSyA4p-JEtAvGo5BFKUilv0nDLKbX7qS4e0E",
-  authDomain: "artspass-dev.firebaseapp.com",
-  databaseURL: "https://artspass-dev.firebaseio.com",
-  projectId: "artspass-dev",
-  storageBucket: "artspass-dev.appspot.com",
-  messagingSenderId: "542991076028"
-};
-
-firebase.initializeApp(config);
+var inputElement = document.getElementById("file-upload");
+var uploadedFile = document.getElementById("uploaded-file");
+var invalidFile = document.getElementById("invalid-file");
+var loginText = document.getElementById("login-text");
+var loginHeader = document.getElementById("login-header");
+inputElement.addEventListener("change", handleFiles, false);
+document.getElementById("login").addEventListener("click", login);
+restore_options();
 
 function login() {
-  if (firebase.auth().currentUser) {
+  if (firebaseAuth.currentUser) {
     console.log("signing out");
     logout();
   } else {
@@ -39,7 +20,7 @@ function login() {
 }
 
 function logout() {
-  firebase.auth().signOut();
+  firebaseAuth.signOut();
   chrome.identity.getAuthToken({
     interactive: true
   }, function (token) {
@@ -96,13 +77,11 @@ function restore_options() {
   }, function (settings) {
     uploadedFile.innerText = settings.encryptFileName;
   });
-  firebase.auth().onAuthStateChanged(function (user) {
+  firebaseAuth.onAuthStateChanged(function (user) {
     if (user) {
-      chrome.extension.getBackgroundPage().initListeners();
       loginHeader.innerText = "Logged in as " + user.displayName + ":";
       loginText.innerText = "Logout";
     } else {
-      chrome.extension.getBackgroundPage().destroyListeners();      
       loginHeader.innerText = "Login with ARTS account:";
       loginText.innerText = "Login with Google";
     }

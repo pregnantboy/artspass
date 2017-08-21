@@ -54,8 +54,13 @@ function destroyListeners() {
 	ref.off();
 }
 
-initListeners();
-
+firebase.auth().onAuthStateChanged(function (user) {
+	if (user) {
+		initListeners();
+	} else {
+		destroyListeners();
+	}
+});
 
 function loadAllData(callback) {
 	initDataLoaded = false;

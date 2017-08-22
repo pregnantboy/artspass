@@ -1,16 +1,22 @@
 var salt;
+var themeColor;
 
 chrome.storage.sync.get({
-	encryptKey: ""
+	encryptKey: "",
+	theme: "183,28,28"
 }, function (settings) {
 	salt = settings.encryptKey;
+	themeColor = settings.theme;
 });
 
 chrome.storage.onChanged.addListener(function (changes) {
-
 	if (changes.hasOwnProperty("encryptKey")) {
 		salt = changes["encryptKey"].newValue;
 		loadAllData();
+	}
+
+	if (changes.hasOwnProperty("theme")) {
+		themeColor = changes["theme"].newValue;
 	}
 });
 

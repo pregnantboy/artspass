@@ -5,8 +5,12 @@ var uploadedFile = document.getElementById("uploaded-file");
 var invalidFile = document.getElementById("invalid-file");
 var loginText = document.getElementById("login-text");
 var loginHeader = document.getElementById("login-header");
+var colorPicker = document.getElementsByName("radios");
 inputElement.addEventListener("change", handleFiles, false);
 document.getElementById("login").addEventListener("click", login);
+colorPicker.forEach(function (color) {
+  color.addEventListener("click", storeNewColor);
+});
 restore_options();
 
 function login() {
@@ -72,8 +76,15 @@ function restore_options() {
   // Use default value color = "red" and likesColor = true.
   chrome.storage.sync.get({
     encryptFileName: "no file uploaded",
+    theme: "198,40,40"
   }, function (settings) {
     uploadedFile.innerText = settings.encryptFileName;
+    colorPicker.forEach(function (color) {
+      if (color.value === settings.theme) {
+        color.checked = true;
+        document.documentElement.style.setProperty("--theme-color", settings.theme);
+      }
+    });
   });
   firebaseAuth.onAuthStateChanged(function (user) {
     if (user) {
@@ -83,5 +94,15 @@ function restore_options() {
       loginHeader.innerText = "Login with ARTS account:";
       loginText.innerText = "Login with Google";
     }
+  });
+}
+
+function storeNewColor(event) {
+  var newColor =  event.target.value;
+  console.log("new color", newColor);
+  chrome.storage.sync.set({
+    theme: newColor
+  }, function () {
+    document.documentElement.style.setProperty("--theme-color", newColor);
   });
 }

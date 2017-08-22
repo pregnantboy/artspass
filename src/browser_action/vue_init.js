@@ -1,3 +1,5 @@
+document.documentElement.style.setProperty("--theme-color", chrome.extension.getBackgroundPage().themeColor);
+
 var app = vueInit([]);
 
 function vueInit(accounts) {
@@ -173,16 +175,16 @@ function reload() {
         return;
     }
     app.isSyncing = true;
-    chrome.runtime.sendMessage({
-        event: "reload"
-    }, (accountsArray) => {
-        console.log(accountsArray);
-        app.accounts = accountsArray;
-        sort();
-        setTimeout(() => {
+    setTimeout(() => {
+        chrome.runtime.sendMessage({
+            event: "reload"
+        }, (accountsArray) => {
+            console.log(accountsArray);
+            app.accounts = accountsArray;
+            sort();
             app.isSyncing = false;
-        }, 1000);
-    });
+        });
+    }, 1000);
 }
 
 chrome.runtime.sendMessage({

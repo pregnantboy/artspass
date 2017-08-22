@@ -169,6 +169,9 @@ function deleteAccount(account) {
 }
 
 function reload() {
+    if (app.isSyncing) {
+        return;
+    }
     app.isSyncing = true;
     chrome.runtime.sendMessage({
         event: "reload"

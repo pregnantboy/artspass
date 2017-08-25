@@ -331,3 +331,69 @@ polyline.check {
 .button-raised:active {
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12) !important;
 }
+
+
+/* Vault Door */
+
+.vault-door {
+    height: 600px;
+    width: 400px;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    position: absolute;
+    animation-timing-function: ease-in;
+}
+
+.left-door {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    top: 0px;
+    left: -300px;
+    background: white;
+    animation-name: slide-left;
+    animation-duration: 2s;
+}
+
+.door-circle {
+    height: 160px;
+    width: 160px;
+    border-radius: 160px;
+    position: relative;
+    background: white;
+    margin-top: calc( 300px - 80px );
+    margin-left: calc( 200px - 80px );
+    border: 1px solid white;
+}
+
+.right-door {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    top: 0px;
+    left: 500px;
+    overflow: hidden;
+    animation-name: slide-right;
+    animation-duration: 2s;
+}
+
+.door-hole {
+    height: 160px;
+    width: 160px;
+    border-radius: 160px;
+    position: relative;
+    box-shadow: 0px 0px 0px 999999px white;
+    margin-top: calc( 300px - 80px );
+    margin-left: -80px;
+}
+
+@keyframes slide-left {
+    from {left: 0px;}
+    to {left: -300px;}
+}
+
+@keyframes slide-right {
+    from {left: 200px;}
+    to {left: 500px;}
+}

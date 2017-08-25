@@ -1,6 +1,5 @@
 var salt;
 var themeColor;
-
 chrome.storage.sync.get({
 	encryptKey: "",
 	theme: "214, 69, 65"
@@ -21,7 +20,7 @@ chrome.storage.onChanged.addListener(function (changes) {
 });
 
 // Initialize Firebase
-
+var isFirstLoad = false;
 var initDataLoaded = false;
 
 var config = {
@@ -88,11 +87,11 @@ function loadAllData(callback) {
 	initDataLoaded = false;
 	ref.once("value")
 		.then((snapshot) => {
-			initDataLoaded = true;
 			accountsObj = {};
 			snapshot.forEach((child) => {
 				addChild(child);
 			});
+			initDataLoaded = true;			
 			console.log(snapshot.numChildren() + " accounts loaded");
 			if (callback) {
 				callback(getAccountsArray());

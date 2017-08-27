@@ -129,7 +129,7 @@
 			</footer>
 	</aside>
 
-	<div class="vault-door" v-if="isFirstLoad" v-bind:class="{'animate': isAuthenticated}">
+	<div class="vault-door" v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
 		<div class="left-door">
 			<div class="door-circle">
 				<img class="door-handle" src="../../icons/wheel.png"/>

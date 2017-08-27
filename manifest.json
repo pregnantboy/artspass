@@ -1,6 +1,6 @@
 {
-  "name": "Valve",
-  "version": "1.0.3",
+  "name": "Vault",
+  "version": "1.0.4",
   "manifest_version": 2,
   "description": "All your password are belong to us.",
   "icons": {
@@ -34,8 +34,7 @@
   "permissions": [
     "clipboardWrite",
     "storage",
-    "identity",
-    "tabs"
+    "identity"
   ],
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com  https://apis.google.com; object-src 'self'"
 }

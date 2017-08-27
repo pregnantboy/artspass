@@ -26,6 +26,7 @@ chrome.runtime.onInstalled.addListener( function() {
 // Initialize Firebase
 var isFirstLoad = true;
 var initDataLoaded = false;
+var isAuthenticated = false;
 
 var config = {
 	apiKey: "AIzaSyA4p-JEtAvGo5BFKUilv0nDLKbX7qS4e0E",
@@ -82,8 +83,10 @@ function destroyListeners() {
 firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
 		initListeners();
+		isAuthenticated = true;
 	} else {
 		destroyListeners();
+		isAuthenticated = false;
 	}
 });
 

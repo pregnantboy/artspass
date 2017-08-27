@@ -17,7 +17,8 @@ function vueInit(accounts) {
             isSaving: false,
             passwordVisible: false,
             saveText: "SAVE",
-            isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad
+            isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
+            isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated
         },
         methods: {
             showNewAccountPage: function () {

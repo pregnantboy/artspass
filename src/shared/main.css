@@ -344,6 +344,7 @@ polyline.check {
     cursor: pointer;
 }
 
+
 /* Vault Door */
 
 :root {
@@ -366,10 +367,8 @@ polyline.check {
     height: 600px;
     position: absolute;
     top: 0px;
-    left: -300px;
+    left: 0px;
     background: var(--vault-color);
-    animation-name: slide-left;
-    animation-duration: 4s;
 }
 
 .door-circle {
@@ -388,10 +387,8 @@ polyline.check {
     height: 600px;
     position: absolute;
     top: 0px;
-    left: 500px;
+    left: 200px;
     overflow: hidden;
-    animation-name: slide-right;
-    animation-duration: 4s;
 }
 
 .door-hole {
@@ -408,6 +405,21 @@ polyline.check {
     height: 130px;
     width: 130px;
     margin: 15px;
+}
+
+.animate .left-door {
+    animation-name: slide-left;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+}
+
+.animate .right-door {
+    animation-name: slide-right;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+}
+
+.animate .door-handle {
     animation-duration: 2s;
     animation-name: spin;
     animation-timing-function: ease-in-out;
@@ -421,11 +433,12 @@ polyline.check {
     }
     50% {
         left: 0px;
-        pointer-events: auto;        
+        pointer-events: auto;
     }
     100% {
         left: -400px;
-        pointer-events: none;        
+        pointer-events: none;
+        display: none;
     }
 }
 
@@ -441,5 +454,6 @@ polyline.check {
     100% {
         pointer-events: none;
         left: 600px;
+        display: none;
     }
 }

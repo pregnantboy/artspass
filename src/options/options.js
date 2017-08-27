@@ -80,7 +80,7 @@ function restore_options() {
   // Use default value color = "red" and likesColor = true.
   chrome.storage.sync.get({
     encryptFileName: "no file uploaded",
-    theme: "198,40,40"
+    theme: "214, 69, 65"
   }, function (settings) {
     uploadedFile.innerText = settings.encryptFileName;
     colorPicker.forEach(function (color) {

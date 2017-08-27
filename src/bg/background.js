@@ -19,8 +19,8 @@ chrome.storage.onChanged.addListener(function (changes) {
 	}
 });
 
-chrome.runtime.onInstalled.addListener( function() {
-	chrome.runtime.openOptionsPage();	
+chrome.runtime.onInstalled.addListener(function () {
+	chrome.runtime.openOptionsPage();
 });
 
 // Initialize Firebase
@@ -40,7 +40,7 @@ firebase.initializeApp(config);
 
 // Get a reference to the database service
 var database = firebase.database();
-var ref = database.ref("/arts/accounts/");
+var ref = database.ref("/noaccess/accounts/");
 
 var accountsObj = {};
 
@@ -82,11 +82,15 @@ function destroyListeners() {
 
 firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
+		ref = database.ref("/" + user.uid + "/accounts/");
 		initListeners();
+		isFirstLoad = true;
 		isAuthenticated = true;
 	} else {
+		ref = database.ref("/noaccess/accounts/");
 		destroyListeners();
 		isAuthenticated = false;
+		isFirstLoad = true;
 	}
 });
 
@@ -98,7 +102,7 @@ function loadAllData(callback) {
 			snapshot.forEach((child) => {
 				addChild(child);
 			});
-			initDataLoaded = true;			
+			initDataLoaded = true;
 			console.log(snapshot.numChildren() + " accounts loaded");
 			if (callback) {
 				callback(getAccountsArray());
@@ -141,9 +145,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		console.log("saving account");
 		var newChildRef;
 		if (message.account.key) {
-			newChildRef = database.ref("arts/accounts/" + message.account.key);
+			newChildRef = ref.child(message.account.key);
 		} else {
-			newChildRef = database.ref("arts/accounts").push();
+			newChildRef = ref.push();
 			message.account.key = newChildRef.key;
 		}
 		newChildRef.set(Account.encrypt(salt, message.account), err => {
@@ -159,7 +163,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (message.event == "delete") {
 		if (message.account.key) {
-			var deleteChildRef = database.ref("arts/accounts/" + message.account.key);
+			var deleteChildRef = ref.child(message.account.key);
 			deleteChildRef.remove(err => {
 				if (err) {
 					console.log(err);

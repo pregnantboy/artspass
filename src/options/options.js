@@ -6,7 +6,11 @@ var invalidFile = document.getElementById("invalid-file");
 var loginText = document.getElementById("login-text");
 var loginHeader = document.getElementById("login-header");
 var colorPicker = document.getElementsByName("radios");
+var closeButton = document.getElementById("options-close");
 inputElement.addEventListener("change", handleFiles, false);
+closeButton.addEventListener("click", function () {
+  window.close();
+});
 document.getElementById("login").addEventListener("click", login);
 colorPicker.forEach(function (color) {
   color.addEventListener("click", storeNewColor);
@@ -98,7 +102,7 @@ function restore_options() {
 }
 
 function storeNewColor(event) {
-  var newColor =  event.target.value;
+  var newColor = event.target.value;
   console.log("new color", newColor);
   chrome.storage.sync.set({
     theme: newColor

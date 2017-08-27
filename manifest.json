@@ -1,8 +1,8 @@
 {
-  "name": "ARTSPass",
+  "name": "Vault",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "This is a chrome extension for sharing of passwords in ARTS",
+  "description": "All your password are belong to us.",
   "homepage_url": "https://asiarisktransfer.com",
   "icons": {
     "16": "icons/icon16.png",

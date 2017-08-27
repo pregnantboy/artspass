@@ -129,9 +129,11 @@
 			</footer>
 	</aside>
 
-	<div class="vault-door">
+	<div class="vault-door" v-if="isFirstLoad">
 		<div class="left-door">
-			<div class="door-circle"></div>
+			<div class="door-circle">
+				<img class="door-handle" src="../../icons/wheel.png"/>
+			</div>
 		</div>
 		<div class="right-door">
 			<div class="door-hole"></div>

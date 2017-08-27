@@ -10,7 +10,7 @@
     <script src="../shared/firebase.js"></script>
 </head>
 
-<body style="padding: 10px; font-family: 'Roboto'">
+<body id="options-container" style="padding: 10px; font-family: 'Roboto'">
     <h3 class="option-title" id="login-header"> Login with ARTS account: </h3>
     <span id="login" class="mdc-button button-raised"><img src="google-icon.png" height="30px" width="30px"/><span id="login-text">Login with Google</span></span>
     <br>
@@ -65,6 +65,9 @@
             </svg>
         </label>
     </div>
+
+    <label class="mdc-button upload-button mdc-button--raised mdc-button--primary options-close" id="options-close">CLOSE
+    </label>
 
     <script src="../shared/material-components-web.min.js" defer></script>
     <script src="options.js"></script>

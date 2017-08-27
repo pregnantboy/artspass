@@ -19,8 +19,12 @@ chrome.storage.onChanged.addListener(function (changes) {
 	}
 });
 
+chrome.runtime.onInstalled.addListener( function() {
+	chrome.runtime.openOptionsPage();	
+});
+
 // Initialize Firebase
-var isFirstLoad = false;
+var isFirstLoad = true;
 var initDataLoaded = false;
 
 var config = {
@@ -111,6 +115,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	// first load - retrieve from variable
 	if (message.event === "onload") {
+		isFirstLoad = false;
 		if (initDataLoaded) {
 			sendResponse(getAccountsArray());
 		} else {

@@ -32,6 +32,8 @@
         "Account": true,
         "firebase": true,
         "_": true,
-        "CryptoJS": true
-    }
+        "CryptoJS": true,
+        "require": true,
+        "module": true
+    }   
 }

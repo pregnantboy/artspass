@@ -1,3 +1,5 @@
+var autoLogin = require("./auto-login");
+
 var salt;
 var themeColor;
 chrome.storage.sync.get({

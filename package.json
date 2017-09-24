@@ -5,12 +5,14 @@
   "main": "src/browser_action/browser_action.html",
   "scripts": {
     "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
-    "zip": "node zip.js"
+    "zip": "node zip.js",
+    "build": "browserify ./src/bg/backgrounds.js > ./src/bg/background.prod.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "archiver": "^2.0.0",
+    "browserify": "^14.4.0",
     "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1"
   },

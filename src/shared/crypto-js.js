@@ -1,4 +1,4 @@
-;(function (root, factory) {
+(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory();
@@ -21,7 +21,7 @@
 	     * Local polyfil of Object.create
 	     */
 	    var create = Object.create || (function () {
-	        function F() {};
+	        function F() {}
 
 	        return function (obj) {
 	            var subtype;
@@ -34,7 +34,7 @@
 
 	            return subtype;
 	        };
-	    }())
+	    }());
 
 	    /**
 	     * CryptoJS namespace.
@@ -81,7 +81,7 @@
 	                }
 
 	                // Create default initializer
-	                if (!subtype.hasOwnProperty('init') || this.init === subtype.init) {
+	                if (!subtype.hasOwnProperty("init") || this.init === subtype.init) {
 	                    subtype.init = function () {
 	                        subtype.$super.init.apply(this, arguments);
 	                    };
@@ -149,7 +149,7 @@
 	                }
 
 	                // IE won't copy toString using the loop above
-	                if (properties.hasOwnProperty('toString')) {
+	                if (properties.hasOwnProperty("toString")) {
 	                    this.toString = properties.toString;
 	                }
 	            },
@@ -316,7 +316,7 @@
 	                    result /= 0x100000000;
 	                    result += 0.5;
 	                    return result * (Math.random() > .5 ? 1 : -1);
-	                }
+	                };
 	            });
 
 	            for (var i = 0, rcache; i < nBytes; i += 4) {
@@ -365,7 +365,7 @@
 	                hexChars.push((bite & 0x0f).toString(16));
 	            }
 
-	            return hexChars.join('');
+	            return hexChars.join("");
 	        },
 
 	        /**
@@ -424,7 +424,7 @@
 	                latin1Chars.push(String.fromCharCode(bite));
 	            }
 
-	            return latin1Chars.join('');
+	            return latin1Chars.join("");
 	        },
 
 	        /**
@@ -475,7 +475,7 @@
 	            try {
 	                return decodeURIComponent(escape(Latin1.stringify(wordArray)));
 	            } catch (e) {
-	                throw new Error('Malformed UTF-8 data');
+	                throw new Error("Malformed UTF-8 data");
 	            }
 	        },
 
@@ -530,7 +530,7 @@
 	         */
 	        _append: function (data) {
 	            // Convert string to WordArray, else assume WordArray already
-	            if (typeof data == 'string') {
+	            if (typeof data == "string") {
 	                data = Utf8.parse(data);
 	            }
 
@@ -810,7 +810,7 @@
 	                }
 	            }
 
-	            return base64Chars.join('');
+	            return base64Chars.join("");
 	        },
 
 	        /**
@@ -853,7 +853,7 @@
 
 	        },
 
-	        _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+	        _map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
 	    };
 
 	    function parseLoop(base64Str, base64StrLength, reverseMap) {
@@ -1471,7 +1471,7 @@
 	                utf16Chars.push(String.fromCharCode(codePoint));
 	            }
 
-	            return utf16Chars.join('');
+	            return utf16Chars.join("");
 	        },
 
 	        /**
@@ -1530,7 +1530,7 @@
 	                utf16Chars.push(String.fromCharCode(codePoint));
 	            }
 
-	            return utf16Chars.join('');
+	            return utf16Chars.join("");
 	        },
 
 	        /**
@@ -1568,7 +1568,7 @@
 
 	(function () {
 	    // Check if typed arrays are supported
-	    if (typeof ArrayBuffer != 'function') {
+	    if (typeof ArrayBuffer != "function") {
 	        return;
 	    }
 
@@ -1901,7 +1901,7 @@
 	            hasher = this._hasher = new hasher.init();
 
 	            // Convert string to WordArray, else assume WordArray already
-	            if (typeof key == 'string') {
+	            if (typeof key == "string") {
 	                key = Utf8.parse(key);
 	            }
 
@@ -2678,7 +2678,7 @@
 	        }),
 
 	        _doReset: function () {
-	            var state = this._state = []
+	            var state = this._state = [];
 	            for (var i = 0; i < 25; i++) {
 	                state[i] = new X64Word.init();
 	            }
@@ -2796,7 +2796,7 @@
 	                var lane = state[0];
 	                var roundConstant = ROUND_CONSTANTS[round];
 	                lane.high ^= roundConstant.high;
-	                lane.low  ^= roundConstant.low;;
+	                lane.low  ^= roundConstant.low;
 	            }
 	        },
 
@@ -3439,7 +3439,7 @@
 	         */
 	        _createHelper: (function () {
 	            function selectCipherStrategy(key) {
-	                if (typeof key == 'string') {
+	                if (typeof key == "string") {
 	                    return PasswordBasedCipher;
 	                } else {
 	                    return SerializableCipher;
@@ -3468,7 +3468,7 @@
 	    var StreamCipher = C_lib.StreamCipher = Cipher.extend({
 	        _doFinalize: function () {
 	            // Process partial blocks
-	            var finalProcessedBlocks = this._process(!!'flush');
+	            var finalProcessedBlocks = this._process(!!"flush");
 
 	            return finalProcessedBlocks;
 	        },
@@ -3743,10 +3743,10 @@
 	                padding.pad(this._data, this.blockSize);
 
 	                // Process final blocks
-	                var finalProcessedBlocks = this._process(!!'flush');
+	                var finalProcessedBlocks = this._process(!!"flush");
 	            } else /* if (this._xformMode == this._DEC_XFORM_MODE) */ {
 	                // Process final blocks
-	                var finalProcessedBlocks = this._process(!!'flush');
+	                var finalProcessedBlocks = this._process(!!"flush");
 
 	                // Unpad data
 	                padding.unpad(finalProcessedBlocks);
@@ -3987,7 +3987,7 @@
 	         *     var ciphertextParams = CryptoJS.lib.SerializableCipher._parse(ciphertextStringOrParams, format);
 	         */
 	        _parse: function (ciphertext, format) {
-	            if (typeof ciphertext == 'string') {
+	            if (typeof ciphertext == "string") {
 	                return format.parse(ciphertext, this);
 	            } else {
 	                return ciphertext;
@@ -4298,7 +4298,7 @@
 	    var Encryptor = OFB.Encryptor = OFB.extend({
 	        processBlock: function (words, offset) {
 	            // Shortcuts
-	            var cipher = this._cipher
+	            var cipher = this._cipher;
 	            var blockSize = cipher.blockSize;
 	            var iv = this._iv;
 	            var keystream = this._keystream;
@@ -5537,7 +5537,7 @@
 	    var Encryptor = CTRGladman.Encryptor = CTRGladman.extend({
 	        processBlock: function (words, offset) {
 	            // Shortcuts
-	            var cipher = this._cipher
+	            var cipher = this._cipher;
 	            var blockSize = cipher.blockSize;
 	            var iv = this._iv;
 	            var counter = this._counter;
@@ -5753,7 +5753,7 @@
 	    var Encryptor = CTR.Encryptor = CTR.extend({
 	        processBlock: function (words, offset) {
 	            // Shortcuts
-	            var cipher = this._cipher
+	            var cipher = this._cipher;
 	            var blockSize = cipher.blockSize;
 	            var iv = this._iv;
 	            var counter = this._counter;
@@ -5769,7 +5769,7 @@
 	            cipher.encryptBlock(keystream, 0);
 
 	            // Increment counter
-	            counter[blockSize - 1] = (counter[blockSize - 1] + 1) | 0
+	            counter[blockSize - 1] = (counter[blockSize - 1] + 1) | 0;
 
 	            // Encrypt
 	            for (var i = 0; i < blockSize; i++) {

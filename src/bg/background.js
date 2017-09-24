@@ -226,100 +226,132 @@ function autoFill(username, password) {
 			var fillUsername = function (el) {
 				el.value = username;
 			};
-			var usernameElements = document.querySelectorAll("input");
-			if (!usernameElements || usernameElements.length === 0) {
-				alert("No username field found");
-				return;
-			} else {
-				let maxPoints = 0;
-				let maxUserEl = null;
-				usernameElements.forEach(userEl => {
-					let points = 0;
-					if (userEl.input && userEl.input === "email") {
-						points++;
-					}
-					[userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
-						if (attr) {
-							let matches = attr.toLowerCase().match(/(user|username|email|e-mail|login|id)/g);
-							if (matches) {
-								points += matches.length;
-							}
-						}
-					});
-					if (userEl.autocomplete && userEl.autocomplete !== "false") {
-						points++;
-					}
-					if (userEl.previousElementSibling) {
-						if (userEl.previousElementSibling.tagName && userEl.previousElementSibling.tagName.toLowerCase() === "label") {
-							if (userEl.previousElementSibling.innerText && userEl.previousElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
-								points++;
-							}
-						}
-					}
-					if (userEl.nextElementSibling) {
-						if (userEl.nextElementSibling.tagName && userEl.nextElementSibling.tagName.toLowerCase() === "label") {
-							if (userEl.nextElementSibling.innerText && userEl.nextElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
-								points++;
-							}
-						}
-					}
-					if (maxPoints < points) {
-						maxPoints = points;
-						maxUserEl = userEl;
-					}
-				});
-				if (maxPoints > 0) {
-					fillUsername(maxUserEl);
-				} else {
-					alert("no username field found");
-				}
-			}
-
 			var fillPassword = function (el) {
 				el.value = password;
-				var evt = document.createEvent("KeyboardEvent");
-				evt.initKeyboardEvent ("keypress", true, true, window,
-								0, 0, 0, 0,
-								32, 32); 
-				el.dispatchEvent(evt);
-				// evt = document.createEvent("KeyboardEvent");
-				// evt.initKeyboardEvent ("keypress", true, true, window,
-				// 				0, 0, 0, 0,
-				// 				8, 8); 
-				// el.dispatchEvent(evt);
 			};
-			var passwordElements = document.querySelectorAll("input[type='password']");
-			if (passwordElements.length === 0) {
-				alert("No password field found");
-				return;
-			}
-			if (passwordElements.length === 1) {
-				fillPassword(passwordElements[0]);
-			} else {
-				let maxPoints = 0;
-				let maxPwEl = passwordElements[0];
-				passwordElements.forEach(pwEl => {
-					let points = 0;
-					[pwEl.name, pwEl.placeholder, pwEl.className].forEach(attr => {
-						if (attr) {
-							let matches = attr.toLowerCase().match(/(password|pw|pass)/g);
-							if (matches) {
-								points += matches.length;
+
+			var attemptAutoFill = function (doc) {
+				let filledUsername = false;
+				let filledPassword = false;
+				let maxPwEl;
+				var passwordElements = doc.querySelectorAll("input[type='password']");
+				if (passwordElements.length === 0) {
+					console.log("No password field found");
+				}
+				if (passwordElements.length === 1) {
+					fillPassword(passwordElements[0]);
+					filledPassword = true;
+				} else {
+					let maxPoints = 0;
+					maxPwEl = passwordElements[0];
+					passwordElements.forEach(pwEl => {
+						let points = 0;
+						[pwEl.name, pwEl.placeholder, pwEl.className].forEach(attr => {
+							if (attr) {
+								let matches = attr.toLowerCase().match(/(password|pw|pass)/g);
+								if (matches) {
+									points += matches.length;
+								}
+							}
+						});
+						if (pwEl.placeholder) {
+							if (pwEl.placeholder.toLowerCase().match(/(new|retype|confirm)/)) {
+								points -= 9999;
 							}
 						}
-					});
-					if (pwEl.placeholder) {
-						if (pwEl.placeholder.toLowerCase().match(/(new|retype|confirm)/)) {
-							points -= 9999;
+						if (maxPoints < points) {
+							maxPoints = points;
+							maxPwEl = pwEl;
 						}
+					});
+					fillPassword(maxPwEl);
+					filledPassword = true;
+				}
+
+				let usernameElements = doc.querySelectorAll("input");
+				
+				if (!usernameElements || usernameElements.length === 0) {
+					console.log("No username field found");
+				} else {
+					let maxPoints = 0;
+					let maxUserEl = null;
+					usernameElements.forEach(userEl => {
+						let points = 0;
+						if (userEl.input && userEl.input === "email") {
+							points++;
+						}
+						if (maxPwEl && filledPassword && maxPwEl.form) {
+							if (userEl.form === maxPwEl.form) {
+								points += 9999;
+							}
+						}
+						[userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
+							if (attr) {
+								if (attr.toLowerCase().match(/^(user|username|email|e-mail|login)$/)) {
+									points += 100;
+								}
+								let matches = attr.toLowerCase().match(/(user|username|email|e-mail|login|id)/g);
+								if (matches) {
+									points += matches.length;
+								}
+								let negativeMatches = attr.toLowerCase().match(/(search|register)/g);
+								if (negativeMatches) {
+									points -= 100;
+								}
+							}
+						});
+						if (userEl.autocomplete && userEl.autocomplete !== "false") {
+							points++;
+						}
+						if (userEl.previousElementSibling) {
+							if (userEl.previousElementSibling.tagName && userEl.previousElementSibling.tagName.toLowerCase() === "label") {
+								if (userEl.previousElementSibling.innerText && userEl.previousElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
+									points++;
+								}
+							}
+						}
+						if (userEl.nextElementSibling) {
+							if (userEl.nextElementSibling.tagName && userEl.nextElementSibling.tagName.toLowerCase() === "label") {
+								if (userEl.nextElementSibling.innerText && userEl.nextElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
+									points++;
+								}
+							}
+						}
+						if (maxPoints < points) {
+							maxPoints = points;
+							maxUserEl = userEl;
+						}
+					});
+					if (maxPoints > 0) {
+						console.log(maxPoints, maxUserEl);
+						fillUsername(maxUserEl);
+						filledUsername = true;
+					} else {
+						console.log("no username field found");
 					}
-					if (maxPoints < points) {
-						maxPoints = points;
-						maxPwEl = pwEl;
+				}
+
+				return filledUsername && filledPassword;
+			};
+			var attemptResults = attemptAutoFill(document);
+			var iframes = document.querySelectorAll("iframe");
+			if (!iframes || iframes.length === 0) {
+				return;
+			} else {
+				let i = 0;
+				while (!attemptResults && i < iframes.length) {
+					try {
+						attemptResults = attemptAutoFill(iframes[i].contentWindow.document);
+					} catch (e) {
+						console.log(e);
 					}
-				});
-				fillPassword(maxPwEl);
+					i++;
+				}
 			}
 		} + ")(\"" + username + "\",\"" + password + "\");"
+	}, function () {
+		if (chrome.runtime.lastError) {
+			console.error(chrome.runtime.lastError);
+		}
 	});
 }

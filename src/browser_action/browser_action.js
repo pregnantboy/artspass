@@ -51,28 +51,36 @@ function vueInit(accounts) {
             remove: function () {
                 deleteAccount(this.currAccount);
             },
-            copyUsername(element, event, account) {
-                var usernameToCopy = this.currAccount.username; // account view
-                var passwordToCopy = this.currAccount.password;
-                if (account) { // list view
-                    usernameToCopy = account.username;
-                    passwordToCopy = account.password;
-                }
+            autoFill(element, event, account) {
+                let usernameToCopy = account.username;
+                let passwordToCopy = account.password;
                 event.stopPropagation();
                 chrome.extension.getBackgroundPage().autoFill(usernameToCopy, passwordToCopy);
-                // copyToClipboard(usernameToCopy);
-                // if (account) { // list view
-                //     var copyText = element.$els.copyuser;
-                //     copyText.innerText = "COPIED!";
-                //     setTimeout(() => {
-                //         copyText.innerText = "COPY";
-                //     }, 2000);
-                // } else { // account view
-                //     event.target.innerText = "check";
-                //     setTimeout(() => {
-                //         event.target.innerText = "content_copy";
-                //     }, 2000);
-                // }
+                var autofillText = element.$els.autofill;
+                autofillText.innerText = "FILLED!";
+                setTimeout(() => {
+                    autofillText.innerText = "AUTOFILL";
+                }, 2000);
+            },
+            copyUsername(element, event, account) {
+                var usernameToCopy = this.currAccount.username; // account view
+                if (account) { // list view
+                    usernameToCopy = account.username;
+                }
+                event.stopPropagation();
+                copyToClipboard(usernameToCopy);
+                if (account) { // list view
+                    var copyText = element.$els.copyuser;
+                    copyText.innerText = "COPIED!";
+                    setTimeout(() => {
+                        copyText.innerText = "COPY";
+                    }, 2000);
+                } else { // account view
+                    event.target.innerText = "check";
+                    setTimeout(() => {
+                        event.target.innerText = "content_copy";
+                    }, 2000);
+                }
             },
             copyPassword(element, event, account) {
                 var passwordToCopy = this.currAccount.password; // account view

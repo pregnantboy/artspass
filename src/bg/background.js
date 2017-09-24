@@ -209,8 +209,20 @@ function startAuth() {
 }
 
 function autoFill(username, password) {
+	username = username.replace(/(\"|\\)/g, function (found) {
+		return +"\\" + found;
+	});
+	password = password.replace(/(\"|\\)/g, function (found) {
+		return +"\\" + found;
+	});
 	chrome.tabs.executeScript({
+		allFrames: true,
 		code: "(" + function (username, password) {
+			if (window.location.protocol !== "https:") {
+				if (!window.confirm("Warning: Insecure site detected. Use https instead.\n\nClick OK to autofill anyway.")) {
+					return;
+				}
+			}
 			var fillUsername = function (el) {
 				el.value = username;
 			};
@@ -228,13 +240,13 @@ function autoFill(username, password) {
 					}
 					[userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
 						if (attr) {
-							let matches = attr.toLowerCase().match(/(user|username|email|e-mail|login)/g);
+							let matches = attr.toLowerCase().match(/(user|username|email|e-mail|login|id)/g);
 							if (matches) {
 								points += matches.length;
 							}
 						}
 					});
-					if (userEl.autocomplete) {
+					if (userEl.autocomplete && userEl.autocomplete !== "false") {
 						points++;
 					}
 					if (userEl.previousElementSibling) {
@@ -258,11 +270,23 @@ function autoFill(username, password) {
 				});
 				if (maxPoints > 0) {
 					fillUsername(maxUserEl);
+				} else {
+					alert("no username field found");
 				}
 			}
 
 			var fillPassword = function (el) {
 				el.value = password;
+				var evt = document.createEvent("KeyboardEvent");
+				evt.initKeyboardEvent ("keypress", true, true, window,
+								0, 0, 0, 0,
+								32, 32); 
+				el.dispatchEvent(evt);
+				// evt = document.createEvent("KeyboardEvent");
+				// evt.initKeyboardEvent ("keypress", true, true, window,
+				// 				0, 0, 0, 0,
+				// 				8, 8); 
+				// el.dispatchEvent(evt);
 			};
 			var passwordElements = document.querySelectorAll("input[type='password']");
 			if (passwordElements.length === 0) {
@@ -296,6 +320,6 @@ function autoFill(username, password) {
 				});
 				fillPassword(maxPwEl);
 			}
-		} + ")(" + username + password + ");"
+		} + ")(\"" + username + "\",\"" + password + "\");"
 	});
 }

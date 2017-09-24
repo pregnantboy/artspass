@@ -51,14 +51,17 @@
 				{{account ? account.site : ""}}
 				<span class="mdc-list-item__text__secondary" style="text-transform: none">{{account ? account.username : null}}</span>
 				</span>
-				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-35px;">
-					<button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="copyUsername(this, $event, account)" style="color:rgba(100,100,100,1);">
+				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-75px;">
+					<!-- <button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="copyUsername(this, $event, account)" style="color:rgba(100,100,100,1);">
 						<i class="material-icons">person</i><span id="copy-text" v-el:copyuser>COPY</span>
-				</button>
-				<button class="mdc-button mdc-button--dense mdc-button mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
+					</button>					 -->
+					<button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="autoFill(this, $event, account)" style="color:rgba(100,100,100,1); width: 100px;">
+					<i class="material-icons">input</i><span id="auto-fill" style="width: 75px" v-el:autofill>AUTOFILL</span>
+					</button>
+					<!-- <button class="mdc-button mdc-button--dense mdc-button mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
 				    @click="copyPassword(this, $event, account)">
 						<i class="material-icons">vpn_key</i><span id="copy-text" v-el:copypass>COPY</span>
-					</button>
+					</button> -->
 				</span>
 			</li>
 		</ul>

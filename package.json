@@ -6,7 +6,7 @@
   "scripts": {
     "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
     "zip": "node zip.js",
-    "build": "browserify ./src/bg/backgrounds.js > ./src/bg/background.prod.js"
+    "build": "browserify ./src/bg/background.js > ./src/bg/background.prod.js"
   },
   "author": "",
   "license": "ISC",

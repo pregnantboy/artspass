@@ -1,3 +1,4 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var salt;
 var themeColor;
 chrome.storage.sync.get({
@@ -208,94 +209,11 @@ function startAuth() {
 	});
 }
 
-function autoFill(username, password) {
-	chrome.tabs.executeScript({
-		code: "(" + function (username, password) {
-			var fillUsername = function (el) {
-				el.value = username;
-			};
-			var usernameElements = document.querySelectorAll("input");
-			if (!usernameElements || usernameElements.length === 0) {
-				alert("No username field found");
-				return;
-			} else {
-				let maxPoints = 0;
-				let maxUserEl = null;
-				usernameElements.forEach(userEl => {
-					let points = 0;
-					if (userEl.input && userEl.input === "email") {
-						points++;
-					}
-					[userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
-						if (attr) {
-							let matches = attr.toLowerCase().match(/(user|username|email|e-mail|login)/g);
-							if (matches) {
-								points += matches.length;
-							}
-						}
-					});
-					if (userEl.autocomplete) {
-						points++;
-					}
-					if (userEl.previousElementSibling) {
-						if (userEl.previousElementSibling.tagName && userEl.previousElementSibling.tagName.toLowerCase() === "label") {
-							if (userEl.previousElementSibling.innerText && userEl.previousElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
-								points++;
-							}
-						}
-					}
-					if (userEl.nextElementSibling) {
-						if (userEl.nextElementSibling.tagName && userEl.nextElementSibling.tagName.toLowerCase() === "label") {
-							if (userEl.nextElementSibling.innerText && userEl.nextElementSibling.innerText.toLowerCase().match(/(user|email|e-mail|login)/g)) {
-								points++;
-							}
-						}
-					}
-					if (maxPoints < points) {
-						maxPoints = points;
-						maxUserEl = userEl;
-					}
-				});
-				if (maxPoints > 0) {
-					fillUsername(maxUserEl);
-				}
-			}
+// function autoFill(username, password) {
+// 	var autoLogin = require("./auto-login");
+// 	chrome.tabs.executeScript({
+// 		code: "(" + autoLogin + ")(" + username + password + ");"
+// 	});
+// }
 
-			var fillPassword = function (el) {
-				el.value = password;
-			};
-			var passwordElements = document.querySelectorAll("input[type='password']");
-			if (passwordElements.length === 0) {
-				alert("No password field found");
-				return;
-			}
-			if (passwordElements.length === 1) {
-				fillPassword(passwordElements[0]);
-			} else {
-				let maxPoints = 0;
-				let maxPwEl = passwordElements[0];
-				passwordElements.forEach(pwEl => {
-					let points = 0;
-					[pwEl.name, pwEl.placeholder, pwEl.className].forEach(attr => {
-						if (attr) {
-							let matches = attr.toLowerCase().match(/(password|pw|pass)/g);
-							if (matches) {
-								points += matches.length;
-							}
-						}
-					});
-					if (pwEl.placeholder) {
-						if (pwEl.placeholder.toLowerCase().match(/(new|retype|confirm)/)) {
-							points -= 9999;
-						}
-					}
-					if (maxPoints < points) {
-						maxPoints = points;
-						maxPwEl = pwEl;
-					}
-				});
-				fillPassword(maxPwEl);
-			}
-		} + ")(" + username + password + ");"
-	});
-}
+},{}]},{},[1]);

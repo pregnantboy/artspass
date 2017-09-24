@@ -15,28 +15,46 @@
 //     // To overwrite a global variable, prefix `window`:
 //     window.alert = null;
 // } + ')(param1, param2);';
-function autoLogin(username, password) {
+module.exports = function (username, password) {
     var fillUsername = function (el) {
         el.value = username;
+    };
+    var usernameElements = document.querySelectorAll("input:not([type]), input[type='text'], input[type='email']");
+    if (!usernameElements || usernameElements.length === 0) {
+        alert("No username field found");
+        return;
+    } else {
+        let maxPoints = 0;
+        let maxUserEl = null;
+        usernameElements.forEach(userEl => {
+            let points = 0;
+            if (userEl.input && userEl.input === "email") {
+                points++;
+            }
+            [userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
+                if (attr) {
+                    let matches = attr.toLowerCase().match(/(user|email|e-mail|login)/g);
+                    if (matches) {
+                        points += matches.length;
+                    }
+                }
+            });
+            if (userEl.autocomplete) {
+                points++;
+            }
+            if (maxPoints < points) {
+                maxPoints = points;
+                maxUserEl = userEl;
+            }
+        });
+        if (maxPoints > 0) {
+            fillUsername(maxUserEl);
+        }
     }
-    var usernameElements = [];
-    var usernameSelectorsToTry = ["input[placeholder*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']",
-        "input[name*='username']"
-    ];
-    while (!usernameElements || usernameElements.length === 0) {
-        usernameElements = document.querySelectorAll("input[")
-    }
+
     var fillPassword = function (el) {
         el.value = password;
-    }
+    };
     var passwordElements = document.querySelectorAll("input[type='password']");
     if (passwordElements.length === 0) {
         alert("No password field found");
@@ -70,4 +88,4 @@ function autoLogin(username, password) {
         fillPassword(maxPwEl);
     }
 
-}
+};

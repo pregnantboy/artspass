@@ -53,26 +53,28 @@ function vueInit(accounts) {
             },
             copyUsername(element, event, account) {
                 var usernameToCopy = this.currAccount.username; // account view
+                var passwordToCopy = this.currAccount.password;
                 if (account) { // list view
                     usernameToCopy = account.username;
+                    passwordToCopy = account.password;
                 }
                 event.stopPropagation();
-                copyToClipboard(usernameToCopy);
-                if (account) { // list view
-                    var copyText = element.$els.copyuser;
-                    copyText.innerText = "COPIED!";
-                    setTimeout(() => {
-                        copyText.innerText = "COPY";
-                    }, 2000);
-                } else { // account view
-                    event.target.innerText = "check";
-                    setTimeout(() => {
-                        event.target.innerText = "content_copy";
-                    }, 2000);
-                }
+                chrome.extension.getBackgroundPage().autoFill(usernameToCopy, passwordToCopy);
+                // copyToClipboard(usernameToCopy);
+                // if (account) { // list view
+                //     var copyText = element.$els.copyuser;
+                //     copyText.innerText = "COPIED!";
+                //     setTimeout(() => {
+                //         copyText.innerText = "COPY";
+                //     }, 2000);
+                // } else { // account view
+                //     event.target.innerText = "check";
+                //     setTimeout(() => {
+                //         event.target.innerText = "content_copy";
+                //     }, 2000);
+                // }
             },
             copyPassword(element, event, account) {
-                autoLogin();
                 var passwordToCopy = this.currAccount.password; // account view
                 if (account) { // list view
                     passwordToCopy = account.password;

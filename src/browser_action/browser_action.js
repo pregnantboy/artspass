@@ -2,6 +2,8 @@ document.documentElement.style.setProperty("--theme-color", chrome.extension.get
 
 var app = vueInit([]);
 
+var saveState = chrome.extension.getBackgroundPage().saveState;
+
 function vueInit(accounts) {
     return new Vue({
         el: "#app",
@@ -18,7 +20,8 @@ function vueInit(accounts) {
             passwordVisible: false,
             saveText: "SAVE",
             isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
-            isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated
+            isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
+            scrollTimer: null
         },
         methods: {
             showNewAccountPage: function () {
@@ -113,6 +116,20 @@ function vueInit(accounts) {
             },
             openOptions() {
                 chrome.runtime.openOptionsPage();
+            },
+            saveScroll(evt) {
+                clearTimeout(this.scrollTimer);
+                this.scrollTimer = setTimeout(() => {
+                    saveState("scroll", evt.target.scrollTop);
+                }, 200);
+            },
+            saveSearch(value) {
+                saveState("search", value);
+            },
+            saveForm() {
+                if (this.createPage) {
+                    saveState("form", this.currAccount);
+                }
             }
         },
         computed: {

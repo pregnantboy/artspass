@@ -27,16 +27,21 @@ function vueInit(accounts) {
             showNewAccountPage: function () {
                 this.createPage = true;
                 populateAccount();
+                this.saveAccount();
+                this.saveView(3);
                 this.showAccount = true;
                 this.canEdit = true;
             },
             showAccountDetailsPage: function (event, account) {
                 this.createPage = false;
                 populateAccount(account);
+                this.saveAccount();
+                this.saveView(2);
                 this.showAccount = true;
                 this.canEdit = false;
             },
             navigateBack: function () {
+                this.saveView(1);
                 this.showAccount = false;
             },
             getIcon: function (event) {
@@ -123,13 +128,15 @@ function vueInit(accounts) {
                     saveState("scroll", evt.target.scrollTop);
                 }, 200);
             },
-            saveSearch(value) {
-                saveState("search", value);
+            saveSearch() {
+                saveState("search", this.searchString);
             },
-            saveForm() {
-                if (this.createPage) {
-                    saveState("form", this.currAccount);
-                }
+            saveAccount() {
+                saveState("account", _.cloneDeep(this.currAccount));
+            },
+            saveView(viewNo) {
+                // 1: Main View, 2: Account View  3: New Account View
+                saveState("view", viewNo);
             }
         },
         computed: {
@@ -141,6 +148,18 @@ function vueInit(accounts) {
                     return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1);
                 });
             }
+        },
+        created: function () {
+            chrome.runtime.sendMessage({
+                event: "onload"
+            }, function (accountsArray) {
+                app.accounts = accountsArray;
+                sort();
+                Vue.nextTick(function () {
+                    loadState();
+                });
+                app.isLoading = false;
+            });
         }
     });
 
@@ -217,13 +236,43 @@ function reload() {
     }, 1000);
 }
 
-chrome.runtime.sendMessage({
-    event: "onload"
-}, function (accountsArray) {
-    app.accounts = accountsArray;
-    sort();
-    app.isLoading = false;
-});
+function loadState() {
+    let state = chrome.extension.getBackgroundPage().state;
+    if (!state) {
+        return;
+    }
+    let savedAccount = _.cloneDeep(state.account);
+    switch (state.view) {
+        default:
+            case 1:
+        {
+            if (state.search) {
+                app.searchString = state.search;
+            }
+            document.getElementById("maindiv").scrollTop = state.scroll;
+            console.log("scrolling to :", state.scroll);
+        }
+        break;
+        case 2:
+            {
+                app.showAccountDetailsPage();
+                if (savedAccount) {
+                    app.currAccount = savedAccount;
+                    app.saveAccount();
+                }
+            }
+            break;
+        case 3:
+            {
+                app.showNewAccountPage();
+                if (savedAccount) {
+                    app.currAccount = savedAccount;
+                    app.saveAccount();
+                }
+            }
+            break;
+    }
+}
 
 // event listeners 
 
@@ -293,6 +342,7 @@ function setSavingMode(mode) {
                 } else {
                     app.saveText = "SAVE";
                     app.canEdit = false;
+                    app.saveView(2);
                 }
             }, 700);
             break;

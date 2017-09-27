@@ -1,12 +1,11 @@
 {
   "name": "artspass",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
   "main": "src/browser_action/browser_action.html",
   "scripts": {
     "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
-    "zip": "node zip.js",
-    "build": "browserify ./src/bg/background.js > ./src/bg/background.prod.js"
+    "zip": "node zip.js"
   },
   "author": "",
   "license": "ISC",

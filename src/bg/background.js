@@ -230,6 +230,10 @@ function autoFill(username, password) {
 				el.value = password;
 			};
 
+			var isHidden = function (el) {
+				return (el.offsetParent === null);
+			};
+
 			var attemptAutoFill = function (doc) {
 				let filledUsername = false;
 				let filledPassword = false;
@@ -254,8 +258,13 @@ function autoFill(username, password) {
 								}
 							}
 						});
-						if (pwEl.placeholder) {
-							if (pwEl.placeholder.toLowerCase().match(/(new|retype|confirm)/)) {
+						if (isHidden(pwEl)) {
+							points -= 9999;
+						}
+						if (pwEl.form) {
+							// most likely registration form
+							let passwordsInForm = pwEl.form.querySelectorAll("input[type='password");
+							if (passwordsInForm && passwordsInForm.length > 1) {
 								points -= 9999;
 							}
 						}
@@ -269,7 +278,7 @@ function autoFill(username, password) {
 				}
 
 				let usernameElements = doc.querySelectorAll("input");
-				
+
 				if (!usernameElements || usernameElements.length === 0) {
 					console.log("No username field found");
 				} else {
@@ -282,7 +291,7 @@ function autoFill(username, password) {
 						}
 						if (maxPwEl && filledPassword && maxPwEl.form) {
 							if (userEl.form === maxPwEl.form) {
-								points += 9999;
+								points += 200;
 							}
 						}
 						[userEl.name, userEl.placeholder, userEl.className, userEl["aria-label"], userEl.id].forEach(attr => {
@@ -300,6 +309,9 @@ function autoFill(username, password) {
 								}
 							}
 						});
+						if (isHidden(userEl)) {
+							points -= 9999;
+						}
 						if (userEl.autocomplete && userEl.autocomplete !== "false") {
 							points++;
 						}

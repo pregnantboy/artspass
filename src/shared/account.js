@@ -1,7 +1,7 @@
 class Account {
 
-    static decrypt(salt, account, key) {
-        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), key);
+    static decrypt(salt, account, id) {
+        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), id);
     }
 
     static encrypt(salt, account) {
@@ -23,13 +23,13 @@ class Account {
         return CryptoJS.AES.encrypt(text, salt).toString();
     }
 
-    constructor(site, url, username, password, key) {
+    constructor(site, url, username, password, id) {
         this.site = site;
         this.url = url ? url : "";
         this.username = username;
         this.password = password;
-        if (key) {
-            this.key = key;
+        if (id) {
+            this.id = id;
         }
     }
 

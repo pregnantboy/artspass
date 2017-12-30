@@ -289,7 +289,7 @@ chrome.runtime.onMessage.addListener((message) => {
         console.log(app.accounts);
     }
 
-    var indexToChange = _.findIndex(app.accounts, ["key", refAccount.key]);
+    var indexToChange = _.findIndex(app.accounts, ["id", refAccount.id]);
 
     if (event === "ref-change") {
         if (indexToChange === -1) {
@@ -320,7 +320,7 @@ function populateAccount(account) {
     if (!account) {
         account = {};
     }
-    app.currAccount = new Account(account.site, account.url, account.username, account.password, account.key);
+    app.currAccount = new Account(account.site, account.url, account.username, account.password, account.id);
 }
 
 function setSavingMode(mode) {

@@ -34,6 +34,7 @@
         "_": true,
         "CryptoJS": true,
         "require": true,
-        "module": true
+        "module": true,
+        "exports": true
     }   
 }

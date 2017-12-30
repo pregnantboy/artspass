@@ -28,48 +28,44 @@ var isFirstLoad = true;
 var initDataLoaded = false;
 var isAuthenticated = false;
 
-var config = {
+firebase.initializeApp({
 	apiKey: "AIzaSyA4p-JEtAvGo5BFKUilv0nDLKbX7qS4e0E",
 	authDomain: "artspass-dev.firebaseapp.com",
-	databaseURL: "https://artspass-dev.firebaseio.com",
 	projectId: "artspass-dev",
-	storageBucket: "",
-	messagingSenderId: "542991076028"
-};
-firebase.initializeApp(config);
+});
+
+
 
 // Get a reference to the database service
-var database = firebase.database();
-var ref = database.ref("/arts/accounts/");
+var db = firebase.firestore();
+var ref = db.collection("teams").doc("arts").collection("accounts");
 
 var accountsObj = {};
 
 function initListeners() {
 	destroyListeners();
-	ref.on("child_added", function (data) {
+	ref.onSnapshot(function (snapshot) {
 		if (initDataLoaded) {
-			chrome.runtime.sendMessage({
-				event: "ref-add",
-				account: addChild(data)
-			});
-		}
-	});
-
-	ref.on("child_changed", function (data) {
-		if (initDataLoaded) {
-			chrome.runtime.sendMessage({
-				event: "ref-change",
-				account: addChild(data)
-			});
-		}
-	});
-
-	ref.on("child_removed", function (data) {
-		if (initDataLoaded) {
-			chrome.runtime.sendMessage({
-				event: "ref-delete",
-				account: {
-					key: removeChild(data)
+			snapshot.docChanges.forEach(function (change) {
+				if (change.type === "added") {
+					chrome.runtime.sendMessage({
+						event: "ref-add",
+						account: addChild(change.doc)
+					});
+				}
+				if (change.type === "modified") {
+					chrome.runtime.sendMessage({
+						event: "ref-change",
+						account: addChild(change.doc)
+					});
+				}
+				if (change.type === "removed") {
+					chrome.runtime.sendMessage({
+						event: "ref-delete",
+						account: {
+							id: removeChild(change.doc)
+						}
+					});
 				}
 			});
 		}
@@ -77,7 +73,7 @@ function initListeners() {
 }
 
 function destroyListeners() {
-	ref.off();
+	// todo: remove listeners
 }
 
 firebase.auth().onAuthStateChanged(function (user) {
@@ -94,14 +90,15 @@ firebase.auth().onAuthStateChanged(function (user) {
 
 function loadAllData(callback) {
 	initDataLoaded = false;
-	ref.once("value")
+	ref.get()
 		.then((snapshot) => {
 			accountsObj = {};
-			snapshot.forEach((child) => {
-				addChild(child);
+			snapshot.forEach((doc) => {
+				// console.log(doc.id, " => ", doc.data());
+				addChild(doc);
 			});
 			initDataLoaded = true;
-			console.log(snapshot.numChildren() + " accounts loaded");
+			console.log(snapshot.length + " accounts loaded");
 			if (callback) {
 				callback(getAccountsArray());
 			}
@@ -141,34 +138,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	// Saving data
 	if (message.event === "save" && message.account) {
 		console.log("saving account");
-		var newChildRef;
-		if (message.account.key) {
-			newChildRef = ref.child(message.account.key);
-		} else {
-			newChildRef = ref.push();
-			message.account.key = newChildRef.key;
-		}
-		newChildRef.set(Account.encrypt(salt, message.account), err => {
-			if (err) {
+		let docObj = Object.assign({}, Account.encrypt(salt, message.account));		
+		if (message.account.id) {
+			ref.doc(message.account.id).set(Object.assign({}, docObj)).then(() => {
+				sendResponse(true);
+			}).catch((err) => {
 				console.error(err);
 				sendResponse(false);
-			} else {
+			});
+		} else {
+			ref.add(Object.assign({}, docObj)).then(() => {
 				sendResponse(true);
-			}
-		});
+			}).catch((err) => {
+				console.error(err);
+				sendResponse(false);
+			});
+		}
 		return true;
 	}
 
 	if (message.event == "delete") {
-		if (message.account.key) {
-			var deleteChildRef = ref.child(message.account.key);
-			deleteChildRef.remove(err => {
-				if (err) {
-					console.log(err);
-					sendResponse(false);
-				} else {
-					sendResponse(true);
-				}
+		if (message.account.id) {
+			ref.doc(message.account.id).delete().then(() => {
+				sendResponse(true);
+			}).catch((err) => {
+				console.log(err);
+				sendResponse(false);
 			});
 			return true;
 		} else {
@@ -183,15 +178,15 @@ function getAccountsArray() {
 }
 
 function addChild(child) {
-	var childVal = child.val();
-	var newChild = Account.decrypt(salt, childVal, child.key);
-	accountsObj[child.key] = newChild;
+	var childVal = child.data();
+	var newChild = Account.decrypt(salt, childVal, child.id);
+	accountsObj[child.id] = newChild;
 	return newChild;
 }
 
 function removeChild(child) {
-	delete accountsObj[child.key];
-	return child.key;
+	delete accountsObj[child.id];
+	return child.id;
 }
 
 function startAuth() {

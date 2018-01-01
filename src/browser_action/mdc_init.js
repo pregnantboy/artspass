@@ -7,4 +7,5 @@ window.onload = function () {
     mdc.iconToggle.MDCIconToggle.attachTo(document.querySelector("#username-toggle-button"));
     mdc.iconToggle.MDCIconToggle.attachTo(document.querySelector("#password-toggle-button"));
     mdc.dialog.MDCDialog.attachTo(document.querySelector("#dialog"));
+    mdc.select.MDCSelect.attachTo(document.querySelector("#permission-select"));
 };

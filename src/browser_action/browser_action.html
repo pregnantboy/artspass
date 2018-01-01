@@ -8,14 +8,15 @@
 	<link rel="stylesheet" href="../shared/main.css">
 </head>
 
-<body id="app" >
+<body id="app">
 
 	<!-- Top Toolbar -->
 	<div class="mdc-toolbar">
 		<div class="mdc-toolbar__row">
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="!showAccount">
 				<div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px; padding: 0;">
-					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px;" @change="saveSearch">
+					<input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px;"
+					  @change="saveSearch">
 				</div>
 			</section>
 			<section class="mdc-toolbar__section mdc-toolbar__section--align-start" class="mdc-theme-fd-dark" v-if="showAccount">
@@ -31,7 +32,7 @@
 			</section>
 		</div>
 		<div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" v-if="isLoading || isSaving || isSyncing"
-		    style="z-index: 100; position: absolute; top: 56px;">
+		  style="z-index: 100; position: absolute; top: 56px;">
 			<div class="mdc-linear-progress__buffer"></div>
 			<div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
 				<span class="mdc-linear-progress__bar-inner"></span>
@@ -48,15 +49,17 @@
 			<li v-for="account in filteredAccounts" class="mdc-list-item" @click="showAccountDetailsPage($event, account)" style="height: 70px; width: 380px; padding: 0 10px;">
 				<span class="mdc-list-item__start-detail letter-icon">{{ account ? account.site.slice(0,1).toUpperCase() : null }}</span>
 				<span class="mdc-list-item__text list-text" style="text-transform: capitalize">
-				{{account ? account.site : ""}}
-				<span class="mdc-list-item__text__secondary" style="text-transform: none">{{account ? account.username : null}}</span>
+					{{account ? account.site : ""}}
+					<span class="mdc-list-item__text__secondary" style="text-transform: none">{{account ? account.username : null}}</span>
 				</span>
 				<span class="mdc-list-item__end-detail" style="width:185px; margin-right:-75px;">
 					<!-- <button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="copyUsername(this, $event, account)" style="color:rgba(100,100,100,1);">
 						<i class="material-icons">person</i><span id="copy-text" v-el:copyuser>COPY</span>
 					</button>					 -->
-					<button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple"  @click="autoFill(this, $event, account)" style="color:rgba(100,100,100,1); width: 100px;">
-					<i class="material-icons">input</i><span id="auto-fill" style="width: 75px" v-el:autofill>AUTOFILL</span>
+					<button class="mdc-button mdc-button--dense mdc-button copy-button username" data-mdc-auto-init="MDCRipple" @click="autoFill(this, $event, account)"
+					  style="color:rgba(100,100,100,1); width: 100px;">
+						<i class="material-icons">input</i>
+						<span id="auto-fill" style="width: 75px" v-el:autofill>AUTOFILL</span>
 					</button>
 					<!-- <button class="mdc-button mdc-button--dense mdc-button mdc-button--primary copy-button password" data-mdc-auto-init="MDCRipple"
 				    @click="copyPassword(this, $event, account)">
@@ -72,47 +75,78 @@
 	</div>
 
 	<!-- Detailed View -->
-	<div class="account" v-show="showAccount" transition="slide" >
-		<!-- <img src="" -->
+	<div class="account" v-show="showAccount" transition="slide">
+		<!-- SITE -->
 		<div class="mdc-form-field account-form-field">
 			<div id="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
 				<input type="text" id="site-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="currAccount.site" @change="saveAccount">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.site) }"
-				    for="site-textfield">Site</label>
+				  for="site-textfield">Site</label>
 			</div>
 		</div>
+		<!-- URL -->
 		<div class="mdc-form-field account-form-field">
 			<div id="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-				<input type="text" id="url-textfield" class="mdc-textfield__input" @blur="getIcon" disabled={{!canEdit}} v-model="currAccount.url" @change="saveAccount">
+				<input type="text" id="url-textfield" class="mdc-textfield__input" @blur="getIcon" disabled={{!canEdit}} v-model="currAccount.url"
+				  @change="saveAccount">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.url) }"
-				    for="url-textfield">URL</label>
+				  for="url-textfield">URL</label>
 			</div>
 		</div>
+		<!-- USERNAME -->
 		<div class="mdc-form-field account-form-field">
 			<div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-				<input type="text" id="username-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="currAccount.username" @change="saveAccount">
+				<input type="text" id="username-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="currAccount.username"
+				  @change="saveAccount">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.username) }"
-				    for="username-textfield">Username</label>
+				  for="username-textfield">Username</label>
 				<i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
-				    role="button" aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
+				  role="button" aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
 			</div>
 		</div>
+		<!-- PASSWORD -->
 		<div class="mdc-form-field account-form-field">
 			<div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-				<input type={{passwordVisible?'text':'password'}} id="password-textfield" class="mdc-textfield__input" disabled={{!canEdit}} v-model="currAccount.password" @change="saveAccount">
+				<input type="{{passwordVisible? 'text': 'password'}}" id="password-textfield" class="mdc-textfield__input" disabled={{!canEdit}}
+				  v-model="currAccount.password" @change="saveAccount">
 				<label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.password) }"
-				    for="password-textfield">Password</label>
-				<i id="password-show-button" v-show="canEdit" class="show-password material-icons" v-bind:class="{'active': passwordVisible}" @mousedown="showPassword()" @mouseup="hidePassword()" @mouseleave="hidePassword()">remove_red_eye</i>
+				  for="password-textfield">Password</label>
+				<i id="password-show-button" v-show="canEdit" class="show-password material-icons" v-bind:class="{'active': passwordVisible}"
+				  @mousedown="showPassword()" @mouseup="hidePassword()" @mouseleave="hidePassword()">remove_red_eye</i>
 				<i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
-				    role="button" aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
+				  role="button" aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
 			</div>
 		</div>
+		<!-- PERMISSIONS -->
+		<div class="mdc-form-field account-form-field">
+			<div class="mdc-select" role="listbox" tabindex="0" id="permission-select">
+				<div class="mdc-select__label--float-above">Food Group</div>
+				<span class="mdc-select__selected-text">All allowed</span>
+				<div class="mdc-simple-menu mdc-select__menu">
+					<ul class="mdc-list mdc-simple-menu__items">
+						<li v-for="yo in [1,2,3,4,5,1,1,1,1,1,1,1,1,1,1,1]" class="mdc-list-item" role="menuitem" tabindex="0" v-on:click.stop id="{{yo}}">
+							<div class="mdc-checkbox">
+								<input type="checkbox" class="mdc-checkbox__native-control" />
+								<div class="mdc-checkbox__background">
+									<svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+										<path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+									</svg>
+									<div class="mdc-checkbox__mixedmark"></div>
+								</div>
+							</div>
+							<label for="{{yo}}">My Checkbox Label</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- BOTTOM BUTTONS -->
 		<div class="mdc-form-field">
 			<button class="mdc-button" style="position: absolute; left: 20px; top: 450px;" v-if="canEdit && !createPage" vd @click="remove()">
 				DELETE
 			</button>
 			<button class="mdc-button mdc-button--primary" style="position: absolute; right: 20px; top: 450px;" disabled={{isSaving}}
-			    vd @click="canEdit? save() : edit()">
+			  vd @click="canEdit? save() : edit()">
 				{{ canEdit ? saveText : 'EDIT'}}
 			</button>
 		</div>
@@ -135,12 +169,12 @@
 	<div class="vault-door" v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
 		<div class="left-door">
 			<div class="door-circle">
-				<img class="door-handle" src="../../icons/wheel.png"/>
+				<img class="door-handle" src="../../icons/wheel.png" />
 			</div>
 		</div>
 		<div class="right-door">
 			<div class="door-hole"></div>
-		</div>				
+		</div>
 	</div>
 
 	<!-- Scripts -->

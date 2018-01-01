@@ -1,5 +1,4 @@
 document.documentElement.style.setProperty("--theme-color", chrome.extension.getBackgroundPage().themeColor);
-
 var app = vueInit([]);
 
 var saveState = chrome.extension.getBackgroundPage().saveState;
@@ -137,6 +136,9 @@ function vueInit(accounts) {
             saveView(viewNo) {
                 // 1: Main View, 2: Account View  3: New Account View
                 saveState("view", viewNo);
+            },
+            openPermissionDropdown() {
+                window.menu.open = true;
             }
         },
         computed: {

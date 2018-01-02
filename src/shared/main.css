@@ -71,6 +71,10 @@
     background-color: rgba(var(--theme-color), 0.2) !important;
 }
 
+.copy-button:hover {
+    background-color: rgba(var(--theme-color), 0.2) !important;
+}
+
 .mdc-button:focus:not(:hover)::before,
 .mdc-button:focus:not(:hover)::after {
     background-color: transparent !important;

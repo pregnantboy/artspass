@@ -150,7 +150,7 @@ function vueInit() {
                     return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1);
                 });
             },
-            usersSelected: function() {
+            usersSelected: function () {
                 var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions)).length;
                 return numUsersSelected === this.userEmails.length ? "All" : numUsersSelected;
             }
@@ -234,9 +234,9 @@ function reload() {
     setTimeout(() => {
         chrome.runtime.sendMessage({
             event: "reload"
-        }, (accountsArray) => {
-            console.log(accountsArray);
-            app.accounts = accountsArray;
+        }, (accountsAndEmails) => {
+            app.accounts = accountsAndEmails[0];
+            app.userEmails = accountsAndEmails[1];
             sort();
             app.isSyncing = false;
         });
@@ -325,10 +325,10 @@ function sort() {
 
 function populateAccount(account) {
     if (!account) {
-        account = {};
+        app.currAccount = new Account(null, null, null, null, _.zipObject(app.userEmails, _.times(app.userEmails.length, _.stubTrue)));
+    } else {
+        app.currAccount = new Account(account.site, account.url, account.username, account.password, account.permissions, account.id);
     }
-    app.currAccount = new Account(account.site, account.url, account.username, account.password, _.zipObject(app.userEmails, _.times(app.userEmails.length, _.stubTrue)), account.id);
-    console.log(app.currAccount);
 }
 
 function setSavingMode(mode) {

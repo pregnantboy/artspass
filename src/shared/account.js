@@ -1,11 +1,17 @@
 class Account {
 
-    static decrypt(salt, account, id) {
-        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), {}, id);
+    static decrypt(salt, account, userEmails, id) {
+        var emailPermissions = _.map(userEmails, (email) => {
+            return _.includes(account.permissions, email);
+        });
+        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), _.zipObject(userEmails, emailPermissions), id);
     }
 
     static encrypt(salt, account) {
-        return new Account(account.site, account.url, Account.encryptText(salt, account.username), Account.encryptText(salt, account.password), {});
+        var permittedAccounts = _.filter(_.keys(account.permissions), (user) => {
+            return account.permissions[user];
+        });
+        return new Account(account.site, account.url, Account.encryptText(salt, account.username), Account.encryptText(salt, account.password), permittedAccounts);
     }
 
     static decryptText(salt, ciphertext) {

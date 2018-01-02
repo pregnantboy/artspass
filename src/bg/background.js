@@ -102,7 +102,6 @@ function loadAllData(callback) {
 							addChild(doc);
 						});
 						initDataLoaded = true;
-						console.log("accounts loaded");
 						if (callback) {
 							callback([getAccountsArray(), userEmails]);
 						}
@@ -191,7 +190,7 @@ function getAccountsArray() {
 
 function addChild(child) {
 	var childVal = child.data();
-	var newChild = Account.decrypt(salt, childVal, child.id);
+	var newChild = Account.decrypt(salt, childVal, userEmails, child.id);
 	accountsObj[child.id] = newChild;
 	return newChild;
 }

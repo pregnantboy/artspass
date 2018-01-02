@@ -1,14 +1,13 @@
 document.documentElement.style.setProperty("--theme-color", chrome.extension.getBackgroundPage().themeColor);
-var app = vueInit([]);
-
+var app = vueInit();
 var saveState = chrome.extension.getBackgroundPage().saveState;
 
-function vueInit(accounts) {
+function vueInit() {
     return new Vue({
         el: "#app",
         data: {
             isLoading: true,
-            accounts: accounts,
+            accounts: [],
             showAccount: false,
             createPage: true,
             searchString: "",
@@ -20,7 +19,8 @@ function vueInit(accounts) {
             saveText: "SAVE",
             isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
             isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
-            scrollTimer: null
+            scrollTimer: null,
+            userEmails: chrome.extension.getBackgroundPage().userEmails
         },
         methods: {
             showNewAccountPage: function () {
@@ -149,13 +149,18 @@ function vueInit(accounts) {
                     }
                     return (acc.site.toLowerCase().indexOf(this.searchString.toLowerCase()) !== -1);
                 });
+            },
+            usersSelected: function() {
+                var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions)).length;
+                return numUsersSelected === this.userEmails.length ? "All" : numUsersSelected;
             }
         },
         created: function () {
             chrome.runtime.sendMessage({
                 event: "onload"
-            }, function (accountsArray) {
-                app.accounts = accountsArray;
+            }, function (accountsAndEmailArray) {
+                app.accounts = accountsAndEmailArray[0];
+                app.userEmails = accountsAndEmailArray[1];
                 sort();
                 Vue.nextTick(function () {
                     loadState();
@@ -322,7 +327,8 @@ function populateAccount(account) {
     if (!account) {
         account = {};
     }
-    app.currAccount = new Account(account.site, account.url, account.username, account.password, account.id);
+    app.currAccount = new Account(account.site, account.url, account.username, account.password, _.zipObject(app.userEmails, _.times(app.userEmails.length, _.stubTrue)), account.id);
+    console.log(app.currAccount);
 }
 
 function setSavingMode(mode) {

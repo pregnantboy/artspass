@@ -39,8 +39,9 @@ firebase.initializeApp({
 // Get a reference to the database service
 var db = firebase.firestore();
 var ref = db.collection("teams").doc("arts").collection("accounts");
-
+var artsRef = db.collection("teams").doc("arts");
 var accountsObj = {};
+var userEmails = [];
 
 function initListeners() {
 	destroyListeners();
@@ -90,24 +91,35 @@ firebase.auth().onAuthStateChanged(function (user) {
 
 function loadAllData(callback) {
 	initDataLoaded = false;
-	ref.get()
-		.then((snapshot) => {
-			accountsObj = {};
-			snapshot.forEach((doc) => {
-				// console.log(doc.id, " => ", doc.data());
-				addChild(doc);
-			});
-			initDataLoaded = true;
-			console.log(snapshot.length + " accounts loaded");
-			if (callback) {
-				callback(getAccountsArray());
+	artsRef.get()
+		.then((artsDoc) => {
+			if (artsDoc.data().users) {
+				userEmails = artsDoc.data().users.sort();
+				ref.get()
+					.then((snapshot) => {
+						accountsObj = {};
+						snapshot.forEach((doc) => {
+							addChild(doc);
+						});
+						initDataLoaded = true;
+						console.log("accounts loaded");
+						if (callback) {
+							callback([getAccountsArray(), userEmails]);
+						}
+					})
+					.catch((err) => {
+						console.error(err);
+						accountsObj = {};
+						if (callback) {
+							callback([getAccountsArray(), userEmails]);
+						}
+					});
 			}
 		})
-		.catch((err) => {
+		.catch(err => {
 			console.error(err);
-			accountsObj = {};
 			if (callback) {
-				callback(getAccountsArray());
+				callback([getAccountsArray(), userEmails]);
 			}
 		});
 }
@@ -119,7 +131,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.event === "onload") {
 		isFirstLoad = false;
 		if (initDataLoaded) {
-			sendResponse(getAccountsArray());
+			sendResponse([getAccountsArray(), userEmails]);
 		} else {
 			loadAllData(sendResponse);
 			// for async response, return true
@@ -138,7 +150,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	// Saving data
 	if (message.event === "save" && message.account) {
 		console.log("saving account");
-		let docObj = Object.assign({}, Account.encrypt(salt, message.account));		
+		let docObj = Object.assign({}, Account.encrypt(salt, message.account));
 		if (message.account.id) {
 			ref.doc(message.account.id).set(Object.assign({}, docObj)).then(() => {
 				sendResponse(true);

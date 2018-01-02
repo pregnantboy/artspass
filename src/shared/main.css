@@ -21,8 +21,8 @@
 /* animations */
 
 .spin {
-    -webkit-animation: spin 1s infinite linear;
-    animation: spin 1s infinite linear;
+    -webkit-animation: spin 0.5s infinite linear;
+    animation: spin 0.5s infinite linear;
 }
 
 @keyframes spin {
@@ -96,6 +96,21 @@
     background-color: transparent !important;
 }
 
+.mdc-checkbox::before,
+.mdc-checkbox::after,
+.mdc-checkbox__background::before {
+    background-color: transparent!important;
+    opacity: 0;
+}
+
+.mdc-simple-menu .mdc-list-item:focus::before,
+.mdc-simple-menu .mdc-list-item:active::before {
+    opacity: 0;
+}
+
+.mdc-select:focus {
+    background-color: transparent !important;
+}
 
 /* built-in tweaks */
 
@@ -229,12 +244,7 @@
     opacity: 0.7;
 }
 
-
 /* Options */
-
-#options-container {
-    /* height: 230px; */
-}
 
 h3.option-title {
     font-weight: 600;
@@ -409,18 +419,18 @@ polyline.check {
 
 .animate .left-door {
     animation-name: slide-left;
-    animation-duration: 4s;
+    animation-duration: 2s;
     animation-fill-mode: forwards;
 }
 
 .animate .right-door {
     animation-name: slide-right;
-    animation-duration: 4s;
+    animation-duration: 2s;
     animation-fill-mode: forwards;
 }
 
 .animate .door-handle {
-    animation-duration: 2s;
+    animation-duration: 1s;
     animation-name: spin;
     animation-timing-function: ease-in-out;
     animation-direction: reverse;

@@ -119,15 +119,15 @@
 		</div>
 		<!-- PERMISSIONS -->
 		<div class="mdc-form-field account-form-field" style="height: 72px; padding-top: 10px;">
-			<div class="mdc-select__selected-text" style="position: absolute; margin-top:-20px; color:rgba(0,0,0, 0.38); font-size: 11px">Permissions</div>
-			<span v-if="!canEdit">{{ usersSelected }} users selected.</span>
-			<div class="mdc-select" v-show="canEdit" role="listbox" tabindex="0" id="permission-select">
+			<div style="position: absolute; margin-top:-20px; color:rgba(0,0,0, 0.38); font-size: 11px">Permissions</div>
+			<span v-show="!canEdit">{{ usersSelected }} users selected.</span>
+			<div class="mdc-select" style="min-width: 316px" v-show="canEdit" role="listbox" tabindex="0" id="permission-select">
 				<span class="mdc-select__selected-text" style="font-size: 0.875rem; font-weight: 400;">{{ usersSelected }} users selected.</span>
 				<div class="mdc-simple-menu mdc-select__menu">
 					<ul class="mdc-list mdc-simple-menu__items">
 						<li v-for="email in userEmails" class="mdc-list-item" role="menuitem" tabindex="0" v-on:click.stop style="height: 35px; font-size: 0.8rem; color:black">
 							<div class="mdc-checkbox no-mdc-ripple" v-on.focus.stop>
-								<input type="checkbox" class="mdc-checkbox__native-control" v-model="currAccount.permissions[email]" />
+								<input type="checkbox" class="mdc-checkbox__native-control" v-model="currAccount.permissions[email]" disabled="{{email === currentUserEmail}}" />
 								<div class="mdc-checkbox__background">
 									<svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
 										<path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />

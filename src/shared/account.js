@@ -1,17 +1,17 @@
 class Account {
 
-    static decrypt(salt, account, userEmails, id) {
-        var emailPermissions = _.map(userEmails, (email) => {
-            return _.includes(account.permissions, email);
+    static decrypt(salt, account, id) {
+        let decodedPermissions = _.mapKeys(account.permissions, (value, key) => {
+            return this.keyDecode(key);
         });
-        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), _.zipObject(userEmails, emailPermissions), id);
+        return new Account(account.site, account.url, Account.decryptText(salt, account.username), Account.decryptText(salt, account.password), decodedPermissions, id);
     }
 
     static encrypt(salt, account) {
-        var permittedAccounts = _.filter(_.keys(account.permissions), (user) => {
-            return account.permissions[user];
+        let encodedPermissions = _.mapKeys(account.permissions, (value, key) => {
+            return this.keyEncode(key);
         });
-        return new Account(account.site, account.url, Account.encryptText(salt, account.username), Account.encryptText(salt, account.password), permittedAccounts);
+        return new Account(account.site, account.url, Account.encryptText(salt, account.username), Account.encryptText(salt, account.password), encodedPermissions);
     }
 
     static decryptText(salt, ciphertext) {
@@ -29,6 +29,14 @@ class Account {
         return CryptoJS.AES.encrypt(text, salt).toString();
     }
 
+    static keyEncode(decoded) {
+        return encodeURIComponent(decoded).replace(/\./g, "%2E");
+    }
+
+    static keyDecode(encoded) {
+        return decodeURIComponent(encoded.replace("%2E", "."));
+    }
+
     constructor(site, url, username, password, permissions, id) {
         this.site = site;
         this.url = url ? url : "";
@@ -39,5 +47,4 @@ class Account {
             this.id = id;
         }
     }
-
 }

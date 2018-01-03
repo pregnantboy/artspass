@@ -38,14 +38,17 @@ firebase.initializeApp({
 
 // Get a reference to the database service
 var db = firebase.firestore();
-var ref = db.collection("teams").doc("arts").collection("accounts");
+var ref =  db.collection("teams").doc("arts").collection("accounts");
+var permRef;
 var artsRef = db.collection("teams").doc("arts");
 var accountsObj = {};
 var userEmails = [];
+var currentUser;
 
 function initListeners() {
 	destroyListeners();
-	ref.onSnapshot(function (snapshot) {
+	permRef = ref.where("permissions." + Account.keyEncode(currentUser.email), "==", true);
+	permRef.onSnapshot(function (snapshot) {
 		if (initDataLoaded) {
 			snapshot.docChanges.forEach(function (change) {
 				if (change.type === "added") {
@@ -79,10 +82,12 @@ function destroyListeners() {
 
 firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
+		currentUser = user;		
 		initListeners();
 		isFirstLoad = true;
 		isAuthenticated = true;
 	} else {
+		currentUser = null;
 		destroyListeners();
 		isFirstLoad = true;
 		isAuthenticated = false;
@@ -95,7 +100,7 @@ function loadAllData(callback) {
 		.then((artsDoc) => {
 			if (artsDoc.data().users) {
 				userEmails = artsDoc.data().users.sort();
-				ref.get()
+				permRef.get()
 					.then((snapshot) => {
 						accountsObj = {};
 						snapshot.forEach((doc) => {
@@ -190,7 +195,7 @@ function getAccountsArray() {
 
 function addChild(child) {
 	var childVal = child.data();
-	var newChild = Account.decrypt(salt, childVal, userEmails, child.id);
+	var newChild = Account.decrypt(salt, childVal, child.id);
 	accountsObj[child.id] = newChild;
 	return newChild;
 }

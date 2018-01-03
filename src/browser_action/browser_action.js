@@ -20,7 +20,8 @@ function vueInit() {
             isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
             isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
             scrollTimer: null,
-            userEmails: chrome.extension.getBackgroundPage().userEmails
+            userEmails: chrome.extension.getBackgroundPage().userEmails,
+            currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email
         },
         methods: {
             showNewAccountPage: function () {

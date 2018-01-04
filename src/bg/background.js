@@ -2,7 +2,7 @@ var salt;
 var themeColor;
 chrome.storage.sync.get({
 	encryptKey: "",
-	theme: "214, 69, 65"
+	theme: "239, 91, 91"
 }, function (settings) {
 	salt = settings.encryptKey;
 	themeColor = settings.theme;

@@ -162,7 +162,7 @@ function vueInit() {
             }, function (accountsAndEmailArray) {
                 app.accounts = accountsAndEmailArray[0];
                 app.userEmails = accountsAndEmailArray[1];
-                sort();
+                sortAccounts();
                 Vue.nextTick(function () {
                     loadState();
                 });
@@ -238,7 +238,7 @@ function reload() {
         }, (accountsAndEmails) => {
             app.accounts = accountsAndEmails[0];
             app.userEmails = accountsAndEmails[1];
-            sort();
+            sortAccounts();
             app.isSyncing = false;
         });
     }, 1000);
@@ -293,7 +293,7 @@ chrome.runtime.onMessage.addListener((message) => {
     console.log("Message received:", event);
     if (event === "ref-add") {
         app.accounts.push(refAccount);
-        sort();
+        sortAccounts();
         console.log(app.accounts);
     }
 
@@ -304,7 +304,7 @@ chrome.runtime.onMessage.addListener((message) => {
             reload();
         } else {
             app.accounts[indexToChange] = refAccount;
-            sort();
+            sortAccounts();
         }
     }
 
@@ -320,8 +320,10 @@ chrome.runtime.onMessage.addListener((message) => {
 // https://github.com/mat/besticon#self-hosting
 // helpers
 
-function sort() {
-    app.accounts = _.sortBy(app.accounts, "site");
+function sortAccounts() {
+    app.accounts = _.sortBy(app.accounts, (acc) => {
+        return acc.site.toLowerCase();
+    });
 }
 
 function populateAccount(account) {

@@ -23,18 +23,7 @@
         "eol-last": [
             "error",
             "always"
-        ]
-    },
-    "globals": {
-        "mdc": true,
-        "chrome": true,
-        "Vue": true,
-        "Account": true,
-        "firebase": true,
-        "_": true,
-        "CryptoJS": true,
-        "require": true,
-        "module": true,
-        "exports": true
-    }   
+        ],
+        "no-undef": "off"
+    }
 }

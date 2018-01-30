@@ -33,96 +33,91 @@
     </div>
 
     <!-- Accounts List -->
-    <div class="maindiv" id="maindiv" v-cloak @scroll="saveScroll">
-        <ul class="mdc-list mdc-list--two-line" style="padding: 0 0 80px 0; overflow-x: hidden;">
-            <li v-for="account in filteredAccounts" :account="account" is="vault-list-item" class="mdc-list-item" v-on:click.native="showAccountDetailsPage($event, account)" style="height: 70px; width: 380px; padding: 0 10px;">
-            </li>
-        </ul>
-
-        <button class="mdc-fab add-new material-icons" @click="showNewAccountPage" data-mdc-auto-init="MDCRipple">
-            <span class="mdc-fab__icon">add</span>
-        </button>
-    </div>
+    <transition name="slide">
+        <vault-list v-show="!showAccount" :filteredAccounts="filteredAccounts" v-on:showAccountDetailsPage="showAccountDetailsPage" v-on:showNewAccountPage="showNewAccountPage" v-on:scroll.native="saveScroll"></vault-list>
+    </transition>
 
     <!-- Detailed View -->
-    <div class="account" v-show="showAccount" transition="slide">
-        <!-- SITE -->
-        <div class="mdc-form-field account-form-field">
-            <div id="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="text" id="site-textfield" class="mdc-textfield__input" disabled="!canEdit" v-model="currAccount.site" @change="saveAccount">
-                <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.site) }"
-                for="site-textfield">Site</label>
-            </div>
-        </div>
-        <!-- URL -->
-        <div class="mdc-form-field account-form-field">
-            <div id="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="text" id="url-textfield" class="mdc-textfield__input" @blur="getIcon" disabled="!canEdit" v-model="currAccount.url"
-                @change="saveAccount">
-                <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.url) }"
-                for="url-textfield">URL</label>
-            </div>
-        </div>
-        <!-- USERNAME -->
-        <div class="mdc-form-field account-form-field">
-            <div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="text" id="username-textfield" class="mdc-textfield__input" disabled="!canEdit" v-model="currAccount.username"
-                @change="saveAccount">
-                <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.username) }"
-                for="username-textfield">Username</label>
-                <i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
-                role="button" aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
-            </div>
-        </div>
-        <!-- PASSWORD -->
-        <div class="mdc-form-field account-form-field">
-            <div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="passwordVisible? 'text': 'password'" id="password-textfield" class="mdc-textfield__input" disabled="!canEdit"
-                v-model="currAccount.password" @change="saveAccount">
-                <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.password) }"
-                for="password-textfield">Password</label>
-                <i id="password-show-button" v-show="canEdit" class="show-password material-icons" v-bind:class="{'active': passwordVisible}"
-                @mousedown="showPassword()" @mouseup="hidePassword()" @mouseleave="hidePassword()">remove_red_eye</i>
-                <i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
-                role="button" aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
-            </div>
-        </div>
-        <!-- PERMISSIONS -->
-        <div class="mdc-form-field account-form-field" style="height: 72px; padding-top: 10px;">
-            <div style="position: absolute; margin-top:-20px; color:rgba(0,0,0, 0.38); font-size: 11px">Permissions</div>
-            <span v-show="!canEdit">{{ usersSelected }} users selected.</span>
-            <div class="mdc-select" style="min-width: 316px" v-show="canEdit" role="listbox" tabindex="0" id="permission-select">
-                <span class="mdc-select__selected-text" style="font-size: 0.875rem; font-weight: 400;">{{ usersSelected }} users selected.</span>
-                <div class="mdc-simple-menu mdc-select__menu">
-                    <ul class="mdc-list mdc-simple-menu__items">
-                        <li v-for="email in userEmails" class="mdc-list-item" role="menuitem" tabindex="0" v-on:click.stop style="height: 35px; font-size: 0.8rem; color:black">
-                            <div class="mdc-checkbox no-mdc-ripple" v-on.focus.stop>
-                                <!-- <input type="checkbox" class="mdc-checkbox__native-control" v-model="currAccount.permissions[email]" disabled="email === currentUserEmail" -->
-                                <!-- /> -->
-                                <div class="mdc-checkbox__background">
-                                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                                        <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-                                    </svg>
-                                    <div class="mdc-checkbox__mixedmark"></div>
-                                </div>
-                            </div>
-                            <label>{{email}}</label>
-                        </li>
-                    </ul>
+    <transition name="slide">
+        <div class="account" v-show="showAccount">
+            <!-- SITE -->
+            <div class="mdc-form-field account-form-field">
+                <div id="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+                    <input type="text" id="site-textfield" class="mdc-textfield__input" disabled="!canEdit" v-model="currAccount.site" @change="saveAccount">
+                    <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.site) }"
+                    for="site-textfield">Site</label>
                 </div>
             </div>
+            <!-- URL -->
+            <div class="mdc-form-field account-form-field">
+                <div id="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+                    <input type="text" id="url-textfield" class="mdc-textfield__input" @blur="getIcon" disabled="!canEdit" v-model="currAccount.url"
+                    @change="saveAccount">
+                    <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.url) }"
+                    for="url-textfield">URL</label>
+                </div>
+            </div>
+            <!-- USERNAME -->
+            <div class="mdc-form-field account-form-field">
+                <div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+                    <input type="text" id="username-textfield" class="mdc-textfield__input" disabled="!canEdit" v-model="currAccount.username"
+                    @change="saveAccount">
+                    <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.username) }"
+                    for="username-textfield">Username</label>
+                    <i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
+                    role="button" aria-pressed="false" tabindex="0" @click="copyUsername(this, $event)" data-mdc-ripple-is-unbounded> content_copy</i>
+                </div>
+            </div>
+            <!-- PASSWORD -->
+            <div class="mdc-form-field account-form-field">
+                <div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+                    <input type="passwordVisible? 'text': 'password'" id="password-textfield" class="mdc-textfield__input" disabled="!canEdit"
+                    v-model="currAccount.password" @change="saveAccount">
+                    <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.password) }"
+                    for="password-textfield">Password</label>
+                    <i id="password-show-button" v-show="canEdit" class="show-password material-icons" v-bind:class="{'active': passwordVisible}"
+                    @mousedown="showPassword()" @mouseup="hidePassword()" @mouseleave="hidePassword()">remove_red_eye</i>
+                    <i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button"
+                    role="button" aria-pressed="false" tabindex="0" @click="copyPassword(this, $event)"> content_copy</i>
+                </div>
+            </div>
+            <!-- PERMISSIONS -->
+            <div class="mdc-form-field account-form-field" style="height: 72px; padding-top: 10px;">
+                <div style="position: absolute; margin-top:-20px; color:rgba(0,0,0, 0.38); font-size: 11px">Permissions</div>
+                <span v-show="!canEdit">{{ usersSelected }} users selected.</span>
+                <div class="mdc-select" style="min-width: 316px" v-show="canEdit" role="listbox" tabindex="0" id="permission-select">
+                    <span class="mdc-select__selected-text" style="font-size: 0.875rem; font-weight: 400;">{{ usersSelected }} users selected.</span>
+                    <div class="mdc-simple-menu mdc-select__menu">
+                        <ul class="mdc-list mdc-simple-menu__items">
+                            <li v-for="email in userEmails" class="mdc-list-item" role="menuitem" tabindex="0" v-on:click.stop style="height: 35px; font-size: 0.8rem; color:black">
+                                <div class="mdc-checkbox no-mdc-ripple" v-on:focus.stop>
+                                    <!-- <input type="checkbox" class="mdc-checkbox__native-control" v-model="currAccount.permissions[email]" disabled="email === currentUserEmail" -->
+                                    <!-- /> -->
+                                    <div class="mdc-checkbox__background">
+                                        <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                            <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                                        </svg>
+                                        <div class="mdc-checkbox__mixedmark"></div>
+                                    </div>
+                                </div>
+                                <label>{{email}}</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- BOTTOM BUTTONS -->
+            <div class="mdc-form-field">
+                <button class="mdc-button" style="position: absolute; left: 20px; top: 450px;" v-if="canEdit && !createPage" vd @click="remove()">
+                    DELETE
+                </button>
+                <button class="mdc-button mdc-button--primary" style="position: absolute; right: 20px; top: 450px;" disabled="isSaving"	
+                vd @click="canEdit? save() : edit()">
+                    {{ canEdit ? saveText : 'EDIT'}}
+                </button>
+            </div>
         </div>
-        <!-- BOTTOM BUTTONS -->
-        <div class="mdc-form-field">
-            <button class="mdc-button" style="position: absolute; left: 20px; top: 450px;" v-if="canEdit && !createPage" vd @click="remove()">
-                DELETE
-            </button>
-            <button class="mdc-button mdc-button--primary" style="position: absolute; right: 20px; top: 450px;" disabled="isSaving"	
-            vd @click="canEdit? save() : edit()">
-                {{ canEdit ? saveText : 'EDIT'}}
-            </button>
-        </div>
-    </div>
+    </transition>
 
     <!-- Dialog -->
     <aside class="mdc-dialog" id="dialog">

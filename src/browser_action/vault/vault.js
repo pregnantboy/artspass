@@ -1,6 +1,6 @@
 import _ from "lodash";
 import Vue from "vue";
-import VaultListItem from "./vault-list-item.vue";
+import ValutList from "./vault-list.vue";
 
 document.documentElement.style.setProperty("--theme-color", chrome.extension.getBackgroundPage().themeColor);
 var saveState = chrome.extension.getBackgroundPage().saveState;
@@ -19,7 +19,6 @@ var data = {
     saveText: "SAVE",
     isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
     isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
-    scrollTimer: null,
     userEmails: chrome.extension.getBackgroundPage().userEmails,
     currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email
 };
@@ -30,7 +29,7 @@ export default {
         return data;
     },
     components: {
-        "vault-list-item": VaultListItem
+        "vault-list": ValutList
     },
     methods: {
         showNewAccountPage: function () {
@@ -41,7 +40,7 @@ export default {
             this.showAccount = true;
             this.canEdit = true;
         },
-        showAccountDetailsPage: function (event, account) {
+        showAccountDetailsPage: function (account) {
             this.createPage = false;
             populateAccount(account);
             this.saveAccount();
@@ -134,12 +133,9 @@ export default {
         openOptions: function () {
             chrome.runtime.openOptionsPage();
         },
-        saveScroll: function (evt) {
-            clearTimeout(this.scrollTimer);
-            this.scrollTimer = setTimeout(function () {
-                saveState("scroll", evt.target.scrollTop);
-            }, 200);
-        },
+        saveScroll: _.debounce(function (evt) {
+            saveState("scroll", evt.target.scrollTop);
+        }, 300),
         saveSearch: function () {
             saveState("search", this.searchString);
         },

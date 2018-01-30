@@ -34,18 +34,20 @@
     }
 }
 
-.slide-transition {
-    transition: all 0.3s ease;
-    top: 56px;
+.slide-enter-to,
+.slide-leave {
     position: absolute;
     background: white;
     left: 0px;
-    height: calc( 100% - 56px);
-    padding: 0 30px;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.3s ease;
 }
 
 .slide-enter,
-.slide-leave {
+.slide-leave-to {
     left: 400px;
 }
 

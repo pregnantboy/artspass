@@ -1,6 +1,7 @@
 import _ from "lodash";
 import Vue from "vue";
-import ValutList from "./vault-list.vue";
+import VaultList from "./vault-list.vue";
+import VaultDetailedView from "./vault-detailed-view.vue";
 
 document.documentElement.style.setProperty("--theme-color", chrome.extension.getBackgroundPage().themeColor);
 var saveState = chrome.extension.getBackgroundPage().saveState;
@@ -20,7 +21,6 @@ var data = {
     isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
     isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
     userEmails: chrome.extension.getBackgroundPage().userEmails,
-    currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email
 };
 
 export default {
@@ -29,7 +29,8 @@ export default {
         return data;
     },
     components: {
-        "vault-list": ValutList
+        "vault-list": VaultList,
+        "vault-detailed-view": VaultDetailedView
     },
     methods: {
         showNewAccountPage: function () {
@@ -37,16 +38,16 @@ export default {
             populateAccount();
             this.saveAccount();
             this.saveView(3);
+            this.canEdit = true;            
             this.showAccount = true;
-            this.canEdit = true;
         },
         showAccountDetailsPage: function (account) {
             this.createPage = false;
             populateAccount(account);
             this.saveAccount();
             this.saveView(2);
+            this.canEdit = false;            
             this.showAccount = true;
-            this.canEdit = false;
         },
         navigateBack: function () {
             this.saveView(1);
@@ -60,9 +61,7 @@ export default {
             this.canEdit = true;
         },
         save: function () {
-            if (validateForm()) {
-                addOrEditAccount(this.currAccount);
-            }
+            addOrEditAccount(this.currAccount);
         },
         remove: function () {
             var dialog = new mdc.dialog.MDCDialog(document.querySelector("#dialog"));
@@ -81,54 +80,8 @@ export default {
                 });
             });
         },
-        copyUsername: function (element, event, account) {
-            var usernameToCopy = this.currAccount.username; // account view
-            if (account) { // list view
-                usernameToCopy = account.username;
-            }
-            event.stopPropagation();
-            copyToClipboard(usernameToCopy);
-            if (account) { // list view
-                var copyText = element.$ref.copyuser;
-                copyText.innerText = "COPIED!";
-                setTimeout(function () {
-                    copyText.innerText = "COPY";
-                }, 2000);
-            } else { // account view
-                event.target.innerText = "check";
-                setTimeout(function () {
-                    event.target.innerText = "content_copy";
-                }, 2000);
-            }
-        },
-        copyPassword: function (element, event, account) {
-            var passwordToCopy = this.currAccount.password; // account view
-            if (account) { // list view
-                passwordToCopy = account.password;
-            }
-            event.stopPropagation();
-            copyToClipboard(passwordToCopy);
-            if (account) { // list view
-                var copyText = element.$ref.copypass;
-                copyText.innerText = "COPIED!";
-                setTimeout(function () {
-                    copyText.innerText = "COPY";
-                }, 2000);
-            } else { // account view
-                event.target.innerText = "check";
-                setTimeout(function () {
-                    event.target.innerText = "content_copy";
-                }, 2000);
-            }
-        },
         reload: function () {
             reload();
-        },
-        showPassword: function () {
-            this.passwordVisible = true;
-        },
-        hidePassword: function () {
-            this.passwordVisible = false;
         },
         openOptions: function () {
             chrome.runtime.openOptionsPage();
@@ -360,33 +313,4 @@ function setSavingMode(mode) {
 function validateURL(textval) {
     var urlregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
     return urlregex.test(textval);
-}
-
-function copyToClipboard(text) {
-    if (!text || text.length === 0) {
-        return;
-    }
-    var textArea = document.createElement("textarea");
-    textArea.style.position = "fixed";
-    textArea.style.top = 0;
-    textArea.style.left = 0;
-    textArea.style.width = "2em";
-    textArea.style.height = "2em";
-    textArea.style.padding = 0;
-    textArea.style.border = "none";
-    textArea.style.outline = "none";
-    textArea.style.boxShadow = "none";
-    textArea.style.background = "transparent";
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-        var successful = document.execCommand("copy");
-        var msg = successful ? "successful" : "unsuccessful";
-        console.log("Copying text command was " + msg);
-    } catch (err) {
-        console.log("Oops, unable to copy");
-    } finally {
-        document.body.removeChild(textArea);
-    }
 }

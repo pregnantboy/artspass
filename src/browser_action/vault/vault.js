@@ -12,12 +12,12 @@ var data = {
     showAccount: false,
     createPage: true,
     searchString: "",
-    canEdit: true,
     currAccount: {},
     isSyncing: false,
     isSaving: false,
     passwordVisible: false,
     saveText: "SAVE",
+    canEdit: false,
     isFirstLoad: chrome.extension.getBackgroundPage().isFirstLoad,
     isAuthenticated: chrome.extension.getBackgroundPage().isAuthenticated,
     userEmails: chrome.extension.getBackgroundPage().userEmails,
@@ -35,50 +35,28 @@ export default {
     methods: {
         showNewAccountPage: function () {
             this.createPage = true;
+            this.canEdit = true;                        
             populateAccount();
-            this.saveAccount();
+            this.saveAccountState();
             this.saveView(3);
-            this.canEdit = true;            
             this.showAccount = true;
         },
         showAccountDetailsPage: function (account) {
             this.createPage = false;
+            this.canEdit = false;                        
             populateAccount(account);
-            this.saveAccount();
+            this.saveAccountState();
             this.saveView(2);
-            this.canEdit = false;            
             this.showAccount = true;
         },
         navigateBack: function () {
             this.saveView(1);
+            this.canEdit = false;
             this.showAccount = false;
         },
         getIcon: function (event) {
             let url = event.target.value;
             validateURL(url);
-        },
-        edit: function () {
-            this.canEdit = true;
-        },
-        save: function () {
-            addOrEditAccount(this.currAccount);
-        },
-        remove: function () {
-            var dialog = new mdc.dialog.MDCDialog(document.querySelector("#dialog"));
-            dialog.show();
-            dialog.listen("MDCDialog:accept", function () {
-                this.isSaving = true;
-                chrome.runtime.sendMessage({
-                    event: "delete",
-                    account: this.currAccount
-                }, function (success) {
-                    console.log("delete complete:", success);
-                    if (success) {
-                        this.isSaving = false;
-                        this.navigateBack();
-                    }
-                });
-            });
         },
         reload: function () {
             reload();
@@ -92,7 +70,7 @@ export default {
         saveSearch: function () {
             saveState("search", this.searchString);
         },
-        saveAccount: function () {
+        saveAccountState: function () {
             saveState("account", _.cloneDeep(this.currAccount));
         },
         saveView: function (viewNo) {
@@ -128,6 +106,7 @@ export default {
             sortAccounts();
             Vue.nextTick(() => {
                 console.log("loading state");
+                // todo
                 loadState.bind(this)();
             });
             this.isLoading = false;
@@ -156,20 +135,6 @@ function validateForm() {
     return true;
 }
 
-function addOrEditAccount(account) {
-    setSavingMode(2);
-    chrome.runtime.sendMessage({
-        event: "save",
-        account: account
-    }, function (success) {
-        console.log("saving complete:", success);
-        if (success) {
-            setSavingMode(3);
-        } else {
-            setSavingMode(4);
-        }
-    });
-}
 
 function reload() {
     if (data.isSyncing) {
@@ -210,7 +175,7 @@ function loadState() {
                 this.showAccountDetailsPage();
                 if (savedAccount) {
                     this.currAccount = savedAccount;
-                    this.saveAccount();
+                    this.saveAccountState();
                 }
             }
             break;
@@ -219,7 +184,7 @@ function loadState() {
                 this.showNewAccountPage();
                 if (savedAccount) {
                     this.currAccount = savedAccount;
-                    this.saveAccount();
+                    this.saveAccountState();
                 }
             }
             break;
@@ -277,38 +242,6 @@ function populateAccount(account) {
     }
 }
 
-function setSavingMode(mode) {
-    switch (mode) {
-        case 1:
-            data.isSaving = false;
-            data.saveText = "SAVE";
-            break;
-        case 2:
-            data.isSaving = true;
-            break;
-        case 3:
-            data.isSaving = false;
-            data.saveText = "SAVED";
-            setTimeout(function () {
-                if (data.createPage) {
-                    data.saveText = "SAVE";
-                    data.navigateBack();
-                } else {
-                    data.saveText = "SAVE";
-                    data.canEdit = false;
-                    data.saveView(2);
-                }
-            }, 700);
-            break;
-        case 4:
-            data.isSaving = false;
-            data.saveText = "FAILED";
-            setTimeout(function () {
-                data.saveText = "SAVE";
-            }, 700);
-            break;
-    }
-}
 
 function validateURL(textval) {
     var urlregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;

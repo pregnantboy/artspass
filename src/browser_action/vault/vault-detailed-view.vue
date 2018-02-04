@@ -2,46 +2,46 @@
     <div class="account">
         <!-- SITE -->
         <div class="mdc-form-field account-form-field">
-            <div id="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+            <div ref="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
                 <input type="text" id="site-textfield" ref="site-textfield" class="mdc-textfield__input" :disabled="!canEdit" v-model.trim="currAccount.site" @change="onAccountChanged">
                 <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.site) }" for="site-textfield">Site</label>
             </div>
         </div>
         <!-- URL -->
         <div class="mdc-form-field account-form-field">
-            <div id="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="text" id="url-textfield" ref="url-textfield" class="mdc-textfield__input" @blur="getIcon" :disabled="!canEdit" v-model.trim="currAccount.url" @change="onAccountChanged">
+            <div ref="url-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+                <input type="text" id="url-textfield" ref="url-textfield" class="mdc-textfield__input" :disabled="!canEdit" v-model.trim="currAccount.url" @change="onAccountChanged">
                 <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.url) }" for="url-textfield">URL</label>
             </div>
         </div>
         <!-- USERNAME -->
         <div class="mdc-form-field account-form-field">
-            <div id="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+            <div ref="username-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
                 <input type="text" id="username-textfield" ref="username-textfield" class="mdc-textfield__input" :disabled="!canEdit" v-model.trim="currAccount.username" @change="onAccountChanged">
                 <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.username) }" for="username-textfield">Username</label>
-                <i id="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button" aria-pressed="false" tabindex="0" @click="copyUsername($event)" data-mdc-ripple-is-unbounded> content_copy</i>
+                <i ref="username-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button" aria-pressed="false" tabindex="0" @click="copyUsername($event)" data-mdc-ripple-is-unbounded> content_copy</i>
             </div>
         </div>
         <!-- PASSWORD -->
         <div class="mdc-form-field account-form-field">
-            <div id="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
+            <div ref="password-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
                 <input :type="passwordVisible? 'text': 'password'" id="password-textfield" ref="password-textfield" class="mdc-textfield__input" :disabled="!canEdit" v-model="currAccount.password" @change="onAccountChanged">
                 <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.password) }" for="password-textfield">Password</label>
                 <i id="password-show-button" v-show="canEdit" class="show-password material-icons" v-bind:class="{'active': passwordVisible}" @mousedown="passwordVisible = true" @mouseup="passwordVisible = false" @mouseleave="passwordVisible = false">remove_red_eye</i>
-                <i id="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button" aria-pressed="false" tabindex="0" @click="copyPassword($event)"> content_copy</i>
+                <i ref="password-toggle-button" v-show="!canEdit" class="mdc-textfield__label mdc-icon-toggle material-icons detailed-copy-button" role="button" aria-pressed="false" tabindex="0" @click="copyPassword($event)"> content_copy</i>
             </div>
         </div>
         <!-- PERMISSIONS -->
         <div class="mdc-form-field account-form-field" style="height: 72px; padding-top: 10px;">
             <div style="position: absolute; margin-top:-20px; color:rgba(0,0,0, 0.38); font-size: 11px">Permissions</div>
-            <span v-show="!canEdit">{{ usersSelected }} users selected.</span>
+            <span v-show="!canEdit">{{ usersSelected }}</span>
             <div class="mdc-select" style="min-width: 316px" v-show="canEdit" role="listbox" tabindex="0" id="permission-select">
-                <span class="mdc-select__selected-text" style="font-size: 0.875rem; font-weight: 400;">{{ usersSelected }} users selected.</span>
+                <span class="mdc-select__selected-text" style="font-size: 0.875rem; font-weight: 400;">{{ usersSelected }}</span>
                 <div class="mdc-simple-menu mdc-select__menu">
-                    <ul class="mdc-list mdc-simple-menu__items" v-if="currAccount.permissions">
+                    <ul class="mdc-list mdc-simple-menu__items">
                         <li v-for="(email, index) in userEmails" :key="index" class="mdc-list-item" role="menuitem" tabindex="0" @click.stop style="height: 35px; font-size: 0.8rem; color:black">
                             <div class="mdc-checkbox no-mdc-ripple" @focus.stop>
-                                <input type="checkbox" class="mdc-checkbox__native-control" v-model="currAccount.permissions[email]" :disabled="email === currentUserEmail" @change="onAccountChanged" />
+                                <input type="checkbox" class="mdc-checkbox__native-control" v-if="currAccount.permissions" v-model="currAccount.permissions[email]" :disabled="email === currentUserEmail" @change="onAccountChanged" />
                                 <div class="mdc-checkbox__background">
                                     <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
                                         <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
@@ -64,7 +64,7 @@
                 {{ canEdit ? saveText : 'EDIT'}}
             </button>
         </div>
-        <aside class="mdc-dialog" id="dialog" ref="delete-dialog">
+        <aside class="mdc-dialog" ref="delete-dialog">
             <div class="mdc-dialog__surface">
                 <header class="mdc-dialog__header">
                     <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title" style="font-size: 16px">
@@ -82,30 +82,57 @@
 
 <script>
     import _ from "lodash";
+    import Vue from "vue";
     const saveState = chrome.extension.getBackgroundPage().saveState;
 
     export default {
-        props: ["currAccount", "initialCreatePage", "userEmails", "initialCanEdit"],
+        props: ["currAccount", "createPage", "userEmails", "initialCanEdit", "showAccount"],
         data() {
             return {
                 currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email,
                 canEdit: this.initialCanEdit,
-                createPage: this.initialCreatePage,
                 isSaving: false,
                 saveText: "SAVE",
                 passwordVisible: false
             };
         },
+        watch: {
+            showAccount(newval, oldval) {
+                console.log('here');
+                if (newval) {
+                    this.canEdit = this.initialCanEdit;
+                    this.attachMDC();
+                }
+            },
+            canEdit() {
+                this.attachMDC();
+            }
+        },
         computed: {
             usersSelected: function () {
                 var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions))
                     .length;
+                if (numUsersSelected === 1) {
+                    return "Only you."
+                }
                 return numUsersSelected === this.userEmails.length
-                    ? "All"
-                    : numUsersSelected;
+                    ? "All users selected."
+                    : numUsersSelected + " users selected.";
             },
         },
         methods: {
+            attachMDC: function () {
+                Vue.nextTick(() => {
+                    mdc.textfield.MDCTextfield.attachTo(this.$refs["site-input"]);
+                    mdc.textfield.MDCTextfield.attachTo(this.$refs["url-input"]);
+                    mdc.textfield.MDCTextfield.attachTo(this.$refs["username-input"]);
+                    mdc.textfield.MDCTextfield.attachTo(this.$refs["password-input"]);
+                    mdc.iconToggle.MDCIconToggle.attachTo(this.$refs["username-toggle-button"]);
+                    mdc.iconToggle.MDCIconToggle.attachTo(this.$refs["password-toggle-button"]);
+                    mdc.dialog.MDCDialog.attachTo(this.$refs["delete-dialog"]);
+                    mdc.select.MDCSelect.attachTo(document.querySelector("#permission-select"));
+                })
+            },
             onAccountChanged: function () {
                 saveAccountState(this.currAccount);
             },
@@ -114,7 +141,7 @@
                 event.stopPropagation();
                 copyToClipboard(usernameToCopy);
                 event.target.innerText = "check";
-                setTimeout(function () {
+                setTimeout(() => {
                     event.target.innerText = "content_copy";
                 }, 2000);
             },
@@ -123,7 +150,7 @@
                 event.stopPropagation();
                 copyToClipboard(passwordToCopy);
                 event.target.innerText = "check";
-                setTimeout(function () {
+                setTimeout(() => {
                     event.target.innerText = "content_copy";
                 }, 2000);
             },
@@ -158,7 +185,7 @@
                     chrome.runtime.sendMessage({
                         event: "delete",
                         account: this.currAccount
-                    }, function (success) {
+                    }, (success) => {
                         console.log("delete complete:", success);
                         if (success) {
                             this.isSaving = false;
@@ -174,7 +201,7 @@
                         event: "save",
                         account: this.currAccount
                     },
-                    function (success) {
+                    (success) => {
                         console.log("saving complete:", success);
                         if (success) {
                             this.setSavingMode(3);
@@ -196,7 +223,7 @@
                     case 3:
                         this.isSaving = false;
                         this.saveText = "SAVED";
-                        setTimeout(function () {
+                        setTimeout(() => {
                             if (this.createPage) {
                                 this.saveText = "SAVE";
                                 this.$emit("navigateBack");
@@ -210,7 +237,7 @@
                     case 4:
                         this.isSaving = false;
                         this.saveText = "FAILED";
-                        setTimeout(function () {
+                        setTimeout(() => {
                             this.saveText = "SAVE";
                         }, 700);
                         break;
@@ -255,3 +282,78 @@
         }
     }
 </script>
+<style>
+.account {
+  padding-left: 20px;
+  background: white;
+  position: absolute;
+  height: 100%;
+  z-index: 2;
+}
+
+.mdc-form-field {
+  width: 100%;
+}
+
+.mdc-form-field .mdc-textfield {
+  width: 100%;
+}
+
+.no-underline::after {
+  background-color: transparent !important;
+}
+
+.mdc-checkbox::before,
+.mdc-checkbox::after,
+.mdc-checkbox__background::before {
+  background-color: transparent !important;
+  opacity: 0;
+}
+
+.mdc-simple-menu .mdc-list-item:focus::before,
+.mdc-simple-menu .mdc-list-item:active::before {
+  opacity: 0;
+}
+
+.mdc-select:focus {
+  background-color: transparent !important;
+}
+
+.detailed-copy-button {
+  left: 291px;
+  cursor: pointer;
+  top: 5px;
+  pointer-events: all !important;
+  font-size: 18px;
+  --mdc-ripple-fg-scale: 1.6 !important;
+  --mdc-ripple-left: 6px !important;
+  --mdc-ripple-top: 6px !important;
+}
+
+.account-form-field .mdc-textfield {
+  width: 340px;
+  max-width: 100%;
+}
+
+.show-password {
+  margin-bottom: 8px;
+  margin-right: 4px;
+  font-size: 21px;
+  color: rgba(100, 100, 100, 0.5);
+  cursor: pointer;
+  user-select: none;
+}
+
+.show-password:hover {
+  color: rgba(100, 100, 100, 0.7);
+}
+
+.show-password:focus {
+  outline: none;
+}
+
+.show-password.active {
+  color: var(--mdc-theme-primary);
+  opacity: 0.7;
+}
+</style>

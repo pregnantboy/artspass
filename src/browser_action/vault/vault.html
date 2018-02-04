@@ -33,17 +33,15 @@
     </div>
 
     <!-- Accounts List -->
-    <transition name="slide">
-        <vault-list v-show="!showAccount" :filteredAccounts="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
-            @scroll.native="saveScroll"></vault-list>
+
+
+    <transition name="slide-right">
+        <vault-detailed-view v-show="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit"
+            :createPage="createPage" :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
     </transition>
 
-    <!-- Detailed View -->
-    <transition name="slide">
-        <vault-detailed-view v-show="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit" :initialCreatePage="createPage" :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
-    </transition>
-
-    <!-- Dialog -->
+    <vault-list :filteredAccounts="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
+        @scroll.native="saveScroll"></vault-list>
 
     <div class="vault-door" v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
         <div class="left-door">

@@ -1,5 +1,5 @@
 <template>
-    <div class="maindiv" id="maindiv" v-cloak>
+    <div class="maindiv" id="maindiv">
         <ul class="mdc-list mdc-list--two-line" style="padding: 0 0 80px 0; overflow-x: hidden;">
             <li v-for="(account, index) in filteredAccounts" :account="account" :key="index" is="vault-list-item" class="mdc-list-item" v-on:click.native="onListItemClicked(account)" style="height: 70px; width: 380px; padding: 0 10px;">
             </li>

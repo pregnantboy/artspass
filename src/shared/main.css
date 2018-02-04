@@ -8,13 +8,8 @@
     height: 600px;
     margin: 0;
     padding: 0;
-    overflow: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
     font-family: 'Roboto';
-}
-
-[v-cloak] {
-    display: none;
 }
 
 
@@ -34,23 +29,18 @@
     }
 }
 
-.slide-enter-to,
-.slide-leave {
-    position: absolute;
-    background: white;
-    left: 0px;
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: 0.3s ease;
 }
 
-.slide-enter-active,
-.slide-leave-active {
-    transition: all 0.3s ease;
-}
+.slide-right-enter {
+    transform: translate(100%, 0);
+  }
 
-.slide-enter,
-.slide-leave-to {
-    left: 400px;
+.slide-right-leave-to {
+    transform: translate(100%, 0);
 }
-
 
 /* mdc tweaks */
 
@@ -82,40 +72,12 @@
     background-color: transparent !important;
 }
 
-.mdc-form-field {
-    width: 100%;
-}
-
-.mdc-form-field .mdc-textfield {
-    width: 100%;
-}
-
 .mdc-list-item:hover {
     background-color: rgba(100, 100, 100, 0.05);
 }
 
 .mdc-list-item__text__secondary {
     font-size: 13px;
-}
-
-.no-underline::after {
-    background-color: transparent !important;
-}
-
-.mdc-checkbox::before,
-.mdc-checkbox::after,
-.mdc-checkbox__background::before {
-    background-color: transparent!important;
-    opacity: 0;
-}
-
-.mdc-simple-menu .mdc-list-item:focus::before,
-.mdc-simple-menu .mdc-list-item:active::before {
-    opacity: 0;
-}
-
-.mdc-select:focus {
-    background-color: transparent !important;
 }
 
 
@@ -219,45 +181,6 @@
     font-size: 15px;
     font-weight: 500;
 }
-
-.detailed-copy-button {
-    left: 291px;
-    cursor: pointer;
-    top: 5px;
-    pointer-events: all !important;
-    font-size: 18px;
-    --mdc-ripple-fg-scale: 1.6 !important;
-    --mdc-ripple-left: 6px !important;
-    --mdc-ripple-top: 6px !important;
-}
-
-.account-form-field .mdc-textfield {
-    width: 340px;
-    max-width: 100%;
-}
-
-.show-password {
-    margin-bottom: 8px;
-    margin-right: 4px;
-    font-size: 21px;
-    color: rgba(100, 100, 100, 0.5);
-    cursor: pointer;
-    user-select: none;
-}
-
-.show-password:hover {
-    color: rgba(100, 100, 100, 0.7);
-}
-
-.show-password:focus {
-    outline: none;
-}
-
-.show-password.active {
-    color: var(--mdc-theme-primary);
-    opacity: 0.7;
-}
-
 
 /* Options */
 

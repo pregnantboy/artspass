@@ -11,7 +11,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
     import VaultListItem from "./vault-list-item.vue";
     export default {
         components: {
@@ -28,3 +28,30 @@
         }
     };
 </script>
+
+<style scoped>
+
+.maindiv {
+    height: calc( 100% - 56px);
+    overflow-y: scroll;
+}
+
+.mdc-list {
+    padding-top: 0px;
+    cursor: pointer;
+}
+
+
+.mdc-list-item:hover {
+    background-color: rgba(100, 100, 100, 0.05);
+}
+
+.add-new {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--mdc-theme-primary);
+}
+
+</style>
+

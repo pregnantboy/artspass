@@ -7,4 +7,159 @@
     font-family: 'Roboto';
 }
 
+/* animations */
 
+.spin {
+    -webkit-animation: spin 0.5s infinite linear;
+    animation: spin 0.5s infinite linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: 0.3s ease;
+}
+
+.slide-right-enter {
+    transform: translate(100%, 0);
+  }
+
+.slide-right-leave-to {
+    transform: translate(100%, 0);
+}
+
+
+/* maindiv */
+
+.toolbar-icon {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.round-button {
+    line-height: 55px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: transparent;
+    padding: 0;
+    margin-right: 5px;
+    color: white;
+}
+
+/* Vault Door */
+
+.vault-door {
+    height: 600px;
+    width: 400px;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    position: absolute;
+    animation-timing-function: ease-out;
+    pointer-events: none;
+}
+
+.left-door {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: var(--vault-color);
+}
+
+.door-circle {
+    height: 160px;
+    width: 160px;
+    border-radius: 160px;
+    position: relative;
+    background: white;
+    margin-top: calc( 300px - 80px);
+    margin-left: calc( 200px - 80px);
+    border: 10px solid var(--vault-color);
+}
+
+.right-door {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    top: 0px;
+    left: 200px;
+    overflow: hidden;
+}
+
+.door-hole {
+    height: 174px;
+    width: 178px;
+    border-radius: 160px;
+    position: relative;
+    box-shadow: 0px 0px 0px 999999px var(--vault-color);
+    margin-top: calc( 300px - 79px);
+    margin-left: -83px;
+}
+
+.door-handle {
+    height: 130px;
+    width: 130px;
+    margin: 15px;
+}
+
+.animate .left-door {
+    animation-name: slide-left;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+.animate .right-door {
+    animation-name: slide-right;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+.animate .door-handle {
+    animation-duration: 1s;
+    animation-name: spin;
+    animation-timing-function: ease-in-out;
+    animation-direction: reverse;
+}
+
+@keyframes slide-left {
+    0% {
+        left: 0px;
+        pointer-events: auto;
+    }
+    50% {
+        left: 0px;
+        pointer-events: auto;
+    }
+    100% {
+        left: -400px;
+        pointer-events: none;
+        display: none;
+    }
+}
+
+@keyframes slide-right {
+    0% {
+        pointer-events: auto;
+        left: 200px;
+    }
+    50% {
+        pointer-events: auto;
+        left: 200px;
+    }
+    100% {
+        pointer-events: none;
+        left: 600px;
+        display: none;
+    }
+}

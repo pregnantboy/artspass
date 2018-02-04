@@ -80,7 +80,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
     import _ from "lodash";
     import Vue from "vue";
     const saveState = chrome.extension.getBackgroundPage().saveState;
@@ -180,7 +180,7 @@
             remove: function () {
                 var dialog = new mdc.dialog.MDCDialog(this.$refs["delete-dialog"]);
                 dialog.show();
-                dialog.listen("MDCDialog:accept", function () {
+                dialog.listen("MDCDialog:accept", () => {
                     this.isSaving = true;
                     chrome.runtime.sendMessage({
                         event: "delete",

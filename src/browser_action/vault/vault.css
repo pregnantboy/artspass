@@ -7,6 +7,7 @@
     font-family: 'Roboto';
 }
 
+
 /* animations */
 
 .spin {
@@ -30,7 +31,7 @@
 
 .slide-right-enter {
     transform: translate(100%, 0);
-  }
+}
 
 .slide-right-leave-to {
     transform: translate(100%, 0);
@@ -39,21 +40,29 @@
 
 /* maindiv */
 
-.toolbar-icon {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.round-button {
-    line-height: 55px;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    background: transparent;
-    padding: 0;
-    margin-right: 5px;
+.vault-toolbar {
+    background-color: var(--vault-color);
     color: white;
 }
+
+.md-icon-button {
+    color: white;
+}
+
+.toolbar-icon {
+    width: 50px;
+    cursor: pointer;
+    color: white
+}
+
+.black-placeholder::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.black-placeholder::-moz-placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 
 /* Vault Door */
 

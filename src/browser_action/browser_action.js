@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vault from "./vault/vault.vue";
-// import VueMDCAdapter from "vue-mdc-adapter";
+import VueMaterial from "vue-material";
 
-// Vue.use(VueMdcAdapter);
+Vue.use(VueMaterial);
 
 var app = new Vue({
   el: "#vault",

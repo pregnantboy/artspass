@@ -1,11 +1,11 @@
 <template>
     <div class="account">
         <!-- SITE -->
-        <div class="mdc-form-field account-form-field">
-            <div ref="site-input" class="mdc-textfield" v-bind:class="{'no-underline': !canEdit}">
-                <input type="text" id="site-textfield" ref="site-textfield" class="mdc-textfield__input" :disabled="!canEdit" v-model.trim="currAccount.site" @change="onAccountChanged">
-                <label class="mdc-textfield__label" v-bind:class="{'mdc-textfield__label--float-above': (!canEdit || currAccount.site) }" for="site-textfield">Site</label>
-            </div>
+        <div class="account-form-field">
+            <md-field ref="site-input" v-bind:class="{'no-underline': !canEdit}" style="color: var(--vault-color);">
+                <label>Site</label>              
+                <md-input type="text" id="site-textfield" ref="site-textfield" :readonly="!canEdit" v-model.trim="currAccount.site" @change="onAccountChanged"></md-input>
+            </md-field>
         </div>
         <!-- URL -->
         <div class="mdc-form-field account-form-field">
@@ -78,217 +78,248 @@
             </div>
         </aside>
     </div>
+         <!-- <md-speed-dial md-event="click" md-direction="bottom">
+      <md-speed-dial-target class="md-primary">
+        <md-icon>my_location</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content>
+        <md-button class="md-icon-button">
+          <md-icon>directions</md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button">
+          <md-icon>streetview</md-icon>
+        </md-button>
+      </md-speed-dial-content>
+    </md-speed-dial>-->
 </template>
 
 <script scoped>
-    import _ from "lodash";
-    import Vue from "vue";
-    const saveState = chrome.extension.getBackgroundPage().saveState;
+import _ from "lodash";
+import Vue from "vue";
+const saveState = chrome.extension.getBackgroundPage().saveState;
 
-    export default {
-        props: ["currAccount", "createPage", "userEmails", "initialCanEdit", "showAccount"],
-        data() {
-            return {
-                currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email,
-                canEdit: this.initialCanEdit,
-                isSaving: false,
-                saveText: "SAVE",
-                passwordVisible: false
-            };
-        },
-        watch: {
-            showAccount(newval, oldval) {
-                console.log('here');
-                if (newval) {
-                    this.canEdit = this.initialCanEdit;
-                    this.attachMDC();
-                }
-            },
-            canEdit() {
-                this.attachMDC();
-            }
-        },
-        computed: {
-            usersSelected: function () {
-                var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions))
-                    .length;
-                if (numUsersSelected === 1) {
-                    return "Only you."
-                }
-                return numUsersSelected === this.userEmails.length
-                    ? "All users selected."
-                    : numUsersSelected + " users selected.";
-            },
-        },
-        methods: {
-            attachMDC: function () {
-                Vue.nextTick(() => {
-                    mdc.textfield.MDCTextfield.attachTo(this.$refs["site-input"]);
-                    mdc.textfield.MDCTextfield.attachTo(this.$refs["url-input"]);
-                    mdc.textfield.MDCTextfield.attachTo(this.$refs["username-input"]);
-                    mdc.textfield.MDCTextfield.attachTo(this.$refs["password-input"]);
-                    mdc.iconToggle.MDCIconToggle.attachTo(this.$refs["username-toggle-button"]);
-                    mdc.iconToggle.MDCIconToggle.attachTo(this.$refs["password-toggle-button"]);
-                    mdc.dialog.MDCDialog.attachTo(this.$refs["delete-dialog"]);
-                    mdc.select.MDCSelect.attachTo(document.querySelector("#permission-select"));
-                })
-            },
-            onAccountChanged: function () {
-                saveAccountState(this.currAccount);
-            },
-            copyUsername: function (event) {
-                var usernameToCopy = this.currAccount.username; // account view
-                event.stopPropagation();
-                copyToClipboard(usernameToCopy);
-                event.target.innerText = "check";
-                setTimeout(() => {
-                    event.target.innerText = "content_copy";
-                }, 2000);
-            },
-            copyPassword: function (event) {
-                var passwordToCopy = this.currAccount.password; // account view
-                event.stopPropagation();
-                copyToClipboard(passwordToCopy);
-                event.target.innerText = "check";
-                setTimeout(() => {
-                    event.target.innerText = "content_copy";
-                }, 2000);
-            },
-            onDeleteClicked: function () {
-                this.$emit("deleteAccount");
-            },
-            save: function () {
-                if (this.currAccount.site.length === 0) {
-                    this.$refs["site-textfield"].focus();
-                    return;
-                }
-                if (this.currAccount.username.length === 0) {
-                    this.$refs["username-textfield"].focus();
-                    return;
-                }
-                if (!this.currAccount.password ||
-                    this.currAccount.password.length === 0
-                ) {
-                    this.$refs["password-textfield"].focus();
-                    return;
-                }
-                this.addOrEditAccount();
-            },
-            edit: function () {
-                this.canEdit = true;
-            },
-            remove: function () {
-                var dialog = new mdc.dialog.MDCDialog(this.$refs["delete-dialog"]);
-                dialog.show();
-                dialog.listen("MDCDialog:accept", () => {
-                    this.isSaving = true;
-                    chrome.runtime.sendMessage({
-                        event: "delete",
-                        account: this.currAccount
-                    }, (success) => {
-                        console.log("delete complete:", success);
-                        if (success) {
-                            this.isSaving = false;
-                            this.$emit("navigateBack");
-                        }
-                    });
-                });
-            },
-            addOrEditAccount: function () {
-                this.setSavingMode(2);
-                chrome.runtime.sendMessage(
-                    {
-                        event: "save",
-                        account: this.currAccount
-                    },
-                    (success) => {
-                        console.log("saving complete:", success);
-                        if (success) {
-                            this.setSavingMode(3);
-                        } else {
-                            this.setSavingMode(4);
-                        }
-                    }
-                );
-            },
-            setSavingMode: function (mode) {
-                switch (mode) {
-                    case 1:
-                        this.isSaving = false;
-                        this.saveText = "SAVE";
-                        break;
-                    case 2:
-                        this.isSaving = true;
-                        break;
-                    case 3:
-                        this.isSaving = false;
-                        this.saveText = "SAVED";
-                        setTimeout(() => {
-                            if (this.createPage) {
-                                this.saveText = "SAVE";
-                                this.$emit("navigateBack");
-                            } else {
-                                this.saveText = "SAVE";
-                                this.canEdit = false;
-                                saveState("view", 2);
-                            }
-                        }, 700);
-                        break;
-                    case 4:
-                        this.isSaving = false;
-                        this.saveText = "FAILED";
-                        setTimeout(() => {
-                            this.saveText = "SAVE";
-                        }, 700);
-                        break;
-                }
-            }
-        },
-        created: function () {
-            console.log("Detailed view created");
-        }
+export default {
+  props: [
+    "currAccount",
+    "createPage",
+    "userEmails",
+    "initialCanEdit",
+    "showAccount"
+  ],
+  data() {
+    return {
+      currentUserEmail: chrome.extension.getBackgroundPage().currentUser.email,
+      canEdit: this.initialCanEdit,
+      isSaving: false,
+      saveText: "SAVE",
+      passwordVisible: false
     };
-
-    function saveAccountState(account) {
-        saveState("account", _.cloneDeep(account));
+  },
+  watch: {
+    showAccount(newval, oldval) {
+      console.log("here");
+      if (newval) {
+        this.canEdit = this.initialCanEdit;
+        this.attachMDC();
+      }
+    },
+    canEdit() {
+      this.attachMDC();
     }
-
-    function copyToClipboard(text) {
-        if (!text || text.length === 0) {
-            return;
-        }
-        var textArea = document.createElement("textarea");
-        textArea.style.position = "fixed";
-        textArea.style.top = 0;
-        textArea.style.left = 0;
-        textArea.style.width = "2em";
-        textArea.style.height = "2em";
-        textArea.style.padding = 0;
-        textArea.style.border = "none";
-        textArea.style.outline = "none";
-        textArea.style.boxShadow = "none";
-        textArea.style.background = "transparent";
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-            var successful = document.execCommand("copy");
-            var msg = successful ? "successful" : "unsuccessful";
-            console.log("Copying text command was " + msg);
-        } catch (err) {
-            console.log("Oops, unable to copy");
-        } finally {
-            document.body.removeChild(textArea);
-        }
+  },
+  computed: {
+    usersSelected: function() {
+      var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions))
+        .length;
+      if (numUsersSelected === 1) {
+        return "Only you.";
+      }
+      return numUsersSelected === this.userEmails.length
+        ? "All users selected."
+        : numUsersSelected + " users selected.";
     }
+  },
+  methods: {
+    attachMDC: function() {
+      Vue.nextTick(() => {
+        // mdc.textfield.MDCTextfield.attachTo(this.$refs["site-input"]);
+        mdc.textfield.MDCTextfield.attachTo(this.$refs["url-input"]);
+        mdc.textfield.MDCTextfield.attachTo(this.$refs["username-input"]);
+        mdc.textfield.MDCTextfield.attachTo(this.$refs["password-input"]);
+        mdc.iconToggle.MDCIconToggle.attachTo(
+          this.$refs["username-toggle-button"]
+        );
+        mdc.iconToggle.MDCIconToggle.attachTo(
+          this.$refs["password-toggle-button"]
+        );
+        mdc.dialog.MDCDialog.attachTo(this.$refs["delete-dialog"]);
+        mdc.select.MDCSelect.attachTo(
+          document.querySelector("#permission-select")
+        );
+      });
+    },
+    onAccountChanged: function() {
+      saveAccountState(this.currAccount);
+    },
+    copyUsername: function(event) {
+      var usernameToCopy = this.currAccount.username; // account view
+      event.stopPropagation();
+      copyToClipboard(usernameToCopy);
+      event.target.innerText = "check";
+      setTimeout(() => {
+        event.target.innerText = "content_copy";
+      }, 2000);
+    },
+    copyPassword: function(event) {
+      var passwordToCopy = this.currAccount.password; // account view
+      event.stopPropagation();
+      copyToClipboard(passwordToCopy);
+      event.target.innerText = "check";
+      setTimeout(() => {
+        event.target.innerText = "content_copy";
+      }, 2000);
+    },
+    onDeleteClicked: function() {
+      this.$emit("deleteAccount");
+    },
+    save: function() {
+      if (this.currAccount.site.length === 0) {
+        this.$refs["site-textfield"].focus();
+        return;
+      }
+      if (this.currAccount.username.length === 0) {
+        this.$refs["username-textfield"].focus();
+        return;
+      }
+      if (
+        !this.currAccount.password ||
+        this.currAccount.password.length === 0
+      ) {
+        this.$refs["password-textfield"].focus();
+        return;
+      }
+      this.addOrEditAccount();
+    },
+    edit: function() {
+      this.canEdit = true;
+    },
+    remove: function() {
+      var dialog = new mdc.dialog.MDCDialog(this.$refs["delete-dialog"]);
+      dialog.show();
+      dialog.listen("MDCDialog:accept", () => {
+        this.isSaving = true;
+        chrome.runtime.sendMessage(
+          {
+            event: "delete",
+            account: this.currAccount
+          },
+          success => {
+            console.log("delete complete:", success);
+            if (success) {
+              this.isSaving = false;
+              this.$emit("navigateBack");
+            }
+          }
+        );
+      });
+    },
+    addOrEditAccount: function() {
+      this.setSavingMode(2);
+      chrome.runtime.sendMessage(
+        {
+          event: "save",
+          account: this.currAccount
+        },
+        success => {
+          console.log("saving complete:", success);
+          if (success) {
+            this.setSavingMode(3);
+          } else {
+            this.setSavingMode(4);
+          }
+        }
+      );
+    },
+    setSavingMode: function(mode) {
+      switch (mode) {
+        case 1:
+          this.isSaving = false;
+          this.saveText = "SAVE";
+          break;
+        case 2:
+          this.isSaving = true;
+          break;
+        case 3:
+          this.isSaving = false;
+          this.saveText = "SAVED";
+          setTimeout(() => {
+            if (this.createPage) {
+              this.saveText = "SAVE";
+              this.$emit("navigateBack");
+            } else {
+              this.saveText = "SAVE";
+              this.canEdit = false;
+              saveState("view", 2);
+            }
+          }, 700);
+          break;
+        case 4:
+          this.isSaving = false;
+          this.saveText = "FAILED";
+          setTimeout(() => {
+            this.saveText = "SAVE";
+          }, 700);
+          break;
+      }
+    }
+  },
+  created: function() {
+    console.log("Detailed view created");
+  }
+};
+
+function saveAccountState(account) {
+  saveState("account", _.cloneDeep(account));
+}
+
+function copyToClipboard(text) {
+  if (!text || text.length === 0) {
+    return;
+  }
+  var textArea = document.createElement("textarea");
+  textArea.style.position = "fixed";
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+  textArea.style.width = "2em";
+  textArea.style.height = "2em";
+  textArea.style.padding = 0;
+  textArea.style.border = "none";
+  textArea.style.outline = "none";
+  textArea.style.boxShadow = "none";
+  textArea.style.background = "transparent";
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.select();
+  try {
+    var successful = document.execCommand("copy");
+    var msg = successful ? "successful" : "unsuccessful";
+    console.log("Copying text command was " + msg);
+  } catch (err) {
+    console.log("Oops, unable to copy");
+  } finally {
+    document.body.removeChild(textArea);
+  }
+}
 </script>
 <style>
 .account {
-  padding-left: 20px;
+  padding: 0 30px;
   background: white;
   position: absolute;
   height: 100%;
-  z-index: 2;
+  z-index: 50;
 }
 
 .mdc-form-field {

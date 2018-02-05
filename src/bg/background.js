@@ -1,5 +1,6 @@
 var salt;
 var themeColor;
+
 chrome.storage.sync.get({
 	encryptKey: "",
 	theme: "239, 91, 91"
@@ -133,8 +134,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	// first load - retrieve from variable
 	if (message.event === "onload") {
+		console.log("here");
 		isFirstLoad = false;
 		if (initDataLoaded) {
+			console.log(getAccountsArray());
 			sendResponse([getAccountsArray(), userEmails]);
 		} else {
 			loadAllData(sendResponse);

@@ -1,0 +1,56 @@
+<div id="app">
+    <!-- Top Toolbar -->
+    <div class="mdc-toolbar">
+        <div class="mdc-toolbar__row">
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-start mdc-theme-fd-dark" v-if="!showAccount">
+                <div class="mdc-textfield mdc-toolbar__title mdc-theme--dark" style="width: 300px; font-size: 18px; margin-bottom: -5px; padding: 0;">
+                    <input type="text" class="mdc-textfield__input" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px;"
+                        @change="saveSearch">
+                </div>
+            </section>
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-start mdc-theme-fd-dark " v-if="showAccount">
+                <i class="material-icons" @click="navigateBack" style="margin-left: 10px; width: 50px; cursor:pointer;">arrow_back</i>
+            </section>
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-end  mdc-toolbar__section--shrink-to-fit mdc-theme--dark">
+                <button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple">
+                    <i class="material-icons" v-bind:class=" { 'spin': isSyncing } " @click="reload">sync</i>
+                </button>
+                <button class="mdc-button round-button mdc-ripple-surface" data-mdc-auto-init="MDCRipple" base-color="white" @click="openOptions()">
+                    <i class="material-icons">settings</i>
+                </button>
+            </section>
+        </div>
+        <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" v-if="isLoading || isSaving || isSyncing"
+            style="z-index: 100; position: absolute; top: 56px;">
+            <div class="mdc-linear-progress__buffer"></div>
+            <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+                <span class="mdc-linear-progress__bar-inner"></span>
+            </div>
+            <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+                <span class="mdc-linear-progress__bar-inner"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accounts List -->
+
+
+    <transition name="slide-right">
+        <vault-detailed-view v-show="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit"
+            :createPage="createPage" :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
+    </transition>
+
+    <vault-list :filteredAccounts="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
+        @scroll.native="saveScroll"></vault-list>
+
+    <div class="vault-door" v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
+        <div class="left-door">
+            <div class="door-circle">
+                <img class="door-handle" src="../../icons/wheel.png" />
+            </div>
+        </div>
+        <div class="right-door">
+            <div class="door-hole"></div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 :root {
     --theme-color: 239, 91, 91;
     --mdc-theme-primary: rgb(var(--theme-color));
+    --vault-color: rgb(var(--theme-color));
 }
 
 #app {
@@ -8,254 +9,9 @@
     height: 600px;
     margin: 0;
     padding: 0;
-    overflow: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
     font-family: 'Roboto';
 }
-
-[v-cloak] {
-    display: none;
-}
-
-
-/* animations */
-
-.spin {
-    -webkit-animation: spin 0.5s infinite linear;
-    animation: spin 0.5s infinite linear;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(-360deg);
-    }
-}
-
-.slide-transition {
-    transition: all 0.3s ease;
-    top: 56px;
-    position: absolute;
-    background: white;
-    left: 0px;
-    height: calc( 100% - 56px);
-    padding: 0 30px;
-}
-
-.slide-enter,
-.slide-leave {
-    left: 400px;
-}
-
-
-/* mdc tweaks */
-
-.mdc-button {
-    min-width: 1%;
-}
-
-.mdc-list {
-    padding-top: 0px;
-    cursor: pointer;
-}
-
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.copy-button::before,
-.copy-button::after {
-    background-color: rgba(var(--theme-color), 0.2) !important;
-}
-
-.copy-button:hover {
-    background-color: rgba(var(--theme-color), 0.2) !important;
-}
-
-.mdc-button:focus:not(:hover)::before,
-.mdc-button:focus:not(:hover)::after {
-    background-color: transparent !important;
-}
-
-.mdc-form-field {
-    width: 100%;
-}
-
-.mdc-form-field .mdc-textfield {
-    width: 100%;
-}
-
-.mdc-list-item:hover {
-    background-color: rgba(100, 100, 100, 0.05);
-}
-
-.mdc-list-item__text__secondary {
-    font-size: 13px;
-}
-
-.no-underline::after {
-    background-color: transparent !important;
-}
-
-.mdc-checkbox::before,
-.mdc-checkbox::after,
-.mdc-checkbox__background::before {
-    background-color: transparent!important;
-    opacity: 0;
-}
-
-.mdc-simple-menu .mdc-list-item:focus::before,
-.mdc-simple-menu .mdc-list-item:active::before {
-    opacity: 0;
-}
-
-.mdc-select:focus {
-    background-color: transparent !important;
-}
-
-
-/* built-in tweaks */
-
-::-webkit-scrollbar {
-    width: 5px;
-    /* remove scrollbar space */
-    /* background: transparent; */
-    /* optional: just make scrollbar invisible */
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(var(--theme-color), 0.14);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--theme-color), 0.7);
-}
-
-
-/* maindiv */
-
-.maindiv {
-    height: calc( 100% - 56px);
-    overflow-y: scroll;
-}
-
-.toolbar-icon {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.round-button {
-    line-height: 55px;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    background: transparent;
-    padding: 0;
-    margin-right: 5px;
-    color: white;
-}
-
-.letter-icon {
-    color: var(--mdc-theme-primary);
-    border: 1px solid var(--mdc-theme-primary);
-    background: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 26px;
-    text-align: center;
-    line-height: 50px;
-    font-size: 23px;
-    margin-left: 4px;
-    margin-right: 22px;
-}
-
-/* .mdc-list-item:hover .letter-icon {
-    background-color: rgba(var(--theme-color), 0.7);
-    border: 1px solid rgba(var(--theme-color), 0.7);
-    color: white;
-} */
-
-.add-new {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: var(--mdc-theme-primary);
-}
-
-.copy-button {
-    position: relative;
-    display: inline-flex;
-    vertical-align: middle;
-    font-size: 10px;
-    width: 70px;
-    text-align: center;
-    padding: 0;
-    box-shadow: 2px 2px 2px 1px rgba(100, 100, 100, 0.2);
-    bottom: 3px;
-}
-
-.copy-button span {
-    width: 42px;
-    text-align: center;
-}
-
-.copy-button i {
-    font-size: 17px;
-    width: auto;
-    line-height: 32px;
-    padding-left: 7px;
-}
-
-.list-text {
-    overflow: hidden;
-    width: 150px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 15px;
-    font-weight: 500;
-}
-
-.detailed-copy-button {
-    left: 291px;
-    cursor: pointer;
-    top: 5px;
-    pointer-events: all !important;
-    font-size: 18px;
-    --mdc-ripple-fg-scale: 1.6 !important;
-    --mdc-ripple-left: 6px !important;
-    --mdc-ripple-top: 6px !important;
-}
-
-.account-form-field .mdc-textfield {
-    width: 340px;
-    max-width: 100%;
-}
-
-.show-password {
-    margin-bottom: 8px;
-    margin-right: 4px;
-    font-size: 21px;
-    color: rgba(100, 100, 100, 0.5);
-    cursor: pointer;
-    user-select: none;
-}
-
-.show-password:hover {
-    color: rgba(100, 100, 100, 0.7);
-}
-
-.show-password:focus {
-    outline: none;
-}
-
-.show-password.active {
-    color: var(--mdc-theme-primary);
-    opacity: 0.7;
-}
-
 
 /* Options */
 
@@ -367,116 +123,36 @@ polyline.check {
     cursor: pointer;
 }
 
+/* mdc tweaks */
 
-/* Vault Door */
-
-:root {
-    --vault-color: rgb(var(--theme-color));
+.mdc-button {
+    min-width: 1%;
 }
 
-.vault-door {
-    height: 600px;
-    width: 400px;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    position: absolute;
-    animation-timing-function: ease-out;
-    pointer-events: none;
+
+.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
+.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.left-door {
-    width: 200px;
-    height: 600px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background: var(--vault-color);
+.mdc-button:focus:not(:hover)::before,
+.mdc-button:focus:not(:hover)::after {
+    background-color: transparent !important;
 }
 
-.door-circle {
-    height: 160px;
-    width: 160px;
-    border-radius: 160px;
-    position: relative;
-    background: white;
-    margin-top: calc( 300px - 80px);
-    margin-left: calc( 200px - 80px);
-    border: 10px solid var(--vault-color);
+/* built-in tweaks */
+
+::-webkit-scrollbar {
+    width: 5px;
+    /* remove scrollbar space */
+    /* background: transparent; */
+    /* optional: just make scrollbar invisible */
 }
 
-.right-door {
-    width: 200px;
-    height: 600px;
-    position: absolute;
-    top: 0px;
-    left: 200px;
-    overflow: hidden;
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--theme-color), 0.14);
 }
 
-.door-hole {
-    height: 174px;
-    width: 178px;
-    border-radius: 160px;
-    position: relative;
-    box-shadow: 0px 0px 0px 999999px var(--vault-color);
-    margin-top: calc( 300px - 79px);
-    margin-left: -83px;
-}
-
-.door-handle {
-    height: 130px;
-    width: 130px;
-    margin: 15px;
-}
-
-.animate .left-door {
-    animation-name: slide-left;
-    animation-duration: 2s;
-    animation-fill-mode: forwards;
-}
-
-.animate .right-door {
-    animation-name: slide-right;
-    animation-duration: 2s;
-    animation-fill-mode: forwards;
-}
-
-.animate .door-handle {
-    animation-duration: 1s;
-    animation-name: spin;
-    animation-timing-function: ease-in-out;
-    animation-direction: reverse;
-}
-
-@keyframes slide-left {
-    0% {
-        left: 0px;
-        pointer-events: auto;
-    }
-    50% {
-        left: 0px;
-        pointer-events: auto;
-    }
-    100% {
-        left: -400px;
-        pointer-events: none;
-        display: none;
-    }
-}
-
-@keyframes slide-right {
-    0% {
-        pointer-events: auto;
-        left: 200px;
-    }
-    50% {
-        pointer-events: auto;
-        left: 200px;
-    }
-    100% {
-        pointer-events: none;
-        left: 600px;
-        display: none;
-    }
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--theme-color), 0.7);
 }

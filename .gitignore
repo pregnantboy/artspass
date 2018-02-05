@@ -2,3 +2,4 @@ node_modules
 .DS_Store
 artspass.zip
 secret.txt
+src/browser_action/browser_action_build.js

@@ -96,17 +96,13 @@ export default {
         }
     },
     created: function () {
-        console.log("created");
         chrome.runtime.sendMessage({
             event: "onload"
         }, (accountsAndEmailArray) => {
-            console.log(accountsAndEmailArray);
             this.accounts = accountsAndEmailArray[0];
             this.userEmails = accountsAndEmailArray[1];
             sortAccounts();
             Vue.nextTick(() => {
-                console.log("loading state");
-                // todo
                 loadState.bind(this)();
             });
             this.isLoading = false;
@@ -167,7 +163,6 @@ function loadState() {
                 this.searchString = state.search;
             }
             document.getElementById("maindiv").scrollTop = state.scroll;
-            console.log("scrolling to :", state.scroll);
         }
         break;
         case 2:
@@ -199,7 +194,6 @@ chrome.runtime.onMessage.addListener(function (message) {
     if (!refAccount) {
         return;
     }
-    console.log("Message received:", event);
     if (event === "ref-add") {
         data.accounts.push(refAccount);
         sortAccounts();

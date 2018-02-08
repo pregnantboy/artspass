@@ -7,7 +7,7 @@
     "watchify": "watchify -vd -p browserify-hmr -e src/browser_action/browser_action.js -o src/browser_action/browser_action_build.js",
     "serve": "http-server -o -s -c 1 -a localhost",
     "dev": "npm-run-all --parallel watchify serve",
-    "build": "cross-env NODE_ENV=production browserify -g envify src/browser_action/browser_action.js > src/browser_action/browser_action_build.js",
+    "build": "cross-env NODE_ENV=production browserify -g envify src/browser_action/browser_action.js | uglifyjs -c -m > src/browser_action/browser_action_build.js",
     "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
     "zip": "node zip.js"
   },
@@ -37,7 +37,8 @@
   },
   "browserify": {
     "transform": [
-      "vueify"
+      "vueify",
+      "babelify"
     ]
   },
   "browser": {

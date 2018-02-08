@@ -46,8 +46,8 @@ export default {
 
 <style>
 .letter-icon {
-  color: var(--mdc-theme-primary);
-  border: 1px solid var(--mdc-theme-primary);
+  color: var(--vault-color);
+  border: 1px solid var(--vault-color);
   background: white;
   width: 50px;
   height: 50px;

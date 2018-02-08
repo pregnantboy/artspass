@@ -33,6 +33,7 @@ export default {
 .maindiv {
   height: calc(100% - 56px);
   overflow-y: scroll;
+  z-index: 1;
 }
 
 .list-item:hover {
@@ -46,7 +47,7 @@ export default {
   right: 20px;
   background-color: var(--vault-color);
   color: white;
-  z-index: 10;
+  z-index: 3;
 }
 </style>
 

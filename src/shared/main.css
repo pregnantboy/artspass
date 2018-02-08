@@ -1,6 +1,5 @@
 :root {
     --theme-color: 239, 91, 91;
-    --mdc-theme-primary: rgb(var(--theme-color));
     --vault-color: rgb(var(--theme-color));
 }
 
@@ -17,11 +16,6 @@
 
 h3.option-title {
     font-weight: 600;
-}
-
-.mdc-button.upload-button {
-    font-size: 11px;
-    height: 34px;
 }
 
 .upload-button i {
@@ -47,14 +41,6 @@ h3.option-title {
 
 #login {
     width: 185px;
-    height: 40px;
-    padding: 0px;
-    margin: 0px;
-    border: 0 none;
-    vertical-align: center;
-    text-align: center;
-    display: inline-flex;
-    vertical-align: middle;
 }
 
 #login img {
@@ -62,10 +48,13 @@ h3.option-title {
     margin-left: 5px;
 }
 
-#login span {
+.button-text {
     line-height: 40px;
-    width: 145px;
     font-size: 12px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.7);
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }
 
 .color-radio {
@@ -108,6 +97,14 @@ polyline.check {
 }
 
 .button-raised {
+    height: 40px;
+    padding: 0px;
+    margin: 0px;
+    border: 0 none;
+    text-align: center;
+    display: inline-flex;
+    vertical-align: middle;
+    cursor: pointer;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -120,24 +117,39 @@ polyline.check {
     position: absolute;
     right: 20px;
     bottom: 20px;
-    cursor: pointer;
+    background-color: var(--vault-color);
 }
 
-/* mdc tweaks */
+/* materialvue tweaks */
 
-.mdc-button {
-    min-width: 1%;
+.md-menu-content.md-select-menu {
+    background: white;
+    height: auto;
+    max-height: 60vh;
+    transition: none;
 }
 
-
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::before,
-.mdc-ripple-surface.mdc-ripple-upgraded.mdc-button::after {
-    background-color: rgba(255, 255, 255, 0.2);
+.md-list-item-content>.md-checkbox:first-child {
+    margin-right: 12px;
 }
 
-.mdc-button:focus:not(:hover)::before,
-.mdc-button:focus:not(:hover)::after {
-    background-color: transparent !important;
+.md-checkbox:not(.md-checkeds) .md-checkbox-container {
+    border-color: rgba(0, 0, 0, .54);
+}
+
+.md-checkbox.md-checked .md-checkbox-container {
+    background-color: var(--vault-color);
+    border-color: transparent;
+}
+
+.md-checkbox .md-checkbox-container:after {
+    border: 2px solid white;
+    border-top: 0;
+    border-left: 0;
+}
+
+.md-select-value {
+    opacity: 0 !important;
 }
 
 /* built-in tweaks */

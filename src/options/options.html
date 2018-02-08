@@ -12,13 +12,14 @@
 
 <body id="options-container" style="padding: 10px; font-family: 'Roboto'; height: 260px">
     <h3 class="option-title" id="login-header"> Login with ARTS account: </h3>
-    <span id="login" class="mdc-button button-raised"><img src="google-icon.png" height="30px" width="30px"/><span id="login-text">Login with Google</span></span>
+    <span id="login" class="button-raised"><img src="google-icon.png" height="30px" width="30px"/><span id="login-text" class="button-text" style="width:145px">Login with Google</span></span>
     <br>
 
     <h3 class="option-title"> Upload encryption file: </h3>
     <span id="uploaded-file">no file uploaded</span>
-    <label class="mdc-button upload-button mdc-button--raised mdc-button--primary">
-        <i class="material-icons">file_upload</i> Upload
+    <label class="button-raised">
+        <i class="material-icons" style="line-height: 40px; margin-left: 7px">file_upload</i>
+        <span class="button-text" style="width: 70px">Upload</span>
         <input id="file-upload" style="display: none;" type="file" />
     </label>
     <span id="invalid-file">Invalid file</span>
@@ -66,7 +67,8 @@
         </label>
     </div>
 
-    <label class="mdc-button upload-button mdc-button--raised mdc-button--primary options-close" id="options-close">CLOSE
+    <label class="button-raised options-close" id="options-close">
+        <span class="button-text" style="width:80px; color: white;">close</span>
     </label>
 
     <script src="../shared/material-components-web.min.js" defer></script>

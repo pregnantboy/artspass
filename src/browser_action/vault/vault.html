@@ -4,7 +4,7 @@
         <div class="md-toolbar-row">
             <div class="md-toolbar-section-start" v-if="!showAccount" style="width:70%">
                 <md-field md-inline style="width: 300px; font-size: 18px; margin-bottom: -14px; padding: 0 10px">
-                    <md-input type="text" class="black-placeholder" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px; color: white;"
+                    <md-input md-clearabletype="text" class="black-placeholder" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px; color: white;"
                         @change="saveSearch"></md-input>
                 </md-field>
             </div>
@@ -18,19 +18,26 @@
                 <md-button class="md-icon-button" base-color="white" @click="openOptions()">
                     <md-icon class="toolbar-icon">settings</md-icon>
                 </md-button>
+                <md-speed-dial class="md-top-right" md-direction="bottom" style="right:0; top:9px;">
+                    <md-speed-dial-target style="background-color: var(--vault-color); width:40px;height:40px; box-shadow: none; color: white">
+                        <md-icon class="md-morph-initial">menu</md-icon>
+                        <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
+                    </md-speed-dial-target>
+                    <md-speed-dial-content>
+                        <md-button class="md-icon-button">
+                            <md-icon>note</md-icon>
+                        </md-button>
+
+                        <md-button class="md-icon-button">
+                            <md-icon>event</md-icon>
+                        </md-button>
+                    </md-speed-dial-content>
+                </md-speed-dial>
             </div>
         </div>
 
-        <div id="progress-bar" v-if="isLoading || isSaving || isSyncing || true"
-            style="z-index: 100; position:absolute; top: 56px;">
+        <div id="progress-bar" v-if="isLoading || isSaving || isSyncing || true" style="z-index: 100; position:absolute; top: 56px;">
             <md-progress-bar md-mode="indeterminate" style="height: 3px; width: 100vw; color:black"></md-progress-bar>
-            <!-- <div class="mdc-linear-progress__buffer"></div>
-            <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-                <span class="mdc-linear-progress__bar-inner"></span>
-            </div>
-            <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-                <span class="mdc-linear-progress__bar-inner"></span>
-            </div> -->
         </div>
     </md-toolbar>
 

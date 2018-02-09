@@ -1,4 +1,4 @@
-<div id="app">
+<div id="app" v-cloak>
     <!-- Top Toolbar -->
     <md-toolbar class="vault-toolbar">
         <div class="md-toolbar-row">
@@ -12,27 +12,9 @@
                 <md-icon class="toolbar-icon">arrow_back</md-icon>
             </md-button>
             <div class="md-toolbar-section-end">
-                <md-button class="md-icon-button" @click="reload">
+                <md-button class="md-icon-button" style="margin-right: 40px;" @click="reload">
                     <md-icon class="toolbar-icon" v-bind:class=" { 'spin': isSyncing } ">sync</md-icon>
                 </md-button>
-                <md-button class="md-icon-button" base-color="white" @click="openOptions()">
-                    <md-icon class="toolbar-icon">settings</md-icon>
-                </md-button>
-                <md-speed-dial class="md-top-right" md-direction="bottom" style="right:0; top:9px;">
-                    <md-speed-dial-target style="background-color: var(--vault-color); width:40px;height:40px; box-shadow: none; color: white">
-                        <md-icon class="md-morph-initial">menu</md-icon>
-                        <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
-                    </md-speed-dial-target>
-                    <md-speed-dial-content>
-                        <md-button class="md-icon-button">
-                            <md-icon>note</md-icon>
-                        </md-button>
-
-                        <md-button class="md-icon-button">
-                            <md-icon>event</md-icon>
-                        </md-button>
-                    </md-speed-dial-content>
-                </md-speed-dial>
             </div>
         </div>
 
@@ -41,17 +23,33 @@
         </div>
     </md-toolbar>
 
+    <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
+        <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow: none;">
+            <md-icon class="md-morph-initial">menu</md-icon>
+            <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
+        </md-speed-dial-target>
+        <md-speed-dial-content>
+            <md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);">
+                <md-icon>train</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);" @click="openOptions()">
+                <md-icon>settings</md-icon>
+            </md-button>
+        </md-speed-dial-content>
+    </md-speed-dial>
+
     <!-- Accounts List -->
 
     <transition name="slide-right">
-        <vault-detailed-view v-show="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit"
+        <vault-detailed-view v-if="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit"
             :createPage="createPage" :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
     </transition>
 
-    <vault-list :filteredAccounts="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
+    <vault-list :filteredAccounts="filteredAccounts" v-if="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
         @scroll.native="saveScroll"></vault-list>
 
-    <div class="vault-door" v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
+    <div class="vault-door" v-once v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
         <div class="left-door">
             <div class="door-circle">
                 <img class="door-handle" src="../../icons/wheel.png" />

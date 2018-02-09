@@ -10,20 +10,6 @@
 
 /* animations */
 
-.spin {
-    -webkit-animation: spin 0.5s infinite linear;
-    animation: spin 0.5s infinite linear;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(-360deg);
-    }
-}
-
 .slide-right-enter-active,
 .slide-right-leave-active {
     transition: 0.3s ease;
@@ -64,9 +50,9 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-.md-menu-content.md-select-menu {
-    background-color: white;
-    z-index: 999;
+.speeddial-button {
+    background-color: var(--vault-color);
+    color: white;
 }
 
 /* Vault Door */

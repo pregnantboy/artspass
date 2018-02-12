@@ -79,6 +79,9 @@ export default {
         },
         openPermissionDropdown: function () {
             window.menu.open = true;
+        },
+        launchTrain: function() {
+            this.$root.$data.page = "lunch";
         }
     },
     computed: {

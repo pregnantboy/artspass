@@ -1,62 +1,64 @@
 <div id="app" v-cloak>
-    <!-- Top Toolbar -->
-    <md-toolbar class="vault-toolbar">
-        <div class="md-toolbar-row">
-            <div class="md-toolbar-section-start" v-if="!showAccount" style="width:70%">
-                <md-field md-inline style="width: 300px; font-size: 18px; margin-bottom: -14px; padding: 0 10px">
-                    <md-input md-clearabletype="text" class="black-placeholder" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px; color: white;"
-                        @change="saveSearch"></md-input>
-                </md-field>
-            </div>
-            <md-button class="md-icon-button" v-if="showAccount" @click="navigateBack">
-                <md-icon class="toolbar-icon">arrow_back</md-icon>
-            </md-button>
-            <div class="md-toolbar-section-end">
-                <md-button class="md-icon-button" style="margin-right: 40px;" @click="reload">
-                    <md-icon class="toolbar-icon" v-bind:class=" { 'spin': isSyncing } ">sync</md-icon>
-                </md-button>
-            </div>
-        </div>
+	<!-- Top Toolbar -->
+	<md-toolbar class="vault-toolbar">
+		<div class="md-toolbar-row">
+			<div class="md-toolbar-section-start" v-if="!showAccount" style="width:70%">
+				<md-field md-inline style="width: 300px; font-size: 18px; margin-bottom: -14px; padding: 0 10px">
+					<md-input md-clearabletype="text" class="black-placeholder" placeholder="Search" v-model="searchString" style="border-bottom:none;font-size: 15px;padding-left: 5px; color: white;"
+					    @change="saveSearch"></md-input>
+				</md-field>
+			</div>
+			<md-button class="md-icon-button" v-if="showAccount" @click="navigateBack">
+				<md-icon class="toolbar-icon">arrow_back</md-icon>
+			</md-button>
+			<div class="md-toolbar-section-end">
+				<md-button class="md-icon-button" style="margin-right: 40px;" @click="reload">
+					<md-icon class="toolbar-icon" v-bind:class=" { 'spin': isSyncing } ">sync</md-icon>
+				</md-button>
+			</div>
+		</div>
 
-        <div id="progress-bar" v-if="isLoading || isSaving || isSyncing || true" style="z-index: 100; position:absolute; top: 56px;">
-            <md-progress-bar md-mode="indeterminate" style="height: 3px; width: 100vw; color:black"></md-progress-bar>
-        </div>
-    </md-toolbar>
+		<div id="progress-bar" v-if="isLoading || isSaving || isSyncing || true" style="z-index: 100; position:absolute; top: 56px;">
+			<md-progress-bar md-mode="indeterminate" style="height: 3px; width: 100vw; color:black"></md-progress-bar>
+		</div>
+	</md-toolbar>
 
-    <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
-        <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow: none;">
-            <md-icon class="md-morph-initial">menu</md-icon>
-            <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
-        </md-speed-dial-target>
-        <md-speed-dial-content>
-            <md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);">
-                <md-icon>train</md-icon>
-            </md-button>
+	<!-- Speed Dial -->
 
-            <md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);" @click="openOptions()">
-                <md-icon>settings</md-icon>
-            </md-button>
-        </md-speed-dial-content>
-    </md-speed-dial>
+	<md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
+		<md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow: none;">
+			<md-icon class="md-morph-initial">menu</md-icon>
+			<md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
+		</md-speed-dial-target>
+		<md-speed-dial-content>
+			<md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);" @click="launchTrain">
+				<md-icon>train</md-icon>
+			</md-button>
 
-    <!-- Accounts List -->
+			<md-button class="md-icon-button speeddial-button" style="background-color: var(--vault-color);" @click="openOptions()">
+				<md-icon>settings</md-icon>
+			</md-button>
+		</md-speed-dial-content>
+	</md-speed-dial>
 
-    <transition name="slide-right">
-        <vault-detailed-view v-if="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit"
-            :createPage="createPage" :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
-    </transition>
+	<!-- Accounts List -->
 
-    <vault-list :filteredAccounts="filteredAccounts" v-if="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage" @showNewAccountPage="showNewAccountPage"
-        @scroll.native="saveScroll"></vault-list>
+	<transition name="slide-right">
+		<vault-detailed-view v-if="showAccount" :showAccount="showAccount" :currAccount="currAccount" :initialCanEdit="canEdit" :createPage="createPage"
+		    :userEmails="userEmails" @navigateBack="navigateBack"></vault-detailed-view>
+	</transition>
 
-    <div class="vault-door" v-once v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
-        <div class="left-door">
-            <div class="door-circle">
-                <img class="door-handle" src="../../icons/wheel.png" />
-            </div>
-        </div>
-        <div class="right-door">
-            <div class="door-hole"></div>
-        </div>
-    </div>
+	<vault-list :filteredAccounts="filteredAccounts" v-if="filteredAccounts" @showAccountDetailsPage="showAccountDetailsPage"
+	    @showNewAccountPage="showNewAccountPage" @scroll.native="saveScroll"></vault-list>
+
+	<div class="vault-door" v-once v-if="isFirstLoad || !isAuthenticated" v-bind:class="{'animate': isAuthenticated}">
+		<div class="left-door">
+			<div class="door-circle">
+				<img class="door-handle" src="../../icons/wheel.png" />
+			</div>
+		</div>
+		<div class="right-door">
+			<div class="door-hole"></div>
+		</div>
+	</div>
 </div>

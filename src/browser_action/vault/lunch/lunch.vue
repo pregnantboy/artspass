@@ -6,7 +6,7 @@
 				<md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
 			</md-speed-dial-target>
 			<md-speed-dial-content>
-				<md-button class="md-icon-button speeddial-button" @click="launchTrain">
+				<md-button class="md-icon-button speeddial-button">
 					<md-icon>train</md-icon>
 				</md-button>
 
@@ -30,7 +30,7 @@
 			<md-button class="time-button md-dense">Custom</md-button>
 		</div>
 		<div class="start-div">
-			<md-button class="md-raised md-dense" id="start-button">Set</md-button>
+			<md-button class="md-raised md-dense" id="start-button" @click="notify">Set</md-button>
 			<!-- <img id="lever-handle" src="../../../icons/lever-handle.png" @click="pulled=!pulled" :class="{'pulled': pulled}" />
 			<img id="lever-base" src="../../../icons/lever-base.png" /> -->
 		</div>
@@ -38,13 +38,32 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				pulled: false
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+      pulled: false
+    };
+  },
+  methods: {
+    notify: function() {
+      setTimeout(() => {
+        chrome.notifications.create(null, {
+          type: "basic",
+          iconUrl: "../../../icons/icon48.png",
+          title: "hello",
+          message: "goodbye",
+          requireInteraction: true
+        });
+      }, 3000);
+    },
+    openOptions: function() {
+      chrome.runtime.openOptionsPage();
+    },
+    naviagateToVault: function() {
+      this.$root.$data.page = "vault";
+    }
+  }
+};
 </script>
 
 <style scoped>

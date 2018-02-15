@@ -80,7 +80,7 @@ export default {
         openPermissionDropdown: function () {
             window.menu.open = true;
         },
-        launchTrain: function() {
+        navigateToLunch: function() {
             this.$root.$data.page = "lunch";
         }
     },

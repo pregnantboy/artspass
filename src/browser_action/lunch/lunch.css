@@ -1,0 +1,110 @@
+.speeddial-button {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.time-label {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.time-button {
+    width: 80px;
+    display: inline-block;
+    color: var(--vault-color);
+    min-width: 60px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.time-button.active {
+    transition: none;
+    border-bottom: 2px solid rgba(var(--theme-color), 0.7);
+}
+
+.start-div {
+    text-align: center;
+}
+
+#start-button {
+    background-color: var(--vault-color);
+    color: white;
+    text-transform: uppercase;
+    width: 100px;
+    margin: 30px 0;
+}
+
+#vehicle {
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-duration: 3000ms;
+    animation-timing-function: ease-out;
+}
+
+.lever-div {
+    height: 150px;
+    width: 100%;
+    text-align: center;
+}
+
+#lever-handle {
+    transform-origin: center bottom;
+    transform: rotate(-30deg);
+    position: absolute;
+    left: calc(50% - 62px);
+    bottom: 25px;
+    cursor: pointer;
+}
+
+#lever-handle:hover {
+    animation-name: tilt;
+    animation-duration: 200ms;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+#lever-handle.pulled {
+    animation-name: pull;
+    animation-duration: 400ms;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+
+#lever-base {
+    position: absolute;
+    left: calc(50% - 64px);
+    bottom: 10px;
+    pointer-events: none;
+}
+
+@keyframes tilt {
+    from {
+        transform: rotate(-30deg);
+    }
+    to {
+        transform: rotate(-20deg);
+    }
+}
+
+@keyframes pull {
+    from {
+        transform: rotate(-20deg);
+    }
+    to {
+        transform: rotate(30deg);
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0px);
+    }
+    10% {
+        transform: translateY(-5px);
+    }
+    20% {
+        transform: translateY(0px);
+    }
+}

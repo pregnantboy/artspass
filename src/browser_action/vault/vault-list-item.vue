@@ -34,7 +34,7 @@ export default {
         .getBackgroundPage()
         .autoFill(this.account.username, this.account.password);
       console.log("this", this.$refs);
-      var autofillText = this.$refs.autofill;
+      let autofillText = this.$refs.autofill;
       autofillText.innerText = "FILLED!";
       setTimeout(function() {
         autofillText.innerText = "AUTOFILL";

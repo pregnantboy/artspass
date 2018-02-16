@@ -88,7 +88,7 @@
     },
     computed: {
       usersSelectedLabel: function () {
-        var numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions))
+        let numUsersSelected = _.keys(_.pickBy(this.currAccount.permissions))
           .length;
         if (numUsersSelected === 1) {
           return "Only me.";
@@ -103,7 +103,7 @@
         saveAccountState(this.currAccount);
       },
       copyUsername: function (event) {
-        var usernameToCopy = this.currAccount.username; // account view
+        let usernameToCopy = this.currAccount.username; // account view
         event.stopPropagation();
         copyToClipboard(usernameToCopy);
         this.usernameCopied = true;
@@ -112,7 +112,7 @@
         }, 2000);
       },
       copyPassword: function (event) {
-        var passwordToCopy = this.currAccount.password; // account view
+        let passwordToCopy = this.currAccount.password; // account view
         event.stopPropagation();
         copyToClipboard(passwordToCopy);
         this.passwordCopied = true;
@@ -234,7 +234,7 @@
     if (!text || text.length === 0) {
       return;
     }
-    var textArea = document.createElement("textarea");
+    let textArea = document.createElement("textarea");
     textArea.style.position = "fixed";
     textArea.style.top = 0;
     textArea.style.left = 0;
@@ -249,8 +249,8 @@
     document.body.appendChild(textArea);
     textArea.select();
     try {
-      var successful = document.execCommand("copy");
-      var msg = successful ? "successful" : "unsuccessful";
+      let successful = document.execCommand("copy");
+      let msg = successful ? "successful" : "unsuccessful";
       console.log("Copying text command was " + msg);
     } catch (err) {
       console.log("Oops, unable to copy");

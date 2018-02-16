@@ -85,6 +85,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
 		currentUser = user;		
 		initListeners();
+		initLunchListeners();
 		isFirstLoad = true;
 		isAuthenticated = true;
 	} else {
@@ -197,8 +198,8 @@ function getAccountsArray() {
 }
 
 function addChild(child) {
-	var childVal = child.data();
-	var newChild = Account.decrypt(salt, childVal, child.id);
+	let childVal = child.data();
+	let newChild = Account.decrypt(salt, childVal, child.id);
 	accountsObj[child.id] = newChild;
 	return newChild;
 }
@@ -210,8 +211,8 @@ function removeChild(child) {
 
 function startAuth() {
 	// Using chrome.tabs
-	var manifest = chrome.runtime.getManifest();
-	var provider = new firebase.auth.GoogleAuthProvider();
+	let manifest = chrome.runtime.getManifest();
+	let provider = new firebase.auth.GoogleAuthProvider();
 
 	manifest.oauth2.scopes.forEach(scope => {
 		provider.addScope(scope);
@@ -237,22 +238,22 @@ function autoFill(username, password) {
 					return;
 				}
 			}
-			var fillUsername = function (el) {
+			let fillUsername = function (el) {
 				el.value = username;
 			};
-			var fillPassword = function (el) {
+			let fillPassword = function (el) {
 				el.value = password;
 			};
 
-			var isHidden = function (el) {
+			let isHidden = function (el) {
 				return (el.offsetParent === null);
 			};
 
-			var attemptAutoFill = function (doc) {
+			let attemptAutoFill = function (doc) {
 				let filledUsername = false;
 				let filledPassword = false;
 				let maxPwEl;
-				var passwordElements = doc.querySelectorAll("input[type='password']");
+				let passwordElements = doc.querySelectorAll("input[type='password']");
 				if (passwordElements.length === 0) {
 					console.log("No password field found");
 				}
@@ -359,8 +360,8 @@ function autoFill(username, password) {
 
 				return filledUsername && filledPassword;
 			};
-			var attemptResults = attemptAutoFill(document);
-			var iframes = document.querySelectorAll("iframe");
+			let attemptResults = attemptAutoFill(document);
+			let iframes = document.querySelectorAll("iframe");
 			if (!iframes || iframes.length === 0) {
 				return;
 			} else {

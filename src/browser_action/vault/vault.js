@@ -77,9 +77,6 @@ export default {
             // 1: Main View, 2: Account View  3: New Account View
             saveState("view", viewNo);
         },
-        openPermissionDropdown: function () {
-            window.menu.open = true;
-        },
         navigateToLunch: function() {
             this.$root.$data.page = "lunch";
         }

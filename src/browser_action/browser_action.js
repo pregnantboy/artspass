@@ -2,13 +2,19 @@ import Vue from "vue";
 import VueMaterial from "vue-material";
 
 import Vault from "./vault/vault.vue";
-import Lunch from "./vault/lunch/lunch.vue";
+import Lunch from "./lunch/lunch.vue";
 
 Vue.use(VueMaterial);
 
 const routes = {
-	"vault": Vault,
-	"lunch": Lunch
+	"vault": {
+		component: Vault,
+		height: "600px"
+	},
+	"lunch": {
+		component: Lunch,
+		height: "400px"
+	}
 };
 
 var app = new Vue({
@@ -18,7 +24,8 @@ var app = new Vue({
 	},
 	computed: {
 		ViewComponent: function () {
-			return routes[this.page] || Vault;
+			document.getElementsByTagName("html")[0].style.height = routes[this.page].height;
+			return routes[this.page].component || Vault;
 		}
 	},
 	render(h) {

@@ -1,69 +1,77 @@
 <template>
-	<div style="width: 400px">
-		<md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
-			<md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow:none;">
-				<md-icon class="md-morph-initial">menu</md-icon>
-				<md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
-			</md-speed-dial-target>
-			<md-speed-dial-content>
-				<md-button class="md-icon-button speeddial-button">
-					<md-icon>train</md-icon>
-				</md-button>
+  <div style="width: 400px">
+    <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
+      <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow:none;">
+        <md-icon class="md-morph-initial">menu</md-icon>
+        <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
+      </md-speed-dial-target>
+      <md-speed-dial-content>
+        <md-button class="md-icon-button speeddial-button">
+          <md-icon>train</md-icon>
+        </md-button>
 
-				<md-button class="md-icon-button speeddial-button" @click="openOptions()">
-					<md-icon>settings</md-icon>
-				</md-button>
-			</md-speed-dial-content>
-		</md-speed-dial>
-		<div id="vehicle-div" style="height:250px;">
-			<img src="../../../icons/svg/cycle.svg" id="vehicle" style="height:150px; position:absolute; top: 70px; left: calc(50% - 75px);" />
-			<svg id="vehicle=shadow" style="position:absolute; top: 140px;">
-				<ellipse cx="200" cy="52" rx="80" ry="6" style="fill:rgba(0,0,0,0.2)" />
-			</svg>
-		</div>
-		<div style="text-align: center;">
-			<span class="time-label">Lunch Time</span>
-			<br/>
-			<md-button class="time-button md-dense">11:15 AM</md-button>
-			<md-button class="time-button md-dense active">11:30 AM</md-button>
-			<md-button class="time-button md-dense">11:45 AM</md-button>
-			<md-button class="time-button md-dense">Custom</md-button>
-		</div>
-		<div class="start-div">
-			<md-button class="md-raised md-dense" id="start-button" @click="notify">Set</md-button>
-			<!-- <img id="lever-handle" src="../../../icons/lever-handle.png" @click="pulled=!pulled" :class="{'pulled': pulled}" />
+        <md-button class="md-icon-button speeddial-button" @click="openOptions()">
+          <md-icon>settings</md-icon>
+        </md-button>
+      </md-speed-dial-content>
+    </md-speed-dial>
+    <div id="vehicle-div" style="height:250px;">
+      <img src="../../../icons/svg/cycle.svg" id="vehicle" style="height:150px; position:absolute; top: 70px; left: calc(50% - 75px);" />
+      <svg id="vehicle=shadow" style="position:absolute; top: 140px;">
+        <ellipse cx="200" cy="52" rx="80" ry="6" style="fill:rgba(0,0,0,0.2)" />
+      </svg>
+    </div>
+    <div style="text-align: center;">
+      <span class="time-label">Lunch Time</span>
+      <br/>
+      <md-button class="time-button md-dense">11:15 AM</md-button>
+      <md-button class="time-button md-dense active">11:30 AM</md-button>
+      <md-button class="time-button md-dense">11:45 AM</md-button>
+      <md-button class="time-button md-dense">Custom</md-button>
+    </div>
+    <div class="start-div">
+      <md-button class="md-raised md-dense" id="start-button" @click="notify">Set</md-button>
+      <!-- <img id="lever-handle" src="../../../icons/lever-handle.png" @click="pulled=!pulled" :class="{'pulled': pulled}" />
 			<img id="lever-base" src="../../../icons/lever-base.png" /> -->
-		</div>
-	</div>
+    </div>
+  </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      pulled: false
-    };
-  },
-  methods: {
-    notify: function() {
-      setTimeout(() => {
-        chrome.notifications.create(null, {
-          type: "basic",
+
+  export default {
+    data() {
+      return {
+        pulled: false
+      };
+    },
+    methods: {
+      notify: function () {
+        // chrome.extension.getBackgroundPage().createNotification();
+        chrome.notifications.create("randomid", {
+          type: "image",
           iconUrl: "../../../icons/icon48.png",
-          title: "hello",
+          imageUrl: "../../../icons/svg/cycle.svg",
+          title: "hello23",
           message: "goodbye",
-          requireInteraction: true
+          buttons: [{
+            title: "YES",
+            iconUrl: "../../../icons/icon48.png"
+          }, {
+            title: "NO",
+            iconUrl: "../../../icons/icon48.png"
+          }],
+          isClickable: true
         });
-      }, 3000);
-    },
-    openOptions: function() {
-      chrome.runtime.openOptionsPage();
-    },
-    naviagateToVault: function() {
-      this.$root.$data.page = "vault";
+      },
+      openOptions: function () {
+        chrome.runtime.openOptionsPage();
+      },
+      naviagateToVault: function () {
+        this.$root.$data.page = "vault";
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>

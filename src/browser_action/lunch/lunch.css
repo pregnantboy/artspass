@@ -37,13 +37,6 @@
     margin: 30px 0;
 }
 
-#vehicle {
-    animation-name: bounce;
-    animation-iteration-count: infinite;
-    animation-duration: 3000ms;
-    animation-timing-function: ease-out;
-}
-
 .lever-div {
     height: 150px;
     width: 100%;

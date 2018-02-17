@@ -1,7 +1,7 @@
 <template>
-	<md-dialog :md-active.sync="show" style="background: white; height: 200px; width: 240px; color: rgba(0, 0, 0, 0.7);">
+	<div style="background: white; height: 200px; width: 280px; color: rgba(0, 0, 0, 0.7); padding-top: 30px;">
 		<md-dialog-title>CUSTOM TIME</md-dialog-title>
-		<div style="width: 100%; text-align:center; font-size: 25px;">
+		<div style="width: 100%; text-align:center; font-size: 25px; margin-top: 15px; margin-bottom: -10px;">
 			<md-field class="time-input" :class="{'md-invalid': hourError}" :md-counter="false">
 				<md-input v-model="hour" maxlength="2"></md-input>
 			</md-field>
@@ -10,28 +10,32 @@
 				<md-input v-model="minute" maxlength="2"></md-input>
 			</md-field>
 			<md-button class="md-dense ampm" @click="toggleAmPm()">{{ ampm }}</md-button>
+			<br/>
 		</div>
-		<md-button class="md-dense" style="color: var(--vault-color);" @click="set()">SET</md-button>
-	</md-dialog>
+		<span id="warning" v-if="showWarning">Must be later than current time</span>
+		<md-button class="md-dense" style="color: var(--vault-color); float: right; margin-right: 18px; margin-top: 16px;" @click="set()">SET</md-button>
+	</div>
 </template>
 
 <script>
 	export default {
-		props: ["show"],
 		data() {
 			return {
 				hour: (new Date().getHours() % 12 || 12),
 				minute: ('0' + new Date().getMinutes()).slice(-2),
-				ampm: new Date().getHours() < 12 ? "AM" : "PM"
+				ampm: new Date().getHours() < 12 ? "AM" : "PM",
+				showWarning: false
 			}
 		},
 		computed: {
 			hourError: function () {
+				this.showWarning = false;
 				if (!/^\d+$/.test(this.hour) || this.hour < 0 || this.hour > 12) {
 					return true;
 				}
 			},
 			minuteError: function () {
+				this.showWarning = false;
 				if (!/^\d+$/.test(this.minute) || this.minute < 0 || this.minute > 59) {
 					return true;
 				}
@@ -43,20 +47,15 @@
 			},
 			set() {
 				if (this.hourError || this.minuteError) {
-					console.log(this.hourError, this.minuteError);
 					return;
 				}
 				let customTime = new Date();
-				customTime.setHours((+this.hour + 12 * (this.ampm === "PM")) % 24);
-				console.log((+this.hour + 12 * (this.ampm === "PM")) % 24);
-				customTime.setMinutes(+this.minutes);
-				customTime.setSeconds(0);
-				customTime.setMilliseconds(0);
-				// if (customTime < new Date()) {
-				// 	this.hourError = true;
-				// 	this.minuteError = true;
-				// }
-				console.log(customTime);
+				customTime.setHours((+this.hour + 12 * (+this.hour !== 12 ? this.ampm === "PM" : this.ampm === "AM")) % 24);
+				customTime.setMinutes(+this.minute, 0, 0);
+				if (customTime < new Date()) {
+					this.showWarning = true;
+					return;
+				}
 				this.$emit("customTime", customTime);
 			}
 		}
@@ -64,7 +63,6 @@
 </script>
 
 <style scoped>
-
 .time-input {
   display: inline-block;
   width: 30px;
@@ -104,6 +102,15 @@
 .md-field.md-invalid:before,
 .md-field.md-invalid:after {
   background-color: #ff1744;
+}
+
+#warning {
+  color: #ff1744;
+  text-align: center;
+  width: 100%;
+  font-size: 12px;
+  position: absolute;
+  margin-top: -10px;
 }
 </style>
 

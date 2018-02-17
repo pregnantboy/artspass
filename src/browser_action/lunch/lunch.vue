@@ -15,29 +15,25 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial>
-    <div id="vehicle-div" style="height:250px;">
-      <img src="../../../icons/svg/cycle.svg" id="vehicle" style="height:150px; position:absolute; top: 70px; left: calc(50% - 75px);" />
-      <svg id="vehicle-shadow" style="position:absolute; top: 140px;">
-        <ellipse cx="200" cy="52" rx="80" ry="6" style="fill:rgba(0,0,0,0.2)" />
-      </svg>
-    </div>
+    <lunch-vehicle></lunch-vehicle>
     <div style="text-align: center;">
       <span class="time-label">Lunch Time</span>
       <br/>
       <md-button v-for="(time, index) in timeOptions" :key="index" class="time-button md-dense" @click="selectedTime = time" :class="{'active': selectedTime === time }">{{ time | formatTime }}</md-button>
-      <md-button class="time-button md-dense" @click="showDialog = true">Custom</md-button>
+      <md-button class="time-button md-dense" :class="{'active': selectedTime === customTimeLabel }" @click="showDialog = true">{{ customTimeLabel | formatTime }}</md-button>
     </div>
     <div class="start-div">
       <md-button class="md-raised md-dense" id="start-button" @click="start">Set</md-button>
-      <!-- <img id="lever-handle" src="../../../icons/lever-handle.png" @click="pulled=!pulled" :class="{'pulled': pulled}" />
-			<img id="lever-base" src="../../../icons/lever-base.png" /> -->
     </div>
-    <timepicker :show="showDialog"></timepicker>
+    <md-dialog :md-active.sync="showDialog" style="height: 200px; width: 240px;">
+      <timepicker @customTime="setCustomTime"></timepicker>
+    </md-dialog>
   </div>
 </template>
 
 <script>
   import Timepicker from "./timepicker.vue";
+  import LunchVehicle from "./lunch-vehicle.vue";
 
   const startLunch = chrome.extension.getBackgroundPage().startLunch;
 
@@ -48,7 +44,8 @@
         mode: "new", // new, inprogress, ended
         timeOptions: [],
         selectedTime: null,
-        showDialog: false
+        showDialog: false,
+        customTimeLabel: "CUSTOM"
       };
     },
     filters: {
@@ -65,7 +62,8 @@
       }
     },
     components: {
-      'timepicker': Timepicker
+      "timepicker": Timepicker,
+      "lunch-vehicle": LunchVehicle
     },
     methods: {
       notify: function () {
@@ -90,8 +88,10 @@
         });
       },
       start: function () {
-        console.log("here");
-        startLunch(Date.now());
+        if (this.selectedTime) {
+          console.log("starting lunch at", this.selectedTime);
+          startLunch(Date.parse(this.selectedTime));
+        }
       },
       openOptions: function () {
         chrome.runtime.openOptionsPage();
@@ -116,6 +116,11 @@
         } else {
           this.mode = "ended";
         }
+      },
+      setCustomTime: function (customTime) {
+        this.showDialog = false;
+        this.selectedTime = customTime;
+        this.customTimeLabel = customTime;
       }
     },
     created: function () {
@@ -132,8 +137,7 @@
 
   function getTimeOptions() {
     let currentTime = new Date();
-    currentTime.setMilliseconds(0);
-    currentTime.setSeconds(0);
+    currentTime.setSeconds(0, 0);
     let timeToNextTimeOption = (15 - currentTime.getMinutes() % 15 || 15);
     let timeOptions = [];
     [0, 15, 30].forEach(timeAddition => {

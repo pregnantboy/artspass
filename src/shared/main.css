@@ -2,7 +2,8 @@
     --theme-color: 239, 91, 91;
     --vault-color: rgb(var(--theme-color));
     font-family: 'Roboto';
-    
+    --md-theme-default-primary: rgb(var(--theme-color));
+    --md-theme-default-accent: rgb(var(--theme-color));
 }
 
 #app {

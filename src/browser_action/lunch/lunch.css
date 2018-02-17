@@ -15,12 +15,13 @@
     display: inline-block;
     color: var(--vault-color);
     min-width: 60px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    padding-bottom: 2px;
+    border-radius: 0;
+    transition: none;    
 }
 
 .time-button.active {
-    transition: none;
+    padding-bottom: 0;    
     border-bottom: 2px solid rgba(var(--theme-color), 0.7);
 }
 

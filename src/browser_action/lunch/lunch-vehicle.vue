@@ -1,14 +1,14 @@
 <template>
-  <div class="vehicle-div" :class="{'active': inProgress}">
+  <div class="vehicle-div" :class="{'active': inProgress, 'completed': hasStopped}">
     <img src="../../../icons/svg/cloud2.svg" id="cloud2" class="cloud" />
     <img src="../../../icons/svg/cloud1.svg" id="cloud1" class="cloud" />
     <svg id="road-line">
       <line x1="0" y1="0" x2="400" y2="0" stroke="rgba(206, 117, 16, 0.8)" />
     </svg>
-    <img src="../../../icons/svg/tree1.svg" class="tree" style="animation-delay: -2s, 0s" />
-    <img src="../../../icons/svg/tree2.svg" class="tree" style="animation-delay: -4s, 0s" />
-    <img src="../../../icons/svg/tree3.svg" class="tree" style="animation-delay: -6s, 0s" />
-
+    <img src="../../../icons/svg/tree1.svg" class="tree" id="tree1" style="animation-delay: -2s, 0s" />
+    <img src="../../../icons/svg/tree2.svg" class="tree" id="tree2" style="animation-delay: -4s, 0s" />
+    <img src="../../../icons/svg/tree3.svg" class="tree" id="tree3" style="animation-delay: -6s, 0s" />
+    <img src="../../../icons/svg/cafe.svg" id="cafe" />
     <svg id="vehicle-shadow">
       <ellipse cx="200" :cy="52" :rx="vehicleWidth/2" :ry="inProgress ? 10 : 6" style="fill:rgba(0,0,0,0.2)" />
     </svg>
@@ -28,7 +28,10 @@
         }
       },
       inProgress: function () {
-        return this.mode === "inprogress"
+        return this.mode !== "inprogress";
+      },
+      hasStopped: function () {
+        return this.mode !== "ended";
       },
       svgName: function () {
         let iconArray = ["cycle", "recreational"];
@@ -85,7 +88,7 @@
         if (arrayOfIcons.length === 1) {
           return arrayOfIcons[0];
         }
-        if (this.mode !=="new" && this.lunchItem && this.lunchItem.lunchtime) {
+        if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
           let t = this.lunchItem.lunchtime;
           let pseudoRandomNumber = t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
           return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
@@ -125,6 +128,12 @@
   animation-iteration-count: infinite;
   animation-duration: 4000ms;
   animation-timing-function: ease-out;
+}
+
+.vehicle-div.active.completed #vehicle,
+.vehicle-div.active.completed #vehicle-shadow {
+  animation: none;
+  opacity: 0;
 }
 
 .vehicle-div #vehicle-shadow {
@@ -169,6 +178,21 @@
   animation: cloud-move 22s linear -2s infinite, fade-in 1s linear;
 }
 
+.vehicle-div.active.completed #cloud2 {
+  animation: none;
+  opacity: 0.5;
+  left: -380px;
+  top: 10px;
+}
+
+.vehicle-div.active.completed #cloud1 {
+  animation: none;
+  opacity: 0.5;
+  left: -30px;
+  top: 40px;
+}
+
+
 .vehicle-div .cloud {
   transform: translateX(400px);
   display: none;
@@ -193,6 +217,38 @@
   animation-duration: 6000ms, 1s;
   animation-timing-function: linear;
   display: block;
+}
+
+.vehicle-div.active.completed #tree1 {
+  animation: none;
+  opacity: 0;
+  left: -100px;
+}
+
+.vehicle-div.active.completed #tree2 {
+  animation: none;
+  opacity: 1;
+  left: -400px;
+}
+
+.vehicle-div.active.completed #tree3 {
+  animation: none;
+  opacity: 1;
+  left: -90px;
+}
+
+.vehicle-div #cafe {
+  display: none;
+  opacity: 0;
+}
+
+.vehicle-div.active.completed #cafe {
+  display: block;  
+  opacity: 1;
+  height: 250px;
+  position: absolute;
+  left: calc(50% - 125px);
+  top: 58px;
 }
 
 @keyframes bounce {

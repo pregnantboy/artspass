@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 400px; height: 400px; overflow: hidden;">
+  <div style="width: 400px; height: 400px; overflow: hidden; user-select: none;">
     <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
       <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow:none;">
         <md-icon class="md-morph-initial">menu</md-icon>

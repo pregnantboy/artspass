@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 400px; height: 400px">
+  <div style="width: 400px; height: 400px; overflow: hidden;">
     <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
       <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow:none;">
         <md-icon class="md-morph-initial">menu</md-icon>
@@ -15,15 +15,19 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial>
-    <lunch-vehicle></lunch-vehicle>
-    <div style="text-align: center;">
-      <span class="time-label">Lunch Time</span>
+    <lunch-vehicle :mode="mode" :lunchItem="currentLunchItem"></lunch-vehicle>
+    <div style="text-align: center; position: relative;">
+      <span class="time-label" :class="{'in-progress':inProgress}">Lunch Time</span>
+      <span class="time-label" :class="{'in-progress':inProgress}" v-if="inProgress">: {{ currentLunchItem.lunchtime | formatTime }} </span>
       <br/>
-      <md-button v-for="(time, index) in timeOptions" :key="index" class="time-button md-dense" @click="selectedTime = time" :class="{'active': selectedTime === time }">{{ time | formatTime }}</md-button>
-      <md-button class="time-button md-dense" :class="{'active': selectedTime === customTimeLabel }" @click="showDialog = true">{{ customTimeLabel | formatTime }}</md-button>
+      <div v-if="!inProgress">
+        <md-button v-for="(time, index) in timeOptions" :key="index" class="time-button md-dense" @click="selectedTime = time" :class="{'active': selectedTime === time }">{{ time | formatTime }}</md-button>
+        <md-button class="time-button md-dense" :class="{'active': selectedTime === customTimeLabel }" @click="showDialog = true">{{ customTimeLabel | formatTime }}</md-button>
+      </div>
     </div>
     <div class="start-div">
-      <md-button class="md-raised md-dense" id="start-button" @click="start">Set</md-button>
+      <md-button v-if="!inProgress" class="md-raised md-dense" id="start-button" @click="start">START</md-button>
+      <md-button v-else class="md-raised md-dense" id="start-button" @click="hopIn" :disabled="alreadyHoppedIn">{{ alreadyHoppedIn ? 'WAITING FOR LUNCH ...' : 'HOP IN' }}</md-button>
     </div>
     <md-dialog :md-active.sync="showDialog" style="height: 200px; width: 240px;">
       <timepicker @customTime="setCustomTime"></timepicker>
@@ -34,8 +38,11 @@
 <script>
   import Timepicker from "./timepicker.vue";
   import LunchVehicle from "./lunch-vehicle.vue";
+  import _ from "lodash";
 
   const startLunch = chrome.extension.getBackgroundPage().startLunch;
+  const addParticipant = chrome.extension.getBackgroundPage().addParticipant;
+  const currentUser = chrome.extension.getBackgroundPage().currentUser;
 
   export default {
     data() {
@@ -59,6 +66,17 @@
         } else {
           return value;
         }
+      }
+    },
+    computed: {
+      inProgress: function () {
+        return this.mode === "inprogress";
+      },
+      alreadyHoppedIn: function () {
+        if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
+          return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
+        }
+        return false;
       }
     },
     components: {
@@ -90,8 +108,11 @@
       start: function () {
         if (this.selectedTime) {
           console.log("starting lunch at", this.selectedTime);
-          startLunch(Date.parse(this.selectedTime));
+          startLunch(this.selectedTime);
         }
+      },
+      hopIn: function () {
+        this.currentLunchItem.participants.push(currentUser.displayName);
       },
       openOptions: function () {
         chrome.runtime.openOptionsPage();
@@ -100,35 +121,46 @@
         this.$root.$data.page = "vault";
       },
       initView: function () {
-        console.log("reached here");
+        console.log("lunch init view");
         if (
           !this.currentLunchItem ||
-          new Date() - this.currentLunchItem.Date > 60000
+          new Date() - this.currentLunchItem.lunctime > 60000
         ) {
           // no item or expired for more than 10 minutes
           this.mode = "new";
           this.timeOptions = getTimeOptions();
-          console.log("reached 2", this.timeOptions);
           return;
         }
-        if (this.currentLunchItem.Date - new Date() > 0) {
+        if ((this.currentLunchItem.lunchtime - Date.now()) > 0) {
           this.mode = "inprogress";
         } else {
-          this.mode = "ended";
+          this.mode = "new";
+          this.timeOptions = getTimeOptions();
         }
+        console.log("current mode:", this.mode);
       },
       setCustomTime: function (customTime) {
         this.showDialog = false;
         this.selectedTime = customTime;
         this.customTimeLabel = customTime;
+      },
+      updateLunchItem: function () {
+        let bgLunchItem = chrome.extension.getBackgroundPage().currentLunchItem;
+        this.currentLunchItem = {
+          id: bgLunchItem.id,
+          lunchtime: new Date(bgLunchItem.lunchtime),
+          participants: _.clone(bgLunchItem.participants)
+        };
       }
     },
     created: function () {
-      this.currentLunchItem = chrome.extension.getBackgroundPage().currentLunchItem;
+      this.updateLunchItem();
+      console.log("on created: ", this.currentLunchItem);
       this.initView();
-      chrome.runtime.onMessage.addListener(function (message) {
-        if (event === "lunch-update") {
-          this.currentLunchItem = chrome.extension.getBackgroundPage().currentLunchItem;
+      chrome.runtime.onMessage.addListener((message) => {
+        if (message.event === "lunch-update") {
+          this.updateLunchItem();
+          console.log("lunch update from background received: ", this.currentLunchItem);
           this.initView();
         }
       });

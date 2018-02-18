@@ -10,6 +10,18 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
+.time-label {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.time-label.in-progress {
+    color: rgba(255, 255, 255, 0.95);
+}
+
 .time-button {
     width: 80px;
     display: inline-block;
@@ -33,7 +45,8 @@
     background-color: var(--vault-color);
     color: white;
     text-transform: uppercase;
-    width: 100px;
+    min-width: 100px;
+    width: auto;
     margin: 30px 0;
 }
 
@@ -91,14 +104,3 @@
     }
 }
 
-@keyframes bounce {
-    0% {
-        transform: translateY(0px);
-    }
-    10% {
-        transform: translateY(-5px);
-    }
-    20% {
-        transform: translateY(0px);
-    }
-}

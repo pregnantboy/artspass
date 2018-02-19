@@ -1,13 +1,17 @@
 <template>
-  <div class="vehicle-div" :class="{'active': inProgress, 'completed': hasStopped}">
+  <div class="vehicle-div" :class="{'active': inProgress || hasCompleted, 'completed': hasCompleted}">
     <img src="../../../icons/svg/cloud2.svg" id="cloud2" class="cloud" />
     <img src="../../../icons/svg/cloud1.svg" id="cloud1" class="cloud" />
+    <img src="../../../icons/svg/cloud2.svg" id="cloud4" class="cloud" v-if="hasCompleted"/>
+    <img src="../../../icons/svg/cloud1.svg" id="cloud3" class="cloud" v-if="hasCompleted"/>
     <svg id="road-line">
       <line x1="0" y1="0" x2="400" y2="0" stroke="rgba(206, 117, 16, 0.8)" />
     </svg>
     <img src="../../../icons/svg/tree1.svg" class="tree" id="tree1" style="animation-delay: -2s, 0s" />
     <img src="../../../icons/svg/tree2.svg" class="tree" id="tree2" style="animation-delay: -4s, 0s" />
     <img src="../../../icons/svg/tree3.svg" class="tree" id="tree3" style="animation-delay: -6s, 0s" />
+    <img src="../../../icons/svg/tree2.svg" class="tree" id="tree4" v-if="hasCompleted"/>
+    <img src="../../../icons/svg/tree3.svg" class="tree" id="tree5" v-if="hasCompleted"/>
     <img src="../../../icons/svg/cafe.svg" id="cafe" />
     <svg id="vehicle-shadow">
       <ellipse cx="200" :cy="52" :rx="vehicleWidth/2" :ry="inProgress ? 10 : 6" style="fill:rgba(0,0,0,0.2)" />
@@ -17,86 +21,89 @@
 </template>
 
 <script>
-  export default {
-    props: ["mode", "lunchItem"],
-    computed: {
-      size: function () {
-        if (this.lunchItem && this.lunchItem.participants) {
-          return this.lunchItem.participants.length;
-        } else {
-          return 1;
-        }
-      },
-      inProgress: function () {
-        return this.mode !== "inprogress";
-      },
-      hasStopped: function () {
-        return this.mode !== "ended";
-      },
-      svgName: function () {
-        let iconArray = ["cycle", "recreational"];
-        if (this.size && this.mode !== "new") {
-          switch (this.size) {
-            case 1:
-              iconArray = ["cycle", "recreational"];
-              break;
-            case 2:
-              iconArray = ["motorbiking", "motor-sports"];
-              break;
-            case 3:
-              iconArray = ["automobile-1"];
-              break;
-            case 4:
-              iconArray = ["automobile", "suv"];
-              break;
-            case 5:
-              iconArray = ["tourist"];
-              break;
-            case 6:
-              iconArray = ["tramway", "buses"];
-              break;
-            case 7:
-            default:
-              iconArray = ["public-transport", "airplanes", "zeppelins"];
-              break;
-          };
-        }
-        return "../../../icons/svg/" + this.getPseudoRandomIcon(iconArray) + ".svg";
-      },
-      vehicleWidth: function () {
-        if (!this.size || this.mode === "new") {
-          return 150;
-        }
-        switch (this.size) {
-          case 1:
-          case 2:
-            return 150;
-          case 3:
-          case 4:
-          case 5:
-            return 200;
-          case 6:
-            return 250;
-          case 7:
-          default:
-            return 300;
-        }
+export default {
+  props: ["mode", "lunchItem"],
+  computed: {
+    size: function() {
+      if (this.lunchItem && this.lunchItem.participants) {
+        return this.lunchItem.participants.length;
+      } else {
+        return 1;
       }
     },
-    methods: {
-      getPseudoRandomIcon: function (arrayOfIcons) {
-        if (arrayOfIcons.length === 1) {
-          return arrayOfIcons[0];
+    inProgress: function() {
+      return this.mode === "inprogress";
+    },
+    hasCompleted: function() {
+      return this.mode === "ended";
+    },
+    svgName: function() {
+      let iconArray = ["cycle", "recreational"];
+      if (this.size && this.mode !== "new") {
+        switch (this.size) {
+          case 1:
+            iconArray = ["cycle", "recreational"];
+            break;
+          case 2:
+            iconArray = ["motorbiking", "motor-sports"];
+            break;
+          case 3:
+            iconArray = ["automobile-1"];
+            break;
+          case 4:
+            iconArray = ["automobile", "suv"];
+            break;
+          case 5:
+            iconArray = ["tourist"];
+            break;
+          case 6:
+            iconArray = ["tramway", "buses"];
+            break;
+          case 7:
+          default:
+            iconArray = ["public-transport", "airplanes", "zeppelins"];
+            break;
         }
-        if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
-          let t = this.lunchItem.lunchtime;
-          let pseudoRandomNumber = t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
-          return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
-        }
-        return arrayOfIcons[Math.floor(Math.random() * arrayOfIcons.length)];
+      }
+      return (
+        "../../../icons/svg/" + this.getPseudoRandomIcon(iconArray) + ".svg"
+      );
+    },
+    vehicleWidth: function() {
+      if (!this.size || this.mode === "new") {
+        return 150;
+      }
+      switch (this.size) {
+        case 1:
+        case 2:
+          return 150;
+        case 3:
+        case 4:
+        case 5:
+          return 200;
+        case 6:
+          return 250;
+        case 7:
+        default:
+          return 300;
       }
     }
+  },
+  methods: {
+    getPseudoRandomIcon: function(arrayOfIcons) {
+      if (arrayOfIcons.length === 1) {
+        return arrayOfIcons[0];
+      }
+      if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
+        let t = this.lunchItem.lunchtime;
+        let pseudoRandomNumber =
+          t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
+        return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
+      }
+      return arrayOfIcons[Math.floor(Math.random() * arrayOfIcons.length)];
+    }
   }
+};
 </script>
 
 <style>
@@ -132,7 +139,7 @@
 
 .vehicle-div.active.completed #vehicle,
 .vehicle-div.active.completed #vehicle-shadow {
-  animation: none;
+  animation: fade-out 0.3s ease;
   opacity: 0;
 }
 
@@ -178,20 +185,23 @@
   animation: cloud-move 22s linear -2s infinite, fade-in 1s linear;
 }
 
-.vehicle-div.active.completed #cloud2 {
-  animation: none;
-  opacity: 0.5;
+.vehicle-div.active.completed #cloud4 {
+  width: 70px;  
+  animation: fade-in 0.3s ease 0.4s forwards;
+  transform: none;
+  opacity: 0;
   left: -380px;
   top: 10px;
 }
 
-.vehicle-div.active.completed #cloud1 {
-  animation: none;
-  opacity: 0.5;
+.vehicle-div.active.completed #cloud3 {
+  width: 100px;  
+  animation: fade-in 0.3s ease 0.4s forwards;
+  transform: none;  
+  opacity: 0;
   left: -30px;
   top: 40px;
 }
-
 
 .vehicle-div .cloud {
   transform: translateX(400px);
@@ -219,21 +229,24 @@
   display: block;
 }
 
-.vehicle-div.active.completed #tree1 {
-  animation: none;
+.vehicle-div.active.completed #tree1,
+.vehicle-div.active.completed #tree2,
+.vehicle-div.active.completed #tree3,
+.vehicle-div.active.completed #cloud1,
+.vehicle-div.active.completed #cloud2 {
+  transition: opacity 0.3s linear;
   opacity: 0;
-  left: -100px;
 }
 
-.vehicle-div.active.completed #tree2 {
-  animation: none;
-  opacity: 1;
+.vehicle-div.active.completed #tree4 {
+  animation: fade-in 0.3s linear 0.4s forwards;
+  opacity: 0;
   left: -400px;
 }
 
-.vehicle-div.active.completed #tree3 {
-  animation: none;
-  opacity: 1;
+.vehicle-div.active.completed #tree5 {
+  animation: fade-in 0.3s linear 0.4s forwards;
+  opacity: 0;
   left: -90px;
 }
 
@@ -243,7 +256,7 @@
 }
 
 .vehicle-div.active.completed #cafe {
-  display: block;  
+  display: block;
   opacity: 1;
   height: 250px;
   position: absolute;
@@ -309,6 +322,15 @@
 }
 
 @keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
   from {
     opacity: 0;
   }

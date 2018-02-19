@@ -17,17 +17,18 @@
     </md-speed-dial>
     <lunch-vehicle :mode="mode" :lunchItem="currentLunchItem"></lunch-vehicle>
     <div style="text-align: center; position: relative;">
-      <span class="time-label" :class="{'in-progress':inProgress}">Lunch Time</span>
-      <span class="time-label" :class="{'in-progress':inProgress}" v-if="inProgress">: {{ currentLunchItem.lunchtime | formatTime }} </span>
+      <span class="time-label" :class="{'in-progress':!isNew}">Lunch Time</span>
+      <span class="time-label in-progress" v-if="inProgress">: {{ currentLunchItem.lunchtime | formatTime }} </span>
+      <span class="time-label in-progress" v-if="hasCompleted"> !</span>
       <br/>
-      <div v-if="!inProgress">
+      <div v-if="isNew">
         <md-button v-for="(time, index) in timeOptions" :key="index" class="time-button md-dense" @click="selectedTime = time" :class="{'active': selectedTime === time }">{{ time | formatTime }}</md-button>
         <md-button class="time-button md-dense" :class="{'active': selectedTime === customTimeLabel }" @click="showDialog = true">{{ customTimeLabel | formatTime }}</md-button>
       </div>
     </div>
     <div class="start-div">
-      <md-button v-if="!inProgress" class="md-raised md-dense" id="start-button" @click="start">START</md-button>
-      <md-button v-else class="md-raised md-dense" id="start-button" @click="hopIn" :disabled="alreadyHoppedIn">{{ alreadyHoppedIn ? 'WAITING FOR LUNCH ...' : 'HOP IN' }}</md-button>
+      <md-button v-if="isNew" class="md-raised md-dense" id="start-button" @click="start">START</md-button>
+      <md-button v-if="inProgress" class="md-raised md-dense" id="start-button" @click="hopIn" :disabled="alreadyHoppedIn">{{ alreadyHoppedIn ? 'WAITING FOR LUNCH ...' : 'HOP IN' }}</md-button>
     </div>
     <md-dialog :md-active.sync="showDialog" style="height: 200px; width: 240px;">
       <timepicker @customTime="setCustomTime"></timepicker>
@@ -71,6 +72,12 @@
     computed: {
       inProgress: function () {
         return this.mode === "inprogress";
+      },
+      isNew: function() {
+        return this.mode === "new";
+      },
+      hasCompleted: function() {
+        return this.mode === "ended";
       },
       alreadyHoppedIn: function () {
         if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
@@ -127,14 +134,14 @@
           new Date() - this.currentLunchItem.lunctime > 60000
         ) {
           // no item or expired for more than 10 minutes
-          this.mode = "new";
+          this.mode = "ended";
           this.timeOptions = getTimeOptions();
           return;
         }
         if ((this.currentLunchItem.lunchtime - Date.now()) > 0) {
           this.mode = "inprogress";
         } else {
-          this.mode = "new";
+          this.mode = "ended";
           this.timeOptions = getTimeOptions();
         }
         console.log("current mode:", this.mode);

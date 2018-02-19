@@ -15,7 +15,7 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial>
-    <lunch-vehicle :mode="mode" :lunchItem="currentLunchItem"></lunch-vehicle>
+    <lunch-vehicle :mode="'inprogress'" :lunchItem="currentLunchItem"></lunch-vehicle>
     <div style="text-align: center; position: relative;">
       <span class="time-label" :class="{'in-progress':!isNew}">Lunch Time</span>
       <span class="time-label in-progress" v-if="inProgress">: {{ currentLunchItem.lunchtime | formatTime }} </span>

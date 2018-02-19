@@ -2,17 +2,18 @@
   <div class="vehicle-div" :class="{'active': inProgress || hasCompleted, 'completed': hasCompleted}">
     <img src="../../../icons/svg/cloud2.svg" id="cloud2" class="cloud" />
     <img src="../../../icons/svg/cloud1.svg" id="cloud1" class="cloud" />
-    <img src="../../../icons/svg/cloud2.svg" id="cloud4" class="cloud" v-if="hasCompleted"/>
-    <img src="../../../icons/svg/cloud1.svg" id="cloud3" class="cloud" v-if="hasCompleted"/>
+    <img src="../../../icons/svg/cloud2.svg" id="cloud4" class="cloud" v-if="hasCompleted" />
+    <img src="../../../icons/svg/cloud1.svg" id="cloud3" class="cloud" v-if="hasCompleted" />
     <svg id="road-line">
       <line x1="0" y1="0" x2="400" y2="0" stroke="rgba(206, 117, 16, 0.8)" />
     </svg>
-    <img src="../../../icons/svg/tree1.svg" class="tree" id="tree1" style="animation-delay: -2s, 0s" />
-    <img src="../../../icons/svg/tree2.svg" class="tree" id="tree2" style="animation-delay: -4s, 0s" />
-    <img src="../../../icons/svg/tree3.svg" class="tree" id="tree3" style="animation-delay: -6s, 0s" />
-    <img src="../../../icons/svg/tree2.svg" class="tree" id="tree4" v-if="hasCompleted"/>
-    <img src="../../../icons/svg/tree3.svg" class="tree" id="tree5" v-if="hasCompleted"/>
-    <img src="../../../icons/svg/cafe.svg" id="cafe" />
+    <img src="../../../icons/svg/tree1.svg" class="tree" id="tree1" />
+    <img src="../../../icons/svg/tree2.svg" class="tree" id="tree2" />
+    <img src="../../../icons/svg/tree3.svg" class="tree" id="tree3" />
+    <img src="../../../icons/svg/tree2.svg" id="tree4" v-if="hasCompleted" />
+    <img src="../../../icons/svg/tree3.svg" id="tree5" v-if="hasCompleted" />
+    <img src="../../../icons/svg/cafe.svg" id="cafe" v-if="hasCompleted" />
+    <span id="lunch-place" v-if="hasCompleted">TIMBRE+</span>
     <svg id="vehicle-shadow">
       <ellipse cx="200" :cy="52" :rx="vehicleWidth/2" :ry="inProgress ? 10 : 6" style="fill:rgba(0,0,0,0.2)" />
     </svg>
@@ -21,89 +22,89 @@
 </template>
 
 <script>
-export default {
-  props: ["mode", "lunchItem"],
-  computed: {
-    size: function() {
-      if (this.lunchItem && this.lunchItem.participants) {
-        return this.lunchItem.participants.length;
-      } else {
-        return 1;
-      }
-    },
-    inProgress: function() {
-      return this.mode === "inprogress";
-    },
-    hasCompleted: function() {
-      return this.mode === "ended";
-    },
-    svgName: function() {
-      let iconArray = ["cycle", "recreational"];
-      if (this.size && this.mode !== "new") {
+  export default {
+    props: ["mode", "lunchItem"],
+    computed: {
+      size: function () {
+        if (this.lunchItem && this.lunchItem.participants) {
+          return this.lunchItem.participants.length;
+        } else {
+          return 1;
+        }
+      },
+      inProgress: function () {
+        return this.mode === "inprogress";
+      },
+      hasCompleted: function () {
+        return this.mode === "ended";
+      },
+      svgName: function () {
+        let iconArray = ["cycle", "recreational"];
+        if (this.size && this.mode !== "new") {
+          switch (this.size) {
+            case 1:
+              iconArray = ["cycle", "recreational"];
+              break;
+            case 2:
+              iconArray = ["motorbiking", "motor-sports"];
+              break;
+            case 3:
+              iconArray = ["automobile-1"];
+              break;
+            case 4:
+              iconArray = ["automobile", "suv"];
+              break;
+            case 5:
+              iconArray = ["tourist"];
+              break;
+            case 6:
+              iconArray = ["tramway", "buses"];
+              break;
+            case 7:
+            default:
+              iconArray = ["public-transport", "airplanes", "zeppelins"];
+              break;
+          }
+        }
+        return (
+          "../../../icons/svg/" + this.getPseudoRandomIcon(iconArray) + ".svg"
+        );
+      },
+      vehicleWidth: function () {
+        if (!this.size || this.mode === "new") {
+          return 150;
+        }
         switch (this.size) {
           case 1:
-            iconArray = ["cycle", "recreational"];
-            break;
           case 2:
-            iconArray = ["motorbiking", "motor-sports"];
-            break;
+            return 150;
           case 3:
-            iconArray = ["automobile-1"];
-            break;
           case 4:
-            iconArray = ["automobile", "suv"];
-            break;
           case 5:
-            iconArray = ["tourist"];
-            break;
+            return 200;
           case 6:
-            iconArray = ["tramway", "buses"];
-            break;
+            return 250;
           case 7:
           default:
-            iconArray = ["public-transport", "airplanes", "zeppelins"];
-            break;
+            return 300;
         }
       }
-      return (
-        "../../../icons/svg/" + this.getPseudoRandomIcon(iconArray) + ".svg"
-      );
     },
-    vehicleWidth: function() {
-      if (!this.size || this.mode === "new") {
-        return 150;
-      }
-      switch (this.size) {
-        case 1:
-        case 2:
-          return 150;
-        case 3:
-        case 4:
-        case 5:
-          return 200;
-        case 6:
-          return 250;
-        case 7:
-        default:
-          return 300;
+    methods: {
+      getPseudoRandomIcon: function (arrayOfIcons) {
+        if (arrayOfIcons.length === 1) {
+          return arrayOfIcons[0];
+        }
+        if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
+          let t = this.lunchItem.lunchtime;
+          let pseudoRandomNumber =
+            t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
+          return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
+        }
+        return arrayOfIcons[Math.floor(Math.random() * arrayOfIcons.length)];
       }
     }
-  },
-  methods: {
-    getPseudoRandomIcon: function(arrayOfIcons) {
-      if (arrayOfIcons.length === 1) {
-        return arrayOfIcons[0];
-      }
-      if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
-        let t = this.lunchItem.lunchtime;
-        let pseudoRandomNumber =
-          t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
-        return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
-      }
-      return arrayOfIcons[Math.floor(Math.random() * arrayOfIcons.length)];
-    }
-  }
-};
+  };
 </script>
 
 <style>
@@ -139,8 +140,7 @@ export default {
 
 .vehicle-div.active.completed #vehicle,
 .vehicle-div.active.completed #vehicle-shadow {
-  animation: fade-out 0.3s ease;
-  opacity: 0;
+  animation: fade-out 1s linear 0.5s forwards;
 }
 
 .vehicle-div #vehicle-shadow {
@@ -173,33 +173,35 @@ export default {
   stroke-width: 300;
 }
 
-#cloud2 {
+.vehicle-div.active #cloud2 {
   width: 70px;
   top: 40px;
   animation: cloud-move 28s linear -12s infinite, fade-in 1s linear;
 }
 
-#cloud1 {
+.vehicle-div.active #cloud1 {
   width: 100px;
   top: 60px;
   animation: cloud-move 22s linear -2s infinite, fade-in 1s linear;
 }
 
+.vehicle-div.active.completed #cloud2 {
+  animation: cloud-move 28s linear -12s, fade-out 1s linear 0.5s forwards;
+}
+
+.vehicle-div.active.completed #cloud1 {
+  animation: cloud-move 22s linear -2s, fade-out 1s linear 0.5s forwards;
+}
+
 .vehicle-div.active.completed #cloud4 {
-  width: 70px;  
-  animation: fade-in 0.3s ease 0.4s forwards;
-  transform: none;
-  opacity: 0;
-  left: -380px;
+  width: 70px;
+  left: -60px;
   top: 10px;
 }
 
 .vehicle-div.active.completed #cloud3 {
-  width: 100px;  
-  animation: fade-in 0.3s ease 0.4s forwards;
-  transform: none;  
-  opacity: 0;
-  left: -30px;
+  width: 100px;
+  left: -426px;
   top: 40px;
 }
 
@@ -213,7 +215,7 @@ export default {
   position: absolute;
 }
 
-.vehicle-div .tree {
+.vehicle-div:not(.active) .tree {
   display: none;
 }
 
@@ -224,44 +226,79 @@ export default {
   transform: translateX(400px);
   animation-name: tree-move, fade-in;
   animation-iteration-count: infinite, 1;
-  animation-duration: 6000ms, 1s;
+  animation-duration: 6s, 1s;
   animation-timing-function: linear;
-  display: block;
 }
 
-.vehicle-div.active.completed #tree1,
-.vehicle-div.active.completed #tree2,
-.vehicle-div.active.completed #tree3,
-.vehicle-div.active.completed #cloud1,
-.vehicle-div.active.completed #cloud2 {
-  transition: opacity 0.3s linear;
-  opacity: 0;
+.vehicle-div.active #tree1 {
+  animation-delay: -2s, 0s;
+}
+
+.vehicle-div.active #tree2 {
+  animation-delay: -4s, 0s;
+}
+
+.vehicle-div.active #tree3 {
+  animation-delay: -1ms, 0s;
+}
+
+.vehicle-div.active.completed #tree1 {
+  animation: tree-move 6s linear -2s, fade-out 1s linear 0.5s forwards;
+}
+
+.vehicle-div.active.completed #tree2 {
+  animation: tree-move 6s linear -4s, fade-out 1s linear 0.5s forwards;
+}
+
+.vehicle-div.active.completed #tree3 {
+  animation: tree-move 6s linear 0s, fade-out 1s linear 0.5s forwards;
 }
 
 .vehicle-div.active.completed #tree4 {
-  animation: fade-in 0.3s linear 0.4s forwards;
-  opacity: 0;
-  left: -400px;
+  position: absolute;
+  width: 80px;
+  top: 200px;  
+  left: 0;
 }
 
 .vehicle-div.active.completed #tree5 {
-  animation: fade-in 0.3s linear 0.4s forwards;
-  opacity: 0;
-  left: -90px;
+  position: absolute;
+  width: 80px;
+  top: 200px;  
+  left: 300px;
 }
 
-.vehicle-div #cafe {
-  display: none;
+.vehicle-div.active.completed #cloud3,
+.vehicle-div.active.completed #cloud4,
+.vehicle-div.active.completed #tree4,
+.vehicle-div.active.completed #tree5 {
   opacity: 0;
+  animation: fade-in 1s linear 2.5s forwards;
 }
 
-.vehicle-div.active.completed #cafe {
-  display: block;
-  opacity: 1;
+#cafe {
   height: 250px;
   position: absolute;
   left: calc(50% - 125px);
   top: 58px;
+}
+
+#lunch-place {
+  position: absolute;
+  top: 88px;
+  left: 132px;
+  text-align: center;
+  width: 147px;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 21px;
+  overflow: hidden;
+}
+
+#lunch-place,
+#cafe {
+  animation: fade-in 1s linear 2s forwards;
+  opacity: 0;
 }
 
 @keyframes bounce {
@@ -332,10 +369,22 @@ export default {
 
 @keyframes fade-out {
   from {
-    opacity: 0;
+    opacity: 1;
   }
   to {
-    opacity: 1;
+    opacity: 0;
+  }
+}
+
+@keyframes cloud-sway {
+  0% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(-20px);
   }
 }
 </style>

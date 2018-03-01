@@ -6,6 +6,15 @@ var onFirstLoad = true;
 var lunchTimer = null;
 var LUNCH_EXPIRY_DURATION = 5000;
 
+chrome.notifications.onClicked.addListener((notificationId, buttonIndex) => {
+	chrome.windows.create({
+		url: "src/browser_action/browser_action.html",
+		type: "popup",
+		top: 40,
+		right: 0
+	});
+});
+
 function initLunchListeners() {
 	currentLunchRef.onSnapshot((snapshot) => {
 		snapshot.docChanges.forEach((change) => {
@@ -59,7 +68,7 @@ function setLunchTimer() {
 	}
 }
 
-function sendNotification(title, msg) {
+function sendNotification(title, msg, button) {
 	console.log(new Date(currentLunchItem.lunchtime));
 	let icon = getIcon(currentLunchItem.participants.length, new Date(currentLunchItem.lunchtime));
 	chrome.notifications.create(null, {

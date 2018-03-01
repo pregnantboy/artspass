@@ -1,6 +1,6 @@
 {
   "name": "artspass",
-  "version": "1.0.5",
+  "version": "3.0.0",
   "description": "",
   "main": "src/browser_action/browser_action.html",
   "scripts": {

@@ -1,5 +1,6 @@
 var salt;
 var themeColor;
+var route = "vault";
 
 chrome.storage.sync.get({
 	encryptKey: "",
@@ -138,7 +139,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		console.log("here");
 		isFirstLoad = false;
 		if (initDataLoaded) {
-			console.log(getAccountsArray());
+			console.log(getAccountsArray().length);
 			sendResponse([getAccountsArray(), userEmails]);
 		} else {
 			loadAllData(sendResponse);

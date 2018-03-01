@@ -35,7 +35,7 @@ export default {
     methods: {
         showNewAccountPage: function () {
             this.createPage = true;
-            this.canEdit = true;                        
+            this.canEdit = true;
             populateAccount();
             this.saveAccountState();
             this.saveView(3);
@@ -43,7 +43,7 @@ export default {
         },
         showAccountDetailsPage: function (account) {
             this.createPage = false;
-            this.canEdit = false;                        
+            this.canEdit = false;
             populateAccount(account);
             this.saveAccountState();
             this.saveView(2);
@@ -77,8 +77,9 @@ export default {
             // 1: Main View, 2: Account View  3: New Account View
             saveState("view", viewNo);
         },
-        navigateToLunch: function() {
+        navigateToLunch: function () {
             this.$root.$data.page = "lunch";
+            chrome.extension.getBackgroundPage().route = "lunch";
         }
     },
     computed: {

@@ -6,11 +6,11 @@
         <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
       </md-speed-dial-target>
       <md-speed-dial-content>
-        <md-button class="md-icon-button speeddial-button" @click="naviagateToVault()">
-          <md-icon>vpn_key</md-icon>
+        <md-button class="md-icon-button speeddial-button" style="background-color: white;" @click="naviagateToVault()">
+          <md-icon>fingerprint</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button speeddial-button" @click="openOptions()">
+        <md-button class="md-icon-button speeddial-button" style="background-color: white;" @click="openOptions()">
           <md-icon>settings</md-icon>
         </md-button>
       </md-speed-dial-content>
@@ -81,9 +81,9 @@
         return this.mode === "ended";
       },
       alreadyHoppedIn: function () {
-        // if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
-        //   return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
-        // }
+        if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
+          return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
+        }
         return false;
       }
     },
@@ -128,6 +128,7 @@
       },
       naviagateToVault: function () {
         this.$root.$data.page = "vault";
+        chrome.extension.getBackgroundPage().route = "vault";
       },
       initView: function () {
         console.log("lunch init view", this.currentLunchItem);

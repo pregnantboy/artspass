@@ -13,7 +13,7 @@
     <img src="../../../icons/svg/tree2.svg" id="tree4" v-if="hasCompleted" />
     <img src="../../../icons/svg/tree3.svg" id="tree5" v-if="hasCompleted" />
     <img src="../../../icons/svg/cafe.svg" id="cafe" v-if="hasCompleted" />
-    <span id="lunch-place" v-if="hasCompleted">TIMBRE+</span>
+    <span id="lunch-place" v-if="hasCompleted">LUNCH</span>
     <svg id="vehicle-shadow">
       <ellipse cx="200" :cy="52" :rx="vehicleWidth/2" :ry="inProgress ? 10 : 6" style="fill:rgba(0,0,0,0.2)" />
     </svg>

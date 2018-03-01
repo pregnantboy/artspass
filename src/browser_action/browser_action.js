@@ -6,6 +6,9 @@ import Lunch from "./lunch/lunch.vue";
 
 Vue.use(VueMaterial);
 
+const removePopupWindow = chrome.extension.getBackgroundPage().removePopupWindow;
+const previousRoute = chrome.extension.getBackgroundPage().route;
+
 const routes = {
 	"vault": {
 		component: Vault,
@@ -20,7 +23,7 @@ const routes = {
 var app = new Vue({
 	el: "#vault",
 	data: {
-		page: "lunch"
+		page: "vault"
 	},
 	computed: {
 		ViewComponent: function () {
@@ -32,3 +35,12 @@ var app = new Vue({
 		return h(this.ViewComponent);
 	}
 });
+
+if (chrome.extension.getViews({
+	type: "popup"
+}).length > 0) {
+	removePopupWindow();
+	app.$data.page = previousRoute || "vault";
+} else {
+	app.$data.page = "lunch";
+}

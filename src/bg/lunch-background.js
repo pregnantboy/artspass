@@ -4,16 +4,39 @@ var currentLunchDocRef = null;
 var currentLunchItem = null;
 var onFirstLoad = true;
 var lunchTimer = null;
-var LUNCH_EXPIRY_DURATION = 5000;
+var LUNCH_EXPIRY_DURATION = 5 * 60 * 1000;
+var popupWindow = null;
 
 chrome.notifications.onClicked.addListener((notificationId, buttonIndex) => {
-	chrome.windows.create({
-		url: "src/browser_action/browser_action.html",
-		type: "popup",
-		top: 40,
-		right: 0
+	let isPopupOpen = chrome.extension.getViews({ type: "popup" }).length > 0;
+	if (isPopupOpen) {
+		return;
+	}
+	removePopupWindow().then(() => {
+		chrome.windows.create({
+			url: "src/browser_action/browser_action.html",
+			type: "popup",
+			top: 108,
+			left: screen.width - 400,
+			width: 400,
+			height: 460
+		}, (windowCreated) => {
+			popupWindow = windowCreated;
+		});
 	});
 });
+
+function removePopupWindow() {
+	if (popupWindow && popupWindow.id) {
+		return new Promise((resolve) => {
+			chrome.windows.remove(popupWindow.id, () => {
+				resolve();
+			});
+		});
+	} else {
+		return Promise.resolve();
+	}
+}
 
 function initLunchListeners() {
 	currentLunchRef.onSnapshot((snapshot) => {
@@ -99,7 +122,7 @@ function addParticipant() {
 			.then(doc => {
 				// Add one person to the city population
 				var currentParticipants = doc.data().participants;
-				if (currentParticipants.indexOf(currentUser.displayName) !== -1) {
+				if (currentParticipants.indexOf(currentUser.displayName) === -1) {
 					currentParticipants.push(currentUser.displayName);
 				}
 				t.update(currentLunchDocRef, {
@@ -108,6 +131,7 @@ function addParticipant() {
 			});
 	}).then(result => {
 		console.log("Participant added");
+		removePopupWindow();
 	}).catch(err => {
 		console.log("Participant could not added");
 	});

@@ -22,6 +22,8 @@
 </template>
 
 <script>
+  const getIcon = chrome.extension.getBackgroundPage().getIcon;
+
   export default {
     props: ["mode", "lunchItem"],
     computed: {
@@ -39,35 +41,11 @@
         return this.mode === "ended";
       },
       svgName: function () {
-        let iconArray = ["cycle", "recreational"];
-        if (this.size && this.mode !== "new") {
-          switch (this.size) {
-            case 1:
-              iconArray = ["cycle", "recreational"];
-              break;
-            case 2:
-              iconArray = ["motorbiking", "motor-sports"];
-              break;
-            case 3:
-              iconArray = ["automobile-1"];
-              break;
-            case 4:
-              iconArray = ["automobile", "suv"];
-              break;
-            case 5:
-              iconArray = ["tourist"];
-              break;
-            case 6:
-              iconArray = ["tramway", "buses"];
-              break;
-            case 7:
-            default:
-              iconArray = ["public-transport", "airplanes", "zeppelins"];
-              break;
-          }
-        }
+        let size = (this.mode === "new") ? 0 : this.size;
+        let lunchtime = this.lunchItem ? this.lunchItem.lunchtime : null;
+        console.log(getIcon(size, lunchtime));
         return (
-          "../../../icons/svg/" + this.getPseudoRandomIcon(iconArray) + ".svg"
+          "../../../icons/svg/" + getIcon(size, lunchtime) + ".svg"
         );
       },
       vehicleWidth: function () {
@@ -91,18 +69,7 @@
       }
     },
     methods: {
-      getPseudoRandomIcon: function (arrayOfIcons) {
-        if (arrayOfIcons.length === 1) {
-          return arrayOfIcons[0];
-        }
-        if (this.mode !== "new" && this.lunchItem && this.lunchItem.lunchtime) {
-          let t = this.lunchItem.lunchtime;
-          let pseudoRandomNumber =
-            t.getMinutes() + t.getHours() + t.getDate() + t.getMonth() + 1;
-          return arrayOfIcons[pseudoRandomNumber % arrayOfIcons.length];
-        }
-        return arrayOfIcons[Math.floor(Math.random() * arrayOfIcons.length)];
-      }
+    
     }
   };
 </script>

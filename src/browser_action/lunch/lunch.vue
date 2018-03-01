@@ -15,7 +15,7 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial>
-    <lunch-vehicle :mode="'inprogress'" :lunchItem="currentLunchItem"></lunch-vehicle>
+    <lunch-vehicle :mode="mode" :lunchItem="currentLunchItem"></lunch-vehicle>
     <div style="text-align: center; position: relative;">
       <span class="time-label" :class="{'in-progress':!isNew}">Lunch Time</span>
       <span class="time-label in-progress" v-if="inProgress">: {{ currentLunchItem.lunchtime | formatTime }} </span>
@@ -44,6 +44,7 @@
   const startLunch = chrome.extension.getBackgroundPage().startLunch;
   const addParticipant = chrome.extension.getBackgroundPage().addParticipant;
   const currentUser = chrome.extension.getBackgroundPage().currentUser;
+  const LUNCH_EXPIRY_DURATION = chrome.extension.getBackgroundPage().LUNCH_EXPIRY_DURATION;
 
   export default {
     data() {
@@ -73,16 +74,16 @@
       inProgress: function () {
         return this.mode === "inprogress";
       },
-      isNew: function() {
+      isNew: function () {
         return this.mode === "new";
       },
-      hasCompleted: function() {
+      hasCompleted: function () {
         return this.mode === "ended";
       },
       alreadyHoppedIn: function () {
-        if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
-          return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
-        }
+        // if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
+        //   return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
+        // }
         return false;
       }
     },
@@ -120,6 +121,7 @@
       },
       hopIn: function () {
         this.currentLunchItem.participants.push(currentUser.displayName);
+        addParticipant();
       },
       openOptions: function () {
         chrome.runtime.openOptionsPage();
@@ -128,23 +130,23 @@
         this.$root.$data.page = "vault";
       },
       initView: function () {
-        console.log("lunch init view");
+        console.log("lunch init view", this.currentLunchItem);
         if (
           !this.currentLunchItem ||
-          new Date() - this.currentLunchItem.lunctime > 60000
+          new Date() - this.currentLunchItem.lunchtime > LUNCH_EXPIRY_DURATION
         ) {
           // no item or expired for more than 10 minutes
-          this.mode = "ended";
+          this.mode = "new";
           this.timeOptions = getTimeOptions();
-          return;
-        }
-        if ((this.currentLunchItem.lunchtime - Date.now()) > 0) {
-          this.mode = "inprogress";
         } else {
-          this.mode = "ended";
-          this.timeOptions = getTimeOptions();
+          if ((this.currentLunchItem.lunchtime - Date.now()) > 0) {
+            this.mode = "inprogress";
+          } else {
+            this.mode = "ended";
+            this.timeOptions = getTimeOptions();
+          }
         }
-        console.log("current mode:", this.mode);
+        console.log("current mode:", this.mode, ". Time since lunch ended", new Date() - this.currentLunchItem.lunchtime);
       },
       setCustomTime: function (customTime) {
         this.showDialog = false;
@@ -153,11 +155,13 @@
       },
       updateLunchItem: function () {
         let bgLunchItem = chrome.extension.getBackgroundPage().currentLunchItem;
-        this.currentLunchItem = {
-          id: bgLunchItem.id,
-          lunchtime: new Date(bgLunchItem.lunchtime),
-          participants: _.clone(bgLunchItem.participants)
-        };
+        if (bgLunchItem) {
+          this.currentLunchItem = {
+            id: bgLunchItem.id,
+            lunchtime: new Date(bgLunchItem.lunchtime),
+            participants: _.clone(bgLunchItem.participants)
+          };
+        }
       }
     },
     created: function () {

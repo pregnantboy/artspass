@@ -35,7 +35,7 @@ export default {
     methods: {
         showNewAccountPage: function () {
             this.createPage = true;
-            this.canEdit = true;                        
+            this.canEdit = true;
             populateAccount();
             this.saveAccountState();
             this.saveView(3);
@@ -43,7 +43,7 @@ export default {
         },
         showAccountDetailsPage: function (account) {
             this.createPage = false;
-            this.canEdit = false;                        
+            this.canEdit = false;
             populateAccount(account);
             this.saveAccountState();
             this.saveView(2);
@@ -77,8 +77,9 @@ export default {
             // 1: Main View, 2: Account View  3: New Account View
             saveState("view", viewNo);
         },
-        openPermissionDropdown: function () {
-            window.menu.open = true;
+        navigateToLunch: function () {
+            this.$root.$data.page = "lunch";
+            chrome.extension.getBackgroundPage().route = "lunch";
         }
     },
     computed: {
@@ -96,17 +97,13 @@ export default {
         }
     },
     created: function () {
-        console.log("created");
         chrome.runtime.sendMessage({
             event: "onload"
         }, (accountsAndEmailArray) => {
-            console.log(accountsAndEmailArray);
             this.accounts = accountsAndEmailArray[0];
             this.userEmails = accountsAndEmailArray[1];
             sortAccounts();
             Vue.nextTick(() => {
-                console.log("loading state");
-                // todo
                 loadState.bind(this)();
             });
             this.isLoading = false;
@@ -167,7 +164,6 @@ function loadState() {
                 this.searchString = state.search;
             }
             document.getElementById("maindiv").scrollTop = state.scroll;
-            console.log("scrolling to :", state.scroll);
         }
         break;
         case 2:
@@ -199,7 +195,6 @@ chrome.runtime.onMessage.addListener(function (message) {
     if (!refAccount) {
         return;
     }
-    console.log("Message received:", event);
     if (event === "ref-add") {
         data.accounts.push(refAccount);
         sortAccounts();

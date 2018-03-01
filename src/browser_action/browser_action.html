@@ -1,19 +1,19 @@
 <!doctype html>
 <html>
-
 <head>
-	<link rel="stylesheet" href="../shared/material-components-web.css">
 	<link rel="stylesheet" href="../../fonts/material-icons/material-icons.css">
+	<link rel="stylesheet" href="../shared/vue-material.min.css">
 	<link href="../../fonts/font.css" rel="stylesheet">
 	<link rel="stylesheet" href="../shared/main.css">
 </head>
 
-<body style="margin: 0">
-	<div id="vault"></div>
-	<script src="mdc_init.js"></script>
+<body style="margin: 0; min-width: 70px; min-height:70px; padding:0; overflow:hidden;">
+	<div id="vault">
+		<img class="spin" height="150px" src="../../icons/wheel.png"/>
+	</div>
 	<script src="../shared/account.js"></script>
-	<script src="../shared/material-components-web.min.js"></script>
-	<script src="browser_action_build.js"></script>
+	<!-- <script src="./browser_action_build.js"></script> -->
+	<script src="load_scripts.js"></script>
 </body>
 
 </html>

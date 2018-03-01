@@ -1,6 +1,6 @@
 {
   "name": "Vault",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "manifest_version": 2,
   "description": "All your password are belong to us.",
   "icons": {
@@ -36,7 +36,8 @@
     "storage",
     "identity",
     "activeTab",
-    "notifications"
+    "notifications",
+    "background"
   ],
-  "content_security_policy": "script-src https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com  https://apis.google.com; object-src 'self'"
+  "content_security_policy": "script-src https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com  https://apis.google.com http://localhost:8081 object-src 'self'"
 }

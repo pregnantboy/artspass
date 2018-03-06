@@ -17,7 +17,7 @@
     <svg id="vehicle-shadow">
       <ellipse cx="200" :cy="52" :rx="vehicleWidth/2" :ry="inProgress ? 10 : 6" style="fill:rgba(0,0,0,0.2)" />
     </svg>
-    <img :src="svgName" id="vehicle" :style="{ width: vehicleWidth + 'px', left: 'calc(50% - ' + vehicleWidth/2 + 'px)'}" />
+    <img :src="svgName" id="vehicle" :style="{ width: vehicleWidth + 'px', left: 'calc(200px - ' + vehicleWidth/2 + 'px)'}" />
   </div>
 </template>
 
@@ -114,6 +114,7 @@
   position: absolute;
   top: 140px;
   width: 100%;
+  left: 0;
   transition: all 1s linear;
 }
 
@@ -129,6 +130,7 @@
   position: absolute;
   top: 275px;
   width: 100%;
+  left: 0;
 }
 
 #road-line line {
@@ -246,7 +248,7 @@
 #cafe {
   height: 250px;
   position: absolute;
-  left: calc(50% - 125px);
+  left: 75px;
   top: 58px;
 }
 

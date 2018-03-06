@@ -8,7 +8,9 @@ var LUNCH_EXPIRY_DURATION = 5 * 60 * 1000;
 var popupWindow = null;
 
 chrome.notifications.onClicked.addListener((notificationId, buttonIndex) => {
-	let isPopupOpen = chrome.extension.getViews({ type: "popup" }).length > 0;
+	let isPopupOpen = chrome.extension.getViews({
+		type: "popup"
+	}).length > 0;
 	if (isPopupOpen) {
 		return;
 	}
@@ -18,7 +20,7 @@ chrome.notifications.onClicked.addListener((notificationId, buttonIndex) => {
 			type: "popup",
 			top: 108,
 			left: screen.width - 400,
-			width: 400,
+			width: 416,
 			height: 460
 		}, (windowCreated) => {
 			popupWindow = windowCreated;
@@ -41,34 +43,46 @@ function removePopupWindow() {
 function initLunchListeners() {
 	currentLunchRef.onSnapshot((snapshot) => {
 		snapshot.docChanges.forEach((change) => {
-			if (!change || change.type === "removed") {
+			if (!change) {
 				onFirstLoad = false;
 				return;
 			}
 			console.log("lunch", change.type, change.doc.data());
 			currentLunchDocRef = change.doc.ref;
 			let data = change.doc.data();
-			currentLunchItem = {
-				id: change.id,
-				lunchtime: data.lunchtime,
-				participants: data.participants
-			};
-			chrome.runtime.sendMessage({
-				event: "lunch-update"
-			});
-			if (change.type === "added") {
-				// new lunch added
-				if (!onFirstLoad) {
-					sendNotification("New lunch started at " + formatTime(data.lunchtime), "by " + data.participants[0]);
-				} else {
-					if (Date.now() - data.lunchtime <= LUNCH_EXPIRY_DURATION) {
+			if (Date.now() - data.lunchtime <= LUNCH_EXPIRY_DURATION) {
+				if (change.type === "added") {
+					// new lunch added
+					if (!onFirstLoad) {
+						sendNotification("New lunch started at " + formatTime(data.lunchtime), "by " + data.participants[0]);
+					} else {
 						sendNotification("Ongoing lunch at " + formatTime(data.lunchtime), "");
 					}
 				}
+				if (change.type === "modified") {
+					if (data.participants.length > currentLunchItem.length) {
+						sendNotification("Someone just boarded:", data.participants[data.participants.length - 1]);
+					} else if (data.lunchtime !== currentLunchItem.lunchtime) {
+						sendNotification("Lunch has been pushed back to " + formatTime(data.lunchtime), "");
+					}
+				}
+
+				if (change.type === "removed") {
+					sendNotification("Lunch deleted", "");
+				}
 			}
-			if (change.type === "modified") {
-				sendNotification("Someone just boarded:", data.participants[data.participants.length - 1]);
+			if (data) {
+				currentLunchItem = {
+					id: change.doc.id,
+					lunchtime: data.lunchtime,
+					participants: data.participants
+				};
+			} else {
+				currentLunchItem = null;
 			}
+			chrome.runtime.sendMessage({
+				event: "lunch-update"
+			});
 			setLunchTimer();
 			onFirstLoad = false;
 		});
@@ -91,7 +105,7 @@ function setLunchTimer() {
 	}
 }
 
-function sendNotification(title, msg, button) {
+function sendNotification(title, msg) {
 	console.log(new Date(currentLunchItem.lunchtime));
 	let icon = getIcon(currentLunchItem.participants.length, new Date(currentLunchItem.lunchtime));
 	chrome.notifications.create(null, {
@@ -116,6 +130,15 @@ function startLunch(time) {
 	});
 }
 
+function deleteLunch() {
+	console.log("attempting to delete lunch");
+	currentLunchDocRef.delete().then(() => {
+		console.log("lunch deleted");
+		currentLunchDocRef = null;
+		currentLunchItem = null;
+	}).catch(console.log);
+}
+
 function addParticipant() {
 	db.runTransaction(t => {
 		return t.get(currentLunchDocRef)
@@ -134,6 +157,26 @@ function addParticipant() {
 		removePopupWindow();
 	}).catch(err => {
 		console.log("Participant could not added");
+	});
+}
+
+function delayLunch() {
+	db.runTransaction(t => {
+		return t.get(currentLunchDocRef)
+			.then(doc => {
+				// Add one person to the city population
+				var currentParticipants = doc.data().participants;
+				if (currentParticipants.indexOf(currentUser.displayName) === -1) {
+					currentParticipants.push(currentUser.displayName);
+				}
+				t.update(currentLunchDocRef, {
+					participants: currentParticipants
+				});
+			});
+	}).then(result => {
+		console.log("Lunch delayed");
+	}).catch(err => {
+		console.log("Lunch could not be delayed");
 	});
 }
 

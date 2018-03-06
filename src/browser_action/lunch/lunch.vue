@@ -1,6 +1,6 @@
 <template>
   <div style="width: 400px; height: 400px; overflow: hidden; user-select: none;">
-    <md-speed-dial class="md-top-right" md-direction="bottom" style="right:8px; top:8px; z-index:5;">
+    <md-speed-dial class="md-top-right" md-direction="bottom" style="left:353px; top:8px; z-index:5; position: relative; float:left">
       <md-speed-dial-target class="speeddial-button" style="width:40px;height:40px; box-shadow:none;">
         <md-icon class="md-morph-initial">menu</md-icon>
         <md-icon class="md-morph-final">keyboard_arrow_down</md-icon>
@@ -30,6 +30,13 @@
       <md-button v-if="isNew" class="md-raised md-dense" id="start-button" @click="start">START</md-button>
       <md-button v-if="inProgress" class="md-raised md-dense" id="start-button" @click="hopIn" :disabled="alreadyHoppedIn">{{ alreadyHoppedIn ? 'WAITING FOR LUNCH ...' : 'HOP IN' }}</md-button>
     </div>
+    <md-button v-if="inProgress || hasCompleted" class="md-icon-button" style="position: absolute; top: 375px; left: 0px; color: rgba(20,20,20,0.5);" @click="stopLunchDialog=true">
+      <md-icon>rv_hookup</md-icon>
+    </md-button>
+    <md-button v-if="inProgress" class="md-icon-button" style="position: absolute; top: 375px; left: 353px; color: rgba(20,20,20,0.5);" @click="stopLunchDialog=true">
+      <md-icon>alarm_add</md-icon>
+    </md-button>
+    <md-dialog-confirm style="background: white;" :md-active.sync="stopLunchDialog" md-title="Turn this shit around?" md-confirm-text="yes! " md-cancel-text="no. keep going." @md-confirm="deleteLunchConfirm" />
     <md-dialog :md-active.sync="showDialog" style="height: 200px; width: 240px;">
       <timepicker @customTime="setCustomTime"></timepicker>
     </md-dialog>
@@ -42,6 +49,7 @@
   import _ from "lodash";
 
   const startLunch = chrome.extension.getBackgroundPage().startLunch;
+  const deleteLunch = chrome.extension.getBackgroundPage().deleteLunch;
   const addParticipant = chrome.extension.getBackgroundPage().addParticipant;
   const currentUser = chrome.extension.getBackgroundPage().currentUser;
   const LUNCH_EXPIRY_DURATION = chrome.extension.getBackgroundPage().LUNCH_EXPIRY_DURATION;
@@ -54,7 +62,8 @@
         timeOptions: [],
         selectedTime: null,
         showDialog: false,
-        customTimeLabel: "CUSTOM"
+        customTimeLabel: "CUSTOM",
+        stopLunchDialog: false
       };
     },
     filters: {
@@ -122,6 +131,14 @@
       hopIn: function () {
         this.currentLunchItem.participants.push(currentUser.displayName);
         addParticipant();
+      },
+      deleteLunchConfirm: function () {
+        this.currentLunchItem = null;
+        this.initView();
+        deleteLunch();
+      },
+      add10Minutes(): function() {
+        
       },
       openOptions: function () {
         chrome.runtime.openOptionsPage();

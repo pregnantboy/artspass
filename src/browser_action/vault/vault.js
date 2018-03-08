@@ -163,7 +163,10 @@ function loadState() {
             if (state.search) {
                 this.searchString = state.search;
             }
-            document.getElementById("maindiv").scrollTop = state.scroll;
+            let maindiv = document.getElementById("maindiv");
+            if (maindiv) {
+                maindiv.scrollTop = state.scroll;
+            }
         }
         break;
         case 2:

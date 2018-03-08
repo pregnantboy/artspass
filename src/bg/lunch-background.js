@@ -54,28 +54,29 @@ function initLunchListeners() {
 				if (change.type === "added") {
 					// new lunch added
 					if (!onFirstLoad) {
-						sendNotification("New lunch started at " + formatTime(data.lunchtime), "by " + data.participants[0]);
+						sendNotification(data, "New lunch started at " + formatTime(data.lunchtime), "by " + data.participants[0]);
 					} else {
-						sendNotification("Ongoing lunch at " + formatTime(data.lunchtime), "");
+						sendNotification(data, "Ongoing lunch at " + formatTime(data.lunchtime), "");
 					}
 				}
 				if (change.type === "modified") {
-					if (data.participants.length > currentLunchItem.length) {
-						sendNotification("Someone just boarded:", data.participants[data.participants.length - 1]);
-					} else if (data.lunchtime !== currentLunchItem.lunchtime) {
-						sendNotification("Lunch has been pushed back to " + formatTime(data.lunchtime), "");
+					if (data.participants.length > currentLunchItem.participants.length) {
+						sendNotification(data, "Someone just boarded:", data.participants[data.participants.length - 1]);
+					} else if (data.delays && (!currentLunchItem.delays && data.delays.length > 0) || (data.delays.length > currentLunchItem.delays.length)) {
+						sendNotification(data, "Lunch has been pushed back to " + formatTime(data.lunchtime), "Shame on " + data.delays[data.delays.length - 1] + "! Shame! Shame! Shame!");
 					}
 				}
 
 				if (change.type === "removed") {
-					sendNotification("Lunch deleted", "");
+					sendNotification(data, "Lunch deleted", "");
 				}
 			}
 			if (data) {
 				currentLunchItem = {
 					id: change.doc.id,
 					lunchtime: data.lunchtime,
-					participants: data.participants
+					participants: data.participants,
+					delays: data.delays
 				};
 			} else {
 				currentLunchItem = null;
@@ -105,10 +106,14 @@ function setLunchTimer() {
 	}
 }
 
-function sendNotification(title, msg) {
-	console.log(new Date(currentLunchItem.lunchtime));
-	let icon = getIcon(currentLunchItem.participants.length, new Date(currentLunchItem.lunchtime));
-	chrome.notifications.create(null, {
+function sendNotification(data, title, msg) {
+	let icon;
+	if (data) {
+		icon = getIcon(data.participants.length, new Date(data.lunchtime));
+	} else {
+		icon = getIcon(5);
+	}
+	chrome.notifications.create("lunchtime", {
 		type: "basic",
 		title: title,
 		message: msg,
@@ -165,12 +170,18 @@ function delayLunch() {
 		return t.get(currentLunchDocRef)
 			.then(doc => {
 				// Add one person to the city population
-				var currentParticipants = doc.data().participants;
-				if (currentParticipants.indexOf(currentUser.displayName) === -1) {
-					currentParticipants.push(currentUser.displayName);
+				var currentDelays = doc.data().delays;
+				var currentLunchtime = doc.data().lunchtime;
+				if (!currentDelays) {
+					currentDelays = [currentUser.displayName];
+					currentLunchtime += 10 * 60 * 1000;
+				} else if (currentDelays.indexOf(currentUser.displayName) === -1 || currentDelays.length >= 2) {
+					currentDelays.push(currentUser.displayName);
+					currentLunchtime += 10 * 60 * 1000;					
 				}
 				t.update(currentLunchDocRef, {
-					participants: currentParticipants
+					delays: currentDelays,
+					lunchtime: currentLunchtime					
 				});
 			});
 	}).then(result => {

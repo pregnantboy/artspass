@@ -33,10 +33,11 @@
     <md-button v-if="inProgress || hasCompleted" class="md-icon-button" style="position: absolute; top: 375px; left: 0px; color: rgba(20,20,20,0.5);" @click="stopLunchDialog=true">
       <md-icon>rv_hookup</md-icon>
     </md-button>
-    <md-button v-if="inProgress" class="md-icon-button" style="position: absolute; top: 375px; left: 353px; color: rgba(20,20,20,0.5);" @click="stopLunchDialog=true">
+    <md-button v-if="inProgress && !alreadyDelayedOnce" class="md-icon-button" style="position: absolute; top: 375px; left: 353px; color: rgba(20,20,20,0.5);" @click="delayLunchDialog=true">
       <md-icon>alarm_add</md-icon>
     </md-button>
-    <md-dialog-confirm style="background: white;" :md-active.sync="stopLunchDialog" md-title="Turn this shit around?" md-confirm-text="yes! " md-cancel-text="no. keep going." @md-confirm="deleteLunchConfirm" />
+    <md-dialog-confirm style="background: white;" :md-active.sync="stopLunchDialog" md-title="Turn this shit around?" md-confirm-text="yes" md-cancel-text="no keep going" @md-confirm="deleteLunchConfirm" />
+    <md-dialog-confirm style="background: white;" :md-active.sync="delayLunchDialog" md-title="Be a Burden?" md-confirm-text="That's my name" md-cancel-text="of course not" @md-confirm="delayLunchConfirm" />
     <md-dialog :md-active.sync="showDialog" style="height: 200px; width: 240px;">
       <timepicker @customTime="setCustomTime"></timepicker>
     </md-dialog>
@@ -49,6 +50,7 @@
   import _ from "lodash";
 
   const startLunch = chrome.extension.getBackgroundPage().startLunch;
+  const delayLunch = chrome.extension.getBackgroundPage().delayLunch;
   const deleteLunch = chrome.extension.getBackgroundPage().deleteLunch;
   const addParticipant = chrome.extension.getBackgroundPage().addParticipant;
   const currentUser = chrome.extension.getBackgroundPage().currentUser;
@@ -63,7 +65,8 @@
         selectedTime: null,
         showDialog: false,
         customTimeLabel: "CUSTOM",
-        stopLunchDialog: false
+        stopLunchDialog: false,
+        delayLunchDialog: false
       };
     },
     filters: {
@@ -92,6 +95,12 @@
       alreadyHoppedIn: function () {
         if (this.inProgress && this.currentLunchItem && this.currentLunchItem.participants) {
           return this.currentLunchItem.participants.indexOf(currentUser.displayName) !== -1;
+        }
+        return false;
+      },
+      alreadyDelayedOnce: function() {
+        if (this.inProgress && this.currentLunchItem && this.currentLunchItem.delays) {
+          return this.currentLunchItem.delays.indexOf(currentUser.displayName) !== -1 || this.currentLunchItem.delays >= 2;          
         }
         return false;
       }
@@ -126,6 +135,8 @@
         if (this.selectedTime) {
           console.log("starting lunch at", this.selectedTime);
           startLunch(this.selectedTime);
+          this.selectedTime = null;
+          this.customTimeLabel = "CUSTOM";
         }
       },
       hopIn: function () {
@@ -137,8 +148,9 @@
         this.initView();
         deleteLunch();
       },
-      add10Minutes(): function() {
-        
+      delayLunchConfirm: function () {
+        (this.currentLunchItem.delays || (this.currentLunchItem.delays = [])).push(currentUser.displayName);
+        delayLunch();
       },
       openOptions: function () {
         chrome.runtime.openOptionsPage();
@@ -164,7 +176,7 @@
             this.timeOptions = getTimeOptions();
           }
         }
-        console.log("current mode:", this.mode, ". Time since lunch ended", new Date() - this.currentLunchItem.lunchtime);
+        console.log("current mode:", this.mode, ". Time since lunch ended", this.currentLunchItem ? new Date() - this.currentLunchItem.lunchtime : 'null');
       },
       setCustomTime: function (customTime) {
         this.showDialog = false;
@@ -177,7 +189,8 @@
           this.currentLunchItem = {
             id: bgLunchItem.id,
             lunchtime: new Date(bgLunchItem.lunchtime),
-            participants: _.clone(bgLunchItem.participants)
+            participants: _.clone(bgLunchItem.participants),
+            delays: _.clone(bgLunchItem.delays)
           };
         }
       }

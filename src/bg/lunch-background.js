@@ -113,7 +113,7 @@ function sendNotification(data, title, msg) {
 	} else {
 		icon = getIcon(5);
 	}
-	chrome.notifications.create("lunchtime", {
+	chrome.notifications.create(null, {
 		type: "basic",
 		title: title,
 		message: msg,

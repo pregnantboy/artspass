@@ -117,7 +117,7 @@ polyline.check {
 }
 
 .options-close {
-    position: absolute;
+    position: fixed;
     right: 20px;
     bottom: 20px;
     background-color: var(--vault-color);

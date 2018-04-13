@@ -1,6 +1,6 @@
 {
   "name": "artspass",
-  "version": "3.1.1",
+  "version": "3.1.3",
   "description": "",
   "main": "src/browser_action/browser_action.html",
   "scripts": {
@@ -8,7 +8,7 @@
     "serve": "http-server -o -s -c 1 -a localhost",
     "dev": "npm-run-all --parallel watchify serve",
     "build": "cross-env NODE_ENV=production browserify -g envify src/browser_action/browser_action.js | uglifyjs -c -m > src/browser_action/browser_action_build.js",
-    "test": "eslint --fix src/browser_action src/options src/bg src/shared/account.js",
+    "test": "eslint --fix --ignore-pattern *_build.js src/browser_action src/options src/bg src/shared/account.js",
     "zip": "node zip.js"
   },
   "author": "",

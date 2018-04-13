@@ -97,8 +97,7 @@ function setLunchTimer() {
 	}
 	if (currentLunchItem.lunchtime - Date.now() > 0) {
 		lunchTimer = setTimeout(() => {
-			console.log("Timeout");
-			sendNotification("IT'S LUNCH TIME!", "Please make your way to the door now.");
+			sendNotification(currentLunchItem, "IT'S LUNCH TIME!", "Please make your way to the door now.");
 			chrome.runtime.sendMessage({
 				event: "lunch-update"
 			});
@@ -177,11 +176,11 @@ function delayLunch() {
 					currentLunchtime += 10 * 60 * 1000;
 				} else if (currentDelays.indexOf(currentUser.displayName) === -1 || currentDelays.length >= 2) {
 					currentDelays.push(currentUser.displayName);
-					currentLunchtime += 10 * 60 * 1000;					
+					currentLunchtime += 10 * 60 * 1000;
 				}
 				t.update(currentLunchDocRef, {
 					delays: currentDelays,
-					lunchtime: currentLunchtime					
+					lunchtime: currentLunchtime
 				});
 			});
 	}).then(result => {
